@@ -1,0 +1,13 @@
+#nav-bar {
+    height: 65px;
+}
+
+.logo {
+    height : 60px;
+    width : auto;
+}
+
+.menu-link:hover {
+    text-shadow: 1px 1px 2px grey;
+    cursor: pointer;
+}
