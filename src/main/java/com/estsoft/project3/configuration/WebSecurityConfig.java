@@ -1,5 +1,7 @@
 package com.estsoft.project3.configuration;
 
+import com.estsoft.project3.login.handler.CustomOAuth2SuccessHandler;
+import com.estsoft.project3.login.service.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,38 +13,43 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    @Bean
-    public WebSecurityCustomizer configure() {      //Disable Spring Security Features
-        return web -> web.ignoring().requestMatchers("/static/**","/api/**");
+    private final CustomOAuth2UserService customOAuth2UserService;
+
+    public WebSecurityConfig(CustomOAuth2UserService customOAuth2UserService) {
+        this.customOAuth2UserService = customOAuth2UserService;
     }
 
-    public WebSecurityConfig() {
+    @Bean
+    public WebSecurityCustomizer configure() {
+        return web -> web.ignoring().requestMatchers("/static/**", "/api/**");
     }
 
-    //Configure web-based security for specific HTTP requests
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity,
+        CustomOAuth2SuccessHandler customOAuth2SuccessHandler) throws Exception {
         httpSecurity
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/images/**","/css/**","/","/home").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN") // /admin/** 경로는 ROLE_ADMIN 권한 필요
-                        .anyRequest().authenticated())
-                /*.oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .userService(customOAuth2UserService)
-                        )
-                        .failureHandler((request, response, exception) -> {
-                            exception.printStackTrace();
-                        })
-                        .loginPage("/login") // Custom login page Url
-                        .defaultSuccessUrl("/checkNickname", true)
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/images/**", "/css/**", "/js/**", "/home", "/login").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
+            )
+            .oauth2Login(oauth2 -> oauth2
+                .userInfoEndpoint(userInfo -> userInfo
+                    .userService(customOAuth2UserService)
                 )
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/home")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                )*/
-                .csrf(auth -> auth.disable());
+                .failureHandler((request, response, exception) -> {
+                    exception.printStackTrace();
+                })
+                .successHandler(customOAuth2SuccessHandler)
+                .loginPage("/login")
+            )
+            .logout(logout -> logout
+                .logoutSuccessUrl("/home")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+            )
+            .csrf(auth -> auth.disable());
+
         return httpSecurity.build();
     }
 }
