@@ -1,0 +1,50 @@
+ol, ul {
+    padding-left: 20px;
+}
+
+li {
+    display: list-item;
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+li > * {
+    display: inline;
+}
+
+p {
+    margin: 10px 0;
+}
+
+#main-content {
+    min-height: calc(100vh - 65px);
+    background-image: url('/images/section-bg.png');
+}
+
+.input-text {
+    width: 100%;
+    max-width: 500px;
+}
+
+.answer-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.guide-text {
+    font-size: 12px;
+}
+
+#tilTitle, #tilContent {
+    border-radius: 10px;
+}
+
+#tilTitle {
+    width: 50%;
+    border-radius: 10px;
+}
+
+#tilContent {
+    width: 100%;
+    min-height: 200px;
+}
