@@ -45,7 +45,7 @@ public class LoginController {
         userRepository.save(user);
 
         session.setAttribute("user", new SessionUser(user));
-        return "redirect:/home";
+        return "redirect:/";
     }
 
     //추후 매핑 주소 변경해야함
