@@ -20,8 +20,8 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public WebSecurityCustomizer configure() {
-        return web -> web.ignoring().requestMatchers("/static/**", "/api/**");
+    public WebSecurityCustomizer configure() {      //Disable Spring Security Features
+        return web -> web.ignoring().requestMatchers("/static/**","/api/**","/js/**");
     }
 
     @Bean
