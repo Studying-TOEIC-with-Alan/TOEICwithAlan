@@ -56,4 +56,5 @@ public class User {
         this.grade = 0L;
         this.score = 0L;
     }
+
 }

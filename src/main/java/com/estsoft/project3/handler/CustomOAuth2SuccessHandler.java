@@ -33,6 +33,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         } else {
             response.sendRedirect("/home");
         }
+
     }
 
 }

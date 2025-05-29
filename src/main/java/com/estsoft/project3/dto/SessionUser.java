@@ -18,4 +18,5 @@ public class SessionUser implements Serializable {
         this.score = user.getScore();
     }
 
+
 }

@@ -1,0 +1,45 @@
+[33mcommit 21b64fe99c46e6c035ff2f8b384f5a7c45cc2fb7[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/login[m[33m, [m[1;31morigin/feature/login[m[33m)[m
+Author: NohYeongJae <nyj1665@naver.com>
+Date:   Thu May 29 14:28:29 2025 +0900
+
+    #   style    : 로그인 박스 크기 수정
+
+[33mcommit 5b18e4c199507a28fcc9525d1926c84db13c20d9[m
+Author: NohYeongJae <nyj1665@naver.com>
+Date:   Thu May 29 11:47:54 2025 +0900
+
+    #   refactor    : 파일 위치 변경 및 중복 파일 삭제
+
+[33mcommit 596ca59dfc4084442ea26e115e70e35248ed0f75[m
+Merge: 4713c86 479a869
+Author: NohYeongJae <nyj1665@naver.com>
+Date:   Thu May 29 10:35:27 2025 +0900
+
+    #   refactor    : code merge로 인한 commit
+
+[33mcommit 4713c86346dadf26cb9cfeb259a20de5b94b5239[m
+Author: NohYeongJae <nyj1665@naver.com>
+Date:   Thu May 29 10:21:59 2025 +0900
+
+    #   style    : login page css 수정
+
+[33mcommit 5a7a0f8ef9aa5fe373b6f0032fb0907ebc2ea31e[m
+Author: NohYeongJae <nyj1665@naver.com>
+Date:   Wed May 28 17:22:34 2025 +0900
+
+    #   feat    : Google Social Login 기능 구현
+
+[33mcommit 957cd30741cab61ca3d314df54264e2b2f6f14b4[m[33m ([m[1;32mmain[m[33m)[m
+Author: NohYeongJae <nyj1665@naver.com>
+Date:   Mon May 26 15:46:24 2025 +0900
+
+    #   refactor    : gitignore application.properties 설정
+
+[33mcommit 47510538ac2445edeea9c3a5060e5e903d9eaca2[m
+Merge: 59b0b62 94611f4
+Author: NohYeongJae <127117532+NohYeongJae@users.noreply.github.com>
+Date:   Mon May 26 14:50:15 2025 +0900
+
+    Merge pull request #2 from Studying-TOEIC-with-Alan/develop
+    
+    Test Push

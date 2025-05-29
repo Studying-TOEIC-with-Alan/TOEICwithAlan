@@ -32,8 +32,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         // Google 사용자 정보
         Map<String, Object> attributes = oAuth2User.getAttributes();
         String email = (String) attributes.get("email");
-        String name = (String) attributes.get("name"); // 구글 이름
-        String provider = userRequest.getClientRegistration().getRegistrationId(); // ex: "google"
+        String name = (String) attributes.get("name");
+        String provider = userRequest.getClientRegistration().getRegistrationId();
 
         // 기존 회원인지 확인
         User user = userRepository.findByEmail(email)
@@ -53,5 +53,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             attributes,
             "email" // principal 이름으로 쓸 key
         );
+
     }
 }
