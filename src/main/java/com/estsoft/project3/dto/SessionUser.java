@@ -1,7 +1,7 @@
-package com.estsoft.project3.user.dto;
+package com.estsoft.project3.dto;
 
-import com.estsoft.project3.user.domain.Role;
-import com.estsoft.project3.user.domain.User;
+import com.estsoft.project3.domain.Role;
+import com.estsoft.project3.domain.User;
 import java.io.Serializable;
 import lombok.Getter;
 

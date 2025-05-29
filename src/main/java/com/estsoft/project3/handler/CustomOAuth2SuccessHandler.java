@@ -1,8 +1,8 @@
-package com.estsoft.project3.login.handler;
+package com.estsoft.project3.handler;
 
 
-import com.estsoft.project3.user.domain.User;
-import com.estsoft.project3.user.repository.UserRepository;
+import com.estsoft.project3.domain.User;
+import com.estsoft.project3.repository.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

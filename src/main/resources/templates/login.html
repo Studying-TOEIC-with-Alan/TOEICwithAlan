@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <link th:href="@{/css/login.css}" rel="stylesheet">
+    <link rel="stylesheet" href="/css/header.css">
+</head>
+<body>
+<div th:replace="header :: siteHeader"></div>
+<main class="login-container">
+    <div class="login-card">
+        <h2>Login</h2>
+        <a href="/oauth2/authorization/google" class="google-btn">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                 alt="Google logo"> Continue With Google
+        </a>
+    </div>
+</main>
+
+
+</body>
+</html>

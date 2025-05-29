@@ -1,7 +1,7 @@
 package com.estsoft.project3.configuration;
 
-import com.estsoft.project3.login.handler.CustomOAuth2SuccessHandler;
-import com.estsoft.project3.login.service.CustomOAuth2UserService;
+import com.estsoft.project3.handler.CustomOAuth2SuccessHandler;
+import com.estsoft.project3.service.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

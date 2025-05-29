@@ -1,8 +1,8 @@
-package com.estsoft.project3.login.service;
+package com.estsoft.project3.service;
 
-import com.estsoft.project3.user.domain.User;
-import com.estsoft.project3.user.domain.Role;
-import com.estsoft.project3.user.repository.UserRepository;
+import com.estsoft.project3.domain.Role;
+import com.estsoft.project3.domain.User;
+import com.estsoft.project3.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
