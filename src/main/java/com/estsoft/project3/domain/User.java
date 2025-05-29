@@ -1,6 +1,7 @@
 package com.estsoft.project3.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -44,4 +45,16 @@ public class User {
 
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime updatedDate;
+
+    @Builder
+    public User(String provider, String email, String nickname, Role role, String isActive) {
+        this.provider = provider;
+        this.email = email;
+        this.nickname = nickname;
+        this.role = role;
+        this.isActive = isActive;
+        this.grade = 0L;
+        this.score = 0L;
+    }
+
 }
