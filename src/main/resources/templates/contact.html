@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/header.css">
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet"/>
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        background: linear-gradient(135deg, #d2e3f3, #dbe8d8);
+      }
+
+      .title_box {
+        width: 50%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 5%;
+        padding-left: 1%;
+        display: flex;
+        flex-direction: column;
+        border-radius: 20px;
+      }
+
+      .box {
+        width: 50%;
+        height: 70%;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 2%;
+        display: flex;
+        flex-direction: column;
+        background: white;
+        border-radius: 20px;
+      }
+
+      #main-content {
+        width: 100%;
+        flex: 1;
+        display: flex;
+        margin-left: auto;
+        margin-right: auto;
+        flex-direction: column;
+        padding: 10px;
+      }
+
+      #editor {
+        flex: 1;
+        background-color: #ffffff;
+      }
+
+      input, button {
+        margin-bottom: 10px;
+      }
+    </style>
+</head>
+<body data-type="contact">
+<div th:replace="header :: siteHeader"></div>
+<div class="title_box">
+    <h4 class="title">작성하기</h4>
+</div>
+<div class="box">
+    <div id="main-content" class="solid-bg">
+        <input type="text" id="title" placeholder="제목"/>
+        <div id="editor"></div>
+        <div class="d-flex justify-content-end mt-2">
+            <button id="submitBtn" class="btn btn-success me-2 mr-1">저장</button>
+            <button id="cancelBtn" class="btn btn-danger">취소</button>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+<script src="/js/review.js"></script>
+</body>
+</html>
