@@ -1,16 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/header.css">
+    <meta charset="UTF-8">
+    <title>TOEIC With Allen</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/index.css">
 </head>
 <body>
 <div th:replace="header :: siteHeader"></div>
-<div id="main-content" class="solid-bg">
+<div id="main-content" class="row justify-content-center">
+    <div class="col-md-10 mb-5 text-center">
+        <h3 class="mb-3 mt-5 font-weight-bold text-white">Easy English, Everyday</h3>
 
+        <form class="mb-3" action="/question" method="post">
+            <label class="text-white">Category :
+                <select name="category">
+                    <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}" th:selected="${cat == category}"></option>
+                </select>
+            </label><br>
+            <input type="text" class="rounded-pill input-text" id="inputText" name="inputText" th:value="${inputText}" />
+            <button type="submit" class="btn btn-light rounded-pill">🔍</button>
+        </form>
+
+        <div class="guide-text text-white">
+            <p>1. 드롭다운 메뉴에서 목표 점수를 선택하세요!</p>
+            <p>2. 검색 내용을 입력해주세요.</p>
+            <p>3. 내 마음대로 노트를 작성하세요</p>
+        </div>
+    </div>
+
+    <!-- Show answer-->
+    <div class="col-md-10">
+        <div th:if="${answer != null}">
+            <div class="card w-100 p-3 mb-3">
+                <pre class="w-100 answer-text" th:utext="${answer}"></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- writing note -->
+    <div class="col-md-10 text-center">
+        <input type="hidden" id="user-id" name="content" th:value="${userId}" />
+        <button type="submit" id="write-note-button" class="btn btn-light rounded-pill border mb-3">✏️ 노트 작성</button>
+        <button type="submit" id="save-note-button" class="btn btn-primary rounded-pill border mb-3">💾 노트 저장</button>
+        <button type="submit" id="cancel-note-button" class="btn btn-secondary rounded-pill border mb-3">❌ 취소</button><br>
+        <div id="tilTitleGroup">
+            <label for="tilTitle" class="font-weight-bold d-block text-white">Title</label>
+            <input type="text" id="tilTitle" name="tilTitle" maxlength="20" />
+        </div><br>
+
+        <div id="tilContentGroup">
+            <label for="tilContent" class="font-weight-bold d-block text-white">Content</label>
+            <textarea id="tilContent" name="tilContent" maxlength="1000"></textarea>
+        </div>
+    </div>
 </div>
+<script src="/js/indexTil.js"></script>
 </body>
 </html>
