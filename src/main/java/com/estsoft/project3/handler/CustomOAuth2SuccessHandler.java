@@ -31,7 +31,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         if (user.getNickname() == null || user.getNickname().isBlank()) {
             response.sendRedirect("/set-nickname");
         } else {
-            response.sendRedirect("/home");
+            response.sendRedirect("/");
         }
 
     }
