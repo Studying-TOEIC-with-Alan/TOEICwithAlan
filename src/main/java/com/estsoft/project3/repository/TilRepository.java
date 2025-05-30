@@ -7,6 +7,5 @@ import java.util.List;
 
 @Repository
 public interface TilRepository extends JpaRepository<Til, Long> {
-    List<Til> findAllByUserUserId(Long userId);
-
+    List<Til> findAllByUserUserIdOrderByUpdatedDateDesc(Long userId);
 }

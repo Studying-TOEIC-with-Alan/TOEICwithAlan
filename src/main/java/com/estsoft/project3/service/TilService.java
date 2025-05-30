@@ -7,6 +7,7 @@ import com.estsoft.project3.repository.TilRepository;
 import com.estsoft.project3.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -33,7 +34,7 @@ public class TilService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("유저 없음"));
 
-        return tilRepository.findAllByUserUserId(userId);
+        return tilRepository.findAllByUserUserIdOrderByUpdatedDateDesc(userId);
     }
 
     //Get single TIL
@@ -45,18 +46,22 @@ public class TilService {
     }
 
     //Update TIL
-    public void updateTIL(TilRequest tilRequest) {
-        Til til = tilRepository.findById(tilRequest.getTilId())
+    public void updateTIL(Long tilId, TilRequest tilRequest) {
+        Til til = tilRepository.findById(tilId)
                 .orElseThrow(() -> new RuntimeException("TIL 없음"));
 
         til.setTitle(tilRequest.getTitle());
         til.setSummary(tilRequest.getSummary());
+        til.setUpdatedDate(LocalDateTime.now());
 
         tilRepository.save(til);
     }
 
     //Delete TIL
     public void deleteTIL(Long tilId) {
+        Til til = tilRepository.findById(tilId)
+                .orElseThrow(() -> new RuntimeException("TIL 없음"));
+
         tilRepository.deleteById(tilId);
     }
 

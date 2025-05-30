@@ -6,7 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TilRequest {
-    private Long tilId;
     private Long userId;
     private String title;
     private String summary;
