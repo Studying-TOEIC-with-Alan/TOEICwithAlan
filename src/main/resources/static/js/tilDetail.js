@@ -67,7 +67,6 @@ document.addEventListener("DOMContentLoaded", function () {
         })
     }
 
-
     function defaultMode() {
         editNoteButton.style.display = "inline";
         deleteNoteButton.style.display = "inline";

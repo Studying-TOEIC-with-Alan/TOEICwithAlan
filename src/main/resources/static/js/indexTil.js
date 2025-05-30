@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("ask-allen-form");
     const categorySelect = document.getElementById('category-select');
     const inputText = document.getElementById('input-text');
-    const answerText = document.getElementById('answer-text');
 
     const writeNoteButton = document.getElementById("write-note-button");
     const saveNoteButton = document.getElementById("save-note-button");

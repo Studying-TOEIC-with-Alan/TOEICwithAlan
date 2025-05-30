@@ -1,0 +1,91 @@
+#profile-container{
+    width: 100%;
+    height: auto;
+    background-color: white;
+    border-radius: 20px;
+}
+
+.user-icon-img {
+    width: 50px;
+    height: auto;
+}
+
+#profile-nickname-input {
+    border-radius: 10px;
+}
+
+#nickname-edit-btn, #nickname-save-btn, #nickname-cancel-btn {
+    text-decoration: none;
+}
+
+#menu-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+#menu-container a {
+    text-decoration: none;
+    justify-content: center;
+    flex: 1 1 calc(30% - 3%); /* 3 buttons + 2 gaps of 5% = ~100% */
+    max-width: calc(30% - 3%)
+}
+
+#menu-container div {
+    aspect-ratio: 1 / 1; /* Keeps height equal to width */
+    background-color: white;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    width: 100%;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#menu-container div span {
+    color: #333333;
+}
+
+
+/*stack button links when screen is smaller*/
+@media (max-width: 600px) {
+    #menu-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #menu-container a {
+        width: 70% !important;
+        max-width: 70% !important;
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+    }
+
+    #menu-container div {
+        width: 100%;
+        aspect-ratio: 1/1;
+    }
+}
+
+
+/* make each box "pop" when hovered */
+#menu-container a div {
+    transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+
+#menu-container a:hover div,
+#menu-container a:focus div {
+    background-color: #f0f0f0;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.menu-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 8px;
+}
