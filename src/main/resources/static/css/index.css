@@ -16,14 +16,14 @@ p {
     margin: 10px 0;
 }
 
-#main-content {
-    min-height: calc(100vh - 65px);
-    background-image: url('/static/images/section-bg.png');
+#category-select {
+    max-width: 200px;
 }
 
 .input-text {
     width: 100%;
     max-width: 500px;
+    height: 38px;
 }
 
 .answer-text {
@@ -35,13 +35,12 @@ p {
     font-size: 12px;
 }
 
-#tilTitle, #tilContent {
+#answer-box, #tilTitle, #tilContent {
     border-radius: 10px;
 }
 
 #tilTitle {
     width: 50%;
-    border-radius: 10px;
 }
 
 #tilContent {
