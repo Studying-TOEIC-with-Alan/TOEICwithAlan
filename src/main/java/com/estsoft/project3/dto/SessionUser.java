@@ -12,12 +12,14 @@ public class SessionUser implements Serializable {
     private final Role role;
     private final Long score;
     private final Long userId;
+    private final Long grade;
 
     public SessionUser(User user){
         this.nickname = user.getNickname();
         this.role = user.getRole();
         this.score = user.getScore();
         this.userId = user.getUserId();
+        this.grade = user.getGrade();
     }
 
 
