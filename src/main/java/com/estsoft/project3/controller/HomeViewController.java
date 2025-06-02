@@ -16,18 +16,28 @@ import java.util.Objects;
 @Controller
 public class HomeViewController {
     private final AllenApiService allenApiService;
+    private final HttpSession httpSession;
 
-    public HomeViewController(AllenApiService allenApiService) {
+    public HomeViewController(AllenApiService allenApiService, HttpSession httpSession) {
         this.allenApiService = allenApiService;
+        this.httpSession = httpSession;
     }
 
     @GetMapping("/")
-    public String showForm(Model model, HttpSession httpSession) {
+    public String showForm(Model model) {
+
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
+
+        if (sessionUser == null) {
+            return "redirect:/login";
+        }
+
         if (sessionUser != null) {
             model.addAttribute("userId", sessionUser.getUserId());
             model.addAttribute("role", sessionUser.getRole());
             model.addAttribute("nickname", sessionUser.getNickname());
+            model.addAttribute("score", sessionUser.getScore());
+            model.addAttribute("grade", sessionUser.getGrade());
         }
 
         model.addAttribute("categories", List.of("문장 체크", "어휘 목록", "어휘 설명", "어휘 플래시 카드"));
