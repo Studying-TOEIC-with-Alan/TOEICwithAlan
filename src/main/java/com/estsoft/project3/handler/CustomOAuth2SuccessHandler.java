@@ -2,6 +2,7 @@ package com.estsoft.project3.handler;
 
 
 import com.estsoft.project3.domain.User;
+import com.estsoft.project3.dto.SessionUser;
 import com.estsoft.project3.repository.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +28,9 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         String email = (String) oAuth2User.getAttributes().get("email");
 
         User user = userRepository.findByEmail(email).orElseThrow();
+
+        request.getSession().setAttribute("user", new SessionUser(user));
+        System.out.println("로그인 성공 후 세션 저장됨: " + user.getNickname());
 
         if (user.getNickname() == null || user.getNickname().isBlank()) {
             response.sendRedirect("/set-nickname");

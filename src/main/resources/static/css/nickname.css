@@ -1,7 +1,7 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #d2e3f3, #dbe8d8);
+    background-image: url('/images/section-bg.png');
     background-size: cover;
     min-height: 100vh;
     display: flex;

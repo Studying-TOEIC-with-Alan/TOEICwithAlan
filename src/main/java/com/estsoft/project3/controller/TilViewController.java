@@ -1,0 +1,48 @@
+package com.estsoft.project3.controller;
+
+import com.estsoft.project3.domain.Til;
+import com.estsoft.project3.dto.SessionUser;
+import com.estsoft.project3.service.TilService;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
+
+@Controller
+public class TilViewController {
+    private final TilService tilService;
+
+    public TilViewController(TilService tilService) {
+        this.tilService = tilService;
+    }
+
+    @GetMapping("/til")
+    public String showTil(Model model, HttpSession httpSession) {
+        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
+        Long userId = sessionUser.getUserId();
+
+        List<Til> tilList = tilService.getTILsByUserId(userId);
+
+        model.addAttribute("userId", userId);
+        model.addAttribute("role", sessionUser.getRole());
+        model.addAttribute("tilList", tilList);
+
+        return "til";
+    }
+
+    @GetMapping("/til/{tilId}")
+    public String showTil(@PathVariable Long tilId, Model model, HttpSession httpSession) {
+        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
+
+        Til til = tilService.getTIL(tilId);
+
+        model.addAttribute("userId", sessionUser.getUserId());
+        model.addAttribute("role", sessionUser.getRole());
+        model.addAttribute("til", til);
+
+        return "tilDetail";
+    }
+}

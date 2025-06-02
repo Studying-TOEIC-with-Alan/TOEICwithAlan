@@ -1,0 +1,37 @@
+#til-container{
+    width: 100%;
+    height: auto;
+    background-color: white;
+    border-radius: 20px;
+}
+
+.til-item:not(:last-child) {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.til-title{
+    text-align: left;
+    font-size: 20px;
+}
+
+.til-date {
+    text-align: right;
+}
+
+/* tilDetail start*/
+#til-title-input, #til-content-input {
+    border-radius: 10px;
+}
+
+#til-title-input {
+    width: 50%;
+    border-radius: 10px;
+}
+
+#til-content-input {
+    width: 100%;
+    min-height: 200px;
+}
+/* tilDetail end*/
