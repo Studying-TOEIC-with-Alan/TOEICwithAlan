@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TIL</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/til.css">
+</head>
+<body>
+<div th:replace="header :: siteHeader"></div>
+<div id="main-content" class="row justify-content-center">
+    <div class="col-md-10 text-center">
+        <h3 class="mb-3 mt-5 mb-5 font-weight-bold text-white">Today I Learned</h3>
+
+        <div id="til-container" class="p-3">
+            <div th:each="tilItem : ${tilList}" class="til-item">
+                <a th:href="@{/til/{id}(id=${tilItem.tilId})}" class="text-decoration-none text-dark d-block">
+                    <div th:text="${tilItem.title}" class="font-weight-bold til-title"></div>
+                    <div th:text="${#temporals.format(tilItem.updatedDate, 'yyyy-MM-dd HH:mm:ss')}" class="til-date text-muted small" ></div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

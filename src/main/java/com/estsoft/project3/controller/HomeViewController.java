@@ -32,18 +32,15 @@ public class HomeViewController {
             return "redirect:/login";
         }
 
-        System.out.println("닉네임: " + sessionUser.getNickname());
-        System.out.println("유저 ID: " + sessionUser.getUserId());
-        System.out.println("점수: " + sessionUser.getScore());
-        System.out.println("역할: " + sessionUser.getRole());
-        System.out.println("등급: " + sessionUser.getGrade());
+        if (sessionUser != null) {
+            model.addAttribute("userId", sessionUser.getUserId());
+            model.addAttribute("role", sessionUser.getRole());
+            model.addAttribute("nickname", sessionUser.getNickname());
+            model.addAttribute("score", sessionUser.getScore());
+            model.addAttribute("grade", sessionUser.getGrade());
+        }
 
-        model.addAttribute("userId", sessionUser.getUserId());
-        model.addAttribute("nickname", sessionUser.getNickname());
-        model.addAttribute("role", sessionUser.getRole());
-        model.addAttribute("score", sessionUser.getScore());
-        model.addAttribute("grade", sessionUser.getGrade());
-        model.addAttribute("categories", List.of("문법", "어휘"));
+        model.addAttribute("categories", List.of("문장 체크", "어휘 목록", "어휘 설명", "어휘 플래시 카드"));
 
         return "index";
     }
@@ -52,14 +49,23 @@ public class HomeViewController {
     public String askQuestion(@RequestParam String category, @RequestParam String inputText, RedirectAttributes redirectAttributes) {
         String content = "";
 
-        if (Objects.equals(category, "문법")) {
+        if (Objects.equals(inputText.trim(), "")) {
+            throw new RuntimeException("입력 없습니다");
+        }
+
+        if (Objects.equals(category, "문장 체크")) {
             content += "문장 맞는 지 확인하고 틀리면 맞는 문장 하고 설명 요약(최대 1000자), 문장 : " + inputText;
-        } else if (Objects.equals(category, "어휘")) {
-            content += inputText + " 관련있는 어휘 예시 하고 의미 (최대 1000자)";
+        } else if (Objects.equals(category, "어휘 플래시 카드")) {
+            content += inputText + " 영어 어휘 하고 그 어휘의뜻 (최대 1000자)";
+        } else if (Objects.equals(category, "어휘 목록")) {
+            content += inputText + " 관련있는 어휘 뜻하고 문장 예시 (최대 1000자)";
+        } else if (Objects.equals(category, "어휘 설명")) {
+            content += inputText + " 영어에 한국어로 번역하고 문장 예시 (최대 1000자)";
         }
 
         String answer = allenApiService.getAnswer(content);
 
+        //Format answer from Allen API
         String formattedAnswer = answer.replace("\n", "<br>");   //replace \n to HTML enter
         formattedAnswer = formattedAnswer.replaceAll("\\*\\*(.*?)\\*\\*", "<strong>$1</strong>");     //replace bold ** to HTML strong
 

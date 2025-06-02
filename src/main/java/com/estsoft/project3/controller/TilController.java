@@ -3,9 +3,7 @@ package com.estsoft.project3.controller;
 import com.estsoft.project3.dto.TilRequest;
 import com.estsoft.project3.service.TilService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class TilController {
@@ -18,6 +16,18 @@ public class TilController {
     @PostMapping("/api/til")
     public ResponseEntity<Void> insertTIL (@RequestBody TilRequest request) {
         tilService.insertTIL(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/api/til/{id}")
+    public ResponseEntity<Void> updateTIL (@PathVariable("id") long id, @RequestBody TilRequest request) {
+        tilService.updateTIL(id, request);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/api/til/{id}")
+    public ResponseEntity<Void> deleteTIL (@PathVariable("id") long id) {
+        tilService.deleteTIL(id);
         return ResponseEntity.ok().build();
     }
 }
