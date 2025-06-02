@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        background: url('/images/section-bg.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+
+      .title_box {
+        width: 50%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 5%;
+        padding-left: 1%;
+        display: flex;
+        flex-direction: column;
+        border-radius: 20px;
+      }
+
+      .box {
+        width: 50%;
+        height: 70%;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 2%;
+        display: flex;
+        flex-direction: column;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08), 0 6px 6px rgba(0, 0, 0, 0.05);
+        transform: translateZ(0);
+      }
+
+      #main-content {
+        width: 100%;
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+        margin-left: auto;
+        margin-right: auto;
+        flex-direction: column;
+        padding: 10px;
+        overflow-y: auto;
+      }
+
+      input, button {
+        margin-bottom: 10px;
+      }
+    </style>
+</head>
+<body data-type="review"
+      th:attr="data-review-id=${review != null} ? ${review.reviewId} : null">
+<div th:replace="header :: siteHeader"></div>
+<div class="title_box">
+    <h4 class="title">Reviews</h4>
+</div>
+<div class="box mb-3">
+    <div id="main-content" class="solid-bg">
+        <h3 th:text="${review.title}">제목</h3>
+
+        <div class="mb-2 text-muted">
+            <span th:text="${review.user.nickname}">닉네임</span>
+            <span th:if="${review.user.grade == 0}">🐣</span>
+            <span th:if="${review.user.grade == 1}">🐥</span>
+            <span th:if="${review.user.grade == 2}">🦅</span>
+            <span th:if="${review.user.grade == 3}">🦉</span>
+            |
+            <small th:text="${#temporals.format(review.createDate, 'yyyy-MM-dd HH:mm')}">작성일</small>
+        </div>
+
+        <hr>
+
+        <div th:utext="${review.content}"></div>
+
+    </div>
+    <div class="mt-4 d-flex justify-content-between align-items-center">
+        <button type="button" class="btn btn-secondary btn-sm" id="backBtn">← 목록으로</button>
+        <div>
+            <button type="button" class="btn btn-success btn-sm" id="editBtn">✏ 수정</button>
+            <button type="button" class="btn btn-danger btn-sm" id="deleteBtn">🗑 삭제</button>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const editBtn = document.getElementById('editBtn');
+        const reviewId = document.body.dataset.reviewId;
+
+        if (editBtn) {
+            editBtn.addEventListener('click', () => {
+                if (!reviewId) {
+                    alert('수정할 리뷰 ID가 없습니다.');
+                    return;
+                }
+                window.location.href = `/reviews/${reviewId}/edit`;
+            });
+        }
+        const backBtn = document.getElementById('backBtn');
+        if (backBtn) {
+            backBtn.addEventListener('click', () => {
+                window.location.href = '/reviews';
+            });
+        }
+    });
+</script>
+<script src="/js/review.js"></script>
+</body>
+</html>
