@@ -1,12 +1,19 @@
 package com.estsoft.project3.domain;
 
-import jakarta.persistence.*;
+import com.estsoft.project3.review.Review;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
@@ -14,6 +21,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
@@ -54,4 +62,11 @@ public class User {
         this.score = 0L;
     }
 
+    public boolean isOwner(Review review) {
+        return this.userId.equals(review.getUser().getUserId());
+    }
+
+    public boolean isAdmin() {
+        return this.role == Role.ROLE_ADMIN;
+    }
 }

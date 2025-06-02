@@ -21,7 +21,7 @@ public class WebSecurityConfig {
 
     @Bean
     public WebSecurityCustomizer configure() {      //Disable Spring Security Features
-        return web -> web.ignoring().requestMatchers("/static/**","/api/**","/js/**");
+        return web -> web.ignoring().requestMatchers("/static/**", "/js/**");
     }
 
     @Bean
@@ -31,6 +31,7 @@ public class WebSecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/images/**", "/css/**", "/js/**", "/home", "/login").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/review/**").authenticated()
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
