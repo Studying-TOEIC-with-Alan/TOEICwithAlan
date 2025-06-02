@@ -1,6 +1,8 @@
 package com.estsoft.project3.controller;
 
+import com.estsoft.project3.dto.SessionUser;
 import com.estsoft.project3.service.AllenApiService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
@@ -14,15 +16,33 @@ import java.util.Objects;
 @Controller
 public class HomeViewController {
     private final AllenApiService allenApiService;
+    private final HttpSession httpSession;
 
-    public HomeViewController(AllenApiService allenApiService) {
+    public HomeViewController(AllenApiService allenApiService, HttpSession httpSession) {
         this.allenApiService = allenApiService;
+        this.httpSession = httpSession;
     }
 
     @GetMapping("/")
     public String showForm(Model model) {
-        Long userId = 1L;   //to be replaced to real one
-        model.addAttribute("userId", userId);   //to be replaced to real one
+
+        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
+
+        if (sessionUser == null) {
+            return "redirect:/login";
+        }
+
+        System.out.println("닉네임: " + sessionUser.getNickname());
+        System.out.println("유저 ID: " + sessionUser.getUserId());
+        System.out.println("점수: " + sessionUser.getScore());
+        System.out.println("역할: " + sessionUser.getRole());
+        System.out.println("등급: " + sessionUser.getGrade());
+
+        model.addAttribute("userId", sessionUser.getUserId());
+        model.addAttribute("nickname", sessionUser.getNickname());
+        model.addAttribute("role", sessionUser.getRole());
+        model.addAttribute("score", sessionUser.getScore());
+        model.addAttribute("grade", sessionUser.getGrade());
         model.addAttribute("categories", List.of("문법", "어휘"));
 
         return "index";
