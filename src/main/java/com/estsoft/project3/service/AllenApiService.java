@@ -7,9 +7,6 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import org.commonmark.parser.Parser;
-import org.commonmark.renderer.html.HtmlRenderer;
-import org.commonmark.node.Node;
 
 @Service
 public class AllenApiService {
@@ -24,23 +21,6 @@ public class AllenApiService {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public String getAnswer(String content) {
-        //Delete previous state before asking
-        String deleteUrl = apiUrl + "/reset-state";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        String jsonBody = "{\"client_id\":\"" + apiKey + "\"}";
-        HttpEntity<String> deleteEntity = new HttpEntity<>(jsonBody, headers);
-        System.out.println("Sending DELETE with body: " + jsonBody);
-        ResponseEntity<Void> deleteResponse = restTemplate.exchange(
-                deleteUrl,
-                HttpMethod.DELETE,
-                deleteEntity,
-                Void.class
-        );
-
-        //Ask question
         String questionUrl = UriComponentsBuilder.fromHttpUrl(apiUrl + "/question")
                 .queryParam("content", content)
                 .queryParam("client_id", apiKey)
@@ -58,10 +38,20 @@ public class AllenApiService {
 
     }
 
-    public String convertMarkdownToHtml(String markdown) {
-        Parser parser = Parser.builder().build();
-        Node document = parser.parse(markdown);
-        HtmlRenderer renderer = HtmlRenderer.builder().build();
-        return renderer.render(document);
+    public void resetState() {
+        String deleteUrl = apiUrl + "/reset-state";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String jsonBody = "{\"client_id\":\"" + apiKey + "\"}";
+        HttpEntity<String> deleteEntity = new HttpEntity<>(jsonBody, headers);
+
+        ResponseEntity<Void> deleteResponse = restTemplate.exchange(
+                deleteUrl,
+                HttpMethod.DELETE,
+                deleteEntity,
+                Void.class
+        );
     }
 }
