@@ -20,16 +20,17 @@ public class MyPageViewController {
     @GetMapping("/myPage")
     public String showMyPage(Model model, HttpSession httpSession) {
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
-        Long userId = 6L;   //*** temp code before login issue fix ***
-
-        if (sessionUser != null) {
-            userId = sessionUser.getUserId();
-        }
+        Long userId = sessionUser.getUserId();
 
         User user= userService.getUserById(userId);
 
-        model.addAttribute("user", user);
+        //For header
+        model.addAttribute("userId", sessionUser.getUserId());
+        model.addAttribute("role", String.valueOf(sessionUser.getRole()));
+        model.addAttribute("nickname", sessionUser.getNickname());
 
+        //For profile
+        model.addAttribute("user", user);
         return "myPage";
     }
 }
