@@ -94,27 +94,6 @@
             <button type="button" class="btn btn-danger btn-sm" id="deleteBtn">🗑 삭제</button>
         </div>
     </div>
-
-    <div class="mt-2">
-        <label for="statusDropdown"><strong>상태 변경</strong></label>
-        <select id="statusDropdown"
-                class="form-control"
-                th:attr="data-contact-id=${contact.contactId}"
-                onchange="updateStatus(this)">
-            <option value="PENDING"
-                    th:selected="${contact.status == T(com.estsoft.project3.contact.Contact.Status).PENDING}">
-                대기중
-            </option>
-            <option value="IN_PROGRESS"
-                    th:selected="${contact.status == T(com.estsoft.project3.contact.Contact.Status).IN_PROGRESS}">
-                진행중
-            </option>
-            <option value="COMPLETED"
-                    th:selected="${contact.status == T(com.estsoft.project3.contact.Contact.Status).COMPLETED}">
-                완료
-            </option>
-        </select>
-    </div>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
