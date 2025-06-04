@@ -32,6 +32,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/images/**", "/css/**", "/js/**", "/home", "/login").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/review/**").authenticated()
+                .requestMatchers("/contact/**").authenticated()
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
