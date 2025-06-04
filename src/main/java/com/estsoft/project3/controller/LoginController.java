@@ -38,6 +38,10 @@ public class LoginController {
     public String saveNickname(@RequestParam String nickname,
         @AuthenticationPrincipal OAuth2User principal, HttpSession session) {
 
+        if (principal == null || principal.getAttribute("email") == null) {
+            return "redirect:/login";
+        }
+
         String email = principal.getAttribute("email");
         User user = userRepository.findByEmail(email).orElseThrow();
 
@@ -48,14 +52,12 @@ public class LoginController {
         return "redirect:/";
     }
 
-    //추후 매핑 주소 변경해야함
-    @GetMapping("/main")
-    public String main(Model model) {
-        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
-        model.addAttribute("nickname", sessionUser.getNickname());
-        model.addAttribute("role", sessionUser.getRole());
-        model.addAttribute("score", sessionUser.getScore());
-        return "main";
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
     }
+
 
 }

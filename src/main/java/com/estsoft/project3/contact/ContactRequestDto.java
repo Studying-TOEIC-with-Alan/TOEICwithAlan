@@ -1,7 +1,7 @@
 package com.estsoft.project3.contact;
 
 import com.estsoft.project3.Image.ImageDto;
-import java.time.LocalDateTime;
+import com.estsoft.project3.domain.User;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,20 +12,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ContactRequestDto {
 
-    private Long userId;
-    private String title;
     private String content;
-    private Contact.Status status;
+    private String title;
     private List<ImageDto> images;
 
-    public Contact toEntity() {
+    public Contact toEntity(User user) {
         return Contact.builder()
-            .userId(userId)
-            .title(title)
+            .user(user)
             .content(content)
-            .status(status != null ? status : Contact.Status.PENDING)
-            .createDate(LocalDateTime.now())
-            .updateDate(LocalDateTime.now())
+            .title(title)
             .build();
     }
 }

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/header.css">
+
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        background: url('/images/section-bg.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+
+      .title_box {
+        width: 50%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 5%;
+        padding-left: 1%;
+        display: flex;
+        flex-direction: column;
+        border-radius: 20px;
+      }
+
+      .box {
+        width: 50%;
+        height: 70%;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 2%;
+        display: flex;
+        flex-direction: column;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08), 0 6px 6px rgba(0, 0, 0, 0.05);
+        transform: translateZ(0);
+      }
+
+      #main-content {
+        width: 100%;
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+        margin-left: auto;
+        margin-right: auto;
+        flex-direction: column;
+        padding: 10px;
+      }
+
+      #main-content2 {
+        width: 100%;
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+        margin-left: auto;
+        margin-right: auto;
+        flex-direction: column;
+        padding: 10px;
+        overflow-y: auto;
+      }
+
+      input, button {
+        margin-bottom: 10px;
+      }
+
+      .bottom-line2 {
+        border-bottom: 2px solid rebeccapurple;
+      }
+
+      .review-list {
+        height: 70%;
+        overflow-y: auto;
+      }
+
+      .review-list img {
+        display: none !important;
+      }
+
+      .review-detail {
+        height: 70%;
+        overflow-y: auto;
+      }
+
+      .only-p img {
+        display: none;
+        width: 0;
+        white-space: pre-line;
+      }
+
+    </style>
+</head>
+<body data-type="review-main">
+<div th:replace="header :: siteHeader"></div>
+<div class="title_box">
+    <h4 class="title">Reviews</h4>
+</div>
+<div class="box mb-3">
+    <div id="main-content" class="solid-bg">
+        <form method="get" action="/reviews" class="mb-4 d-flex justify-content-end">
+            <label for="sort" class="me-2 align-self-center"></label>
+            <select id="sort" name="sort" onchange="this.form.submit()" class="form-select w-auto">
+                <option value="newest" th:selected="${sort == 'newest'}">최신순</option>
+                <option value="oldest" th:selected="${sort == 'oldest'}">오래된순</option>
+            </select>
+        </form>
+        <div class="row mb-2 mx-2 bottom-line2 pb-3 mt-2">
+            <div class="col-6 text-center pl-5 font-weight-bold">제목</div>
+            <div class="col-3 text-center font-weight-bold">닉네임</div>
+            <div class="col-3 text-center font-weight-bold">작성일</div>
+        </div>
+        <ul style="list-style: none;" class="review-list pl-1">
+            <li th:each="review : ${reviews}" class="mb-3">
+                <div class="row align-items-center mb-2 mx-2 border-bottom">
+                    <div class="col-7 text-truncate text-start pl-5 mb-0">
+                        <a th:href="@{/reviews/{id}(id=${review.reviewId})}"
+                           th:text="${#strings.length(review.title) > 30} ? ${#strings.substring(review.title, 0, 30)} + '...' : ${review.title}"
+                           style="text-decoration: underline; cursor: pointer;">
+                        </a>
+                        <div class="reviewContent only-p text-muted small mt-1"
+                             th:utext="${review.content}"></div>
+                    </div>
+
+                    <div class="col-2 text-left pl-0 pr-0 mr-4">
+                        <p>
+                            <span th:text="${review.nickname}">닉네임</span>
+                            <span style="margin-left: 2px;" th:if="${review.grade == 0}"
+                                  th:text="'🐣'">🐣</span>
+                            <span style="margin-left: 2px;" th:if="${review.grade == 1}"
+                                  th:text="'🐥'">🐥</span>
+                            <span style="margin-left: 2px;" th:if="${review.grade == 2}"
+                                  th:text="'🦅'">🦅</span>
+                            <span style="margin-left: 2px;" th:if="${review.grade == 3}"
+                                  th:text="'🦉'">🦉</span>
+                        </p>
+                    </div>
+                    <div class="col-2 text-center pl-0 pr-0 ml-4">
+                        <p th:text="${#temporals.format(review.createDate, 'yyyy-MM-dd HH:mm')}">
+                            작성일</p>
+                    </div>
+                </div>
+                <div th:id="'hidden-content-' + ${review.reviewId}" style="display:none;">
+                    <div class="bottom-line2">
+                        <h5 th:text="${review.title}"></h5>
+                        <p>
+                            <small th:text="${review.nickname}">닉네임</small>
+                            <small style="margin-left: 2px;" th:if="${review.grade == 0}"
+                                   th:text="'🐣'">🐣</small>
+                            <small style="margin-left: 2px;" th:if="${review.grade == 1}"
+                                   th:text="'🐥'">🐥</small>
+                            <small style="margin-left: 2px;" th:if="${review.grade == 2}"
+                                   th:text="'🦅'">🦅</small>
+                            <small style="margin-left: 2px;" th:if="${review.grade == 3}"
+                                   th:text="'🦉'">🦉</small>
+                            <small
+                                th:text="${#temporals.format(review.createDate, 'yyyy-MM-dd HH:mm')}">
+                                작성일</small>
+                        </p>
+                    </div>
+                    <div>
+                        <p th:utext="${review.content}"></p>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-primary" id="writeBtn">작성하기</button>
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById('writeBtn').addEventListener('click', () => {
+        window.location.href = '/reviews/new';
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.reviewContent').forEach(div => {
+            div.querySelectorAll('img').forEach(img => img.remove());
+
+            let text = div.textContent || div.innerText;
+            if (text.length > 10) {
+                text = text.substring(0, 10) + '...';
+            }
+
+            div.textContent = text;
+        });
+    });
+</script>
+</body>
+</html>

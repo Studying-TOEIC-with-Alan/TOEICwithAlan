@@ -10,6 +10,8 @@ public class ContactResponseDto {
 
     private Long contactId;
     private Long userId;
+    private String nickname;
+    private Long grade;
     private String title;
     private String content;
     private Contact.Status status;
@@ -18,11 +20,13 @@ public class ContactResponseDto {
 
     public ContactResponseDto(Contact contact) {
         this.contactId = contact.getContactId();
-        this.userId = contact.getUserId();
+        this.userId = contact.getUser().getUserId();
         this.title = contact.getTitle();
         this.content = contact.getContent();
         this.status = contact.getStatus();
         this.createDate = contact.getCreateDate();
         this.updateDate = contact.getUpdateDate();
+        this.nickname = contact.getUser().getNickname();
+        this.grade = contact.getUser().getGrade();
     }
 }

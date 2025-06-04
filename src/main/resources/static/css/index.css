@@ -16,7 +16,7 @@ p {
     margin: 10px 0;
 }
 
-#category-select {
+#category-select, #partName-select {
     max-width: 200px;
 }
 
@@ -26,7 +26,7 @@ p {
     height: 38px;
 }
 
-.answer-text {
+.result-text {
     white-space: pre-wrap;
     word-break: break-word;
 }
@@ -35,7 +35,7 @@ p {
     font-size: 12px;
 }
 
-#answer-box, #tilTitle, #tilContent {
+#result-box, #tilTitle, #tilContent, #partName-select {
     border-radius: 10px;
 }
 

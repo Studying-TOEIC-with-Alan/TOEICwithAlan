@@ -1,10 +1,12 @@
 package com.estsoft.project3.contact;
 
+import com.estsoft.project3.domain.User;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,20 +26,26 @@ public class ContactController {
         this.contactService = contactService;
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     public ResponseEntity<ContactResponseDto> saveContact(
-        @RequestBody ContactRequestDto contactRequestDto) {
+        @RequestBody ContactRequestDto contactRequestDto,
+        @AuthenticationPrincipal OAuth2User principal) {
 
-        ContactResponseDto responseDto = contactService.saveContact(contactRequestDto);
+        String email = principal.getAttribute("email");
 
-        return ResponseEntity.status(HttpStatus.CREATED)
+        User user = contactService.getUserByEmail(email);
+
+        ContactResponseDto responseDto = contactService.saveContact(user, contactRequestDto);
+
+        return ResponseEntity.ok()
             .contentType(MediaType.APPLICATION_JSON)
             .body(responseDto);
     }
 
     @GetMapping
     public ResponseEntity<List<ContactResponseDto>> getAllContacts() {
-        List<Contact> contacts = contactService.getAllContacts();
+        List<Contact> contacts = contactService.getAllContactsSortedByDate(
+            true);
         List<ContactResponseDto> responseList = contacts.stream()
             .map(ContactResponseDto::new)
             .collect(Collectors.toList());
@@ -59,9 +67,14 @@ public class ContactController {
     @PutMapping("/{id}")
     public ResponseEntity<ContactResponseDto> updateContact(
         @PathVariable Long id,
-        @RequestBody ContactRequestDto requestDto) {
+        @RequestBody ContactRequestDto requestDto,
+        @AuthenticationPrincipal OAuth2User principal) {
 
-        Contact updatedContact = contactService.updateContact(id, requestDto);
+        String email = principal.getAttribute("email");
+
+        User user = contactService.getUserByEmail(email);
+
+        Contact updatedContact = contactService.updateContact(id, requestDto, user);
         ContactResponseDto responseDto = new ContactResponseDto(updatedContact);
 
         return ResponseEntity.ok()
@@ -70,8 +83,33 @@ public class ContactController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteContact(@PathVariable Long id) {
-        contactService.deleteContact(id);
+    public ResponseEntity<Void> deleteContact(@PathVariable Long id,
+        @AuthenticationPrincipal OAuth2User principal) {
+
+        String email = principal.getAttribute("email");
+
+        User user = contactService.getUserByEmail(email);
+
+        contactService.deleteContact(id, user);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/my")
+    public ResponseEntity<List<ContactResponseDto>> getMyContacts(
+        @AuthenticationPrincipal OAuth2User principal) {
+
+        String email = principal.getAttribute("email");
+
+        User user = contactService.getUserByEmail(email);
+
+        List<Contact> contacts = contactService.getContactsByUser(user);
+
+        List<ContactResponseDto> responseList = contacts.stream()
+            .map(ContactResponseDto::new)
+            .collect(Collectors.toList());
+
+        return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(responseList);
     }
 }

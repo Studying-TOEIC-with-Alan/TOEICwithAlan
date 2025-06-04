@@ -1,7 +1,7 @@
 package com.estsoft.project3.review;
 
 import com.estsoft.project3.Image.ImageDto;
-import java.time.LocalDateTime;
+import com.estsoft.project3.domain.User;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,20 +12,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReviewRequestDto {
 
-    private Long userId;
-    private String nickname;
     private String content;
     private String title;
     private List<ImageDto> images;
 
-    public Review toEntity() {
+    public Review toEntity(User user) {
         return Review.builder()
-            .userId(userId)
-            .nickname(nickname)
+            .user(user)
             .content(content)
             .title(title)
-            .createDate(LocalDateTime.now())
-            .updateDate(LocalDateTime.now())
             .build();
     }
 }

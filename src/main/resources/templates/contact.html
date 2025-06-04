@@ -14,7 +14,10 @@
       }
 
       body {
-        background: linear-gradient(135deg, #d2e3f3, #dbe8d8);
+        background: url('/images/section-bg.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
       }
 
       .title_box {
@@ -48,34 +51,57 @@
         margin-right: auto;
         flex-direction: column;
         padding: 10px;
+        overflow: hidden;
       }
 
       #editor {
         flex: 1;
         background-color: #ffffff;
+        overflow-y: auto;
       }
 
       input, button {
         margin-bottom: 10px;
       }
+
+      #title {
+        height: 50px;
+        font-size: 1rem;
+        padding: 10px 12px;
+      }
+
+      #editor {
+        font-size: 0.9rem;
+      }
     </style>
 </head>
-<body data-type="contact">
+<body data-type="contact" th:attr="data-contact-id=${contact != null ? contact.contactId : null}">
 <div th:replace="header :: siteHeader"></div>
 <div class="title_box">
-    <h4 class="title">작성하기</h4>
+    <h4 class="title" th:text="${contact != null ? '수정하기' : '작성하기'}">작성하기</h4>
 </div>
 <div class="box">
     <div id="main-content" class="solid-bg">
-        <input type="text" id="title" placeholder="제목"/>
+        <input type="text" id="title" placeholder="문의 /등급 /불편"
+               th:value="${contact != null ? contact.title : ''}"/>
         <div id="editor"></div>
         <div class="d-flex justify-content-end mt-2">
-            <button id="submitBtn" class="btn btn-success me-2 mr-1">저장</button>
+            <button id="submitBtn" class="btn btn-success me-2 mr-1"
+                    th:text="${contact != null} ? '수정' : '저장'">저장
+            </button>
             <button id="cancelBtn" class="btn btn-danger">취소</button>
         </div>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 <script src="/js/review.js"></script>
+<script>
+    const cancelBtn = document.getElementById('cancelBtn');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', () => {
+            window.location.href = '/reviews';
+        });
+    }
+</script>
 </body>
 </html>

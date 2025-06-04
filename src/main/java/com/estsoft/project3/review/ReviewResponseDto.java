@@ -11,6 +11,7 @@ public class ReviewResponseDto {
     private Long reviewId;
     private Long userId;
     private String nickname;
+    private Long grade;
     private String title;
     private String content;
     private LocalDateTime createDate;
@@ -18,13 +19,13 @@ public class ReviewResponseDto {
 
     public ReviewResponseDto(Review review) {
         this.reviewId = review.getReviewId();
-        this.userId = review.getUserId();
+        this.userId = review.getUser().getUserId();
         this.content = review.getContent();
         this.title = review.getTitle();
         this.createDate = review.getCreateDate();
         this.updateDate = review.getUpdateDate();
-
-        this.nickname = review.getNickname();
+        this.nickname = review.getUser().getNickname();
+        this.grade = review.getUser().getGrade();
 
     }
 }

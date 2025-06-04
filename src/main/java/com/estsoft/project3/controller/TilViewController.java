@@ -26,10 +26,13 @@ public class TilViewController {
 
         List<Til> tilList = tilService.getTILsByUserId(userId);
 
+        //For header
         model.addAttribute("userId", userId);
-        model.addAttribute("role", sessionUser.getRole());
-        model.addAttribute("tilList", tilList);
+        model.addAttribute("role", String.valueOf(sessionUser.getRole()));
+        model.addAttribute("nickname", sessionUser.getNickname());
 
+        //For TIL
+        model.addAttribute("tilList", tilList);
         return "til";
     }
 
