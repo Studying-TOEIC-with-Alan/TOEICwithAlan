@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>TOEIC With Allen</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/header.css">
@@ -14,31 +15,51 @@
     <div class="col-md-10 mb-5 text-center">
         <h3 class="mb-5 mt-5 font-weight-bold text-white">Easy English, Everyday</h3>
 
-        <form id="ask-allen-form" class="mb-5" action="/question" method="post">
-            <div class="form-group mb-3">
-                <label class="text-white">Category :</label>
-                <select id="category-select" class="custom-select" name="category">
-                    <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}" th:selected="${cat == category}"></option>
-                </select>
+        <div id="ask-allen-form" class="mb-5">
+            <!--Category selection button-->
+            <div class="btn-group mb-3" role="group" aria-label="Category Buttons">
+                <button th:each="cat : ${categories}"
+                        th:text="${cat}"
+                        th:class="'btn btn-outline-light rounded-pill mr-2 ' + (${cat} == ${category} ? 'active' : '')"
+                        th:attr="data-category=${cat}, onclick='selectCategory(this)'">
+                </button>
             </div>
-            <div class="form-group">
-                <input type="text" class="rounded-pill input-text pl-3 pr-3" id="input-text" name="inputText" th:value="${inputText}" placeholder="Start typing..." />
-                <button th:attr="disabled=${userId == null}" type="submit" class="btn btn-light rounded-pill">🔍</button>
-            </div>
-        </form>
+            <input type="hidden" name="category" id="category-hidden" th:value="${category}" />
 
-        <div class="guide-text text-white mb-5">
-            <p>1. 드롭다운 메뉴에서 목표 점수를 선택하세요!</p>
+            <div class="form-group">
+                <!--Question type-->
+                <input type="text" class="rounded-pill input-text pl-3 pr-3" id="input-text" name="inputText" th:value="${inputText}" style="display: none;" placeholder="Start typing..." autocomplete="off"/>
+                <button th:attr="disabled=${userId == null}" type="submit" id="search-btn" class="btn btn-light rounded-pill" style="display: none;">🔍</button>
+
+                <!--Quiz type-->
+                <div class="mb-3">
+                <select id="partName-select" class="custom-select" name="partName" style="display: none;">
+                    <option th:each="part : ${partList}" th:value="${part}" th:text="${part}" th:selected="${part == partName}"></option>
+                </select>
+                <button th:attr="disabled=${userId == null}" type="submit" id="start-btn" class="btn btn-light rounded-pill" style="display: none;">▶️</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="input-result-guide" class="guide-text text-white mb-5">
+            <p>1. 메뉴를 선택하세요!</p>
             <p>2. 검색 내용을 입력해주세요.</p>
             <p>3. 내 마음대로 노트를 작성하세요</p>
         </div>
 
-        <!-- Show answer-->
-        <div th:if="${answer != null}">
-            <div id="answer-box" class="card w-100 p-3 mb-5 text-left">
-                <pre id ="answer-text" class="w-100 answer-text" th:utext="${answer}"></pre>
+        <!-- Show result -->
+        <div id="result-box" class="card w-100 p-3 mb-5 text-left" style="display: none;">
+            <div id ="result-text" class="w-100 result-text"></div>
+            <button id="next-question-btn" class="btn btn-light rounded-pill border mb-3" style="display: none;">👉 Next</button>
+            <button id="stop-question-btn" class="btn btn-light rounded-pill border mb-3" style="display: none;">🛑 Stop</button>
+        </div>
+        <!-- Loading spinner -->
+        <div id="loading-spinner" class="text-center mb-3" style="display: none;">
+            <div class="spinner-border text-light" role="status">
+                <span class="sr-only">Loading...</span>
             </div>
         </div>
+
 
         <!-- writing note -->
         <input type="hidden" id="user-id" name="userId" th:value="${userId}" />
@@ -56,6 +77,6 @@
         </div>
     </div>
 </div>
-<script src="/js/indexTil.js"></script>
+<script src="/js/index.js"></script>
 </body>
 </html>

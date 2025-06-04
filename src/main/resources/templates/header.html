@@ -4,9 +4,13 @@
 
             <!-- Left Menu -->
             <div class="d-flex align-items-center nav-menu">
-                <a href="/">
-                    <img src="/images/picture_logo.png" class="logo" alt="Logo" />
-                </a>
+                <div class="logo-container">
+                    <a href="/" class="logo">
+                        <span class="brand">TOEIC</span>
+                        <span class="with">with</span>
+                        <span class="name">Allen</span>
+                    </a>
+                </div>
                 <a class="menu-link ml-3" th:href="@{/review}">리뷰</a>
                 <a class="menu-link ml-3" th:href="@{/myPage}">내 페이지</a>
                 <a class="menu-link ml-3" th:if="${role == 'ROLE_ADMIN'}" th:href="@{/admin}">관리자</a>
@@ -15,7 +19,7 @@
             <!-- Right Menu -->
             <div>
                 <div th:if="${userId != null}" class="d-flex align-items-center nav-menu">
-                    <span class="ml-3 d-inline-block text-truncate" th:text="${nickname}" th:title="${nickname}"></span>
+                    <span class="ml-3 d-inline-block text-truncate font-weight-bold" th:text="${nickname}" th:title="${nickname}"></span>
                     <a class="menu-link ml-3" th:href="@{/logout}">로그아웃</a>
                 </div>
                 <div th:if="${userId == null}" class="d-flex align-items-center nav-menu">
