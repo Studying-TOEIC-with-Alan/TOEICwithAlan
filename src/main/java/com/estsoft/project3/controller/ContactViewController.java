@@ -46,23 +46,6 @@ public class ContactViewController {
         return "contact";
     }
 
-    @GetMapping("/contact")
-    public String showAllContacts(@RequestParam(name = "sort", defaultValue = "newest") String sort,
-        Model model) {
-        boolean newestFirst = sort.equalsIgnoreCase("newest");
-
-        List<Contact> contacts = contactService.getAllContactsSortedByDate(newestFirst);
-
-        List<ContactResponseDto> responseDto = contacts.stream()
-            .map(ContactResponseDto::new)
-            .collect(Collectors.toList());
-
-        model.addAttribute("contacts", responseDto);
-        model.addAttribute("sort", sort);
-
-        return "contacts";
-    }
-
     @GetMapping("/contacts/{id}")
     public String showReviewDetail(@PathVariable Long id, Model model) {
         Contact contact = contactService.getContactById(id);

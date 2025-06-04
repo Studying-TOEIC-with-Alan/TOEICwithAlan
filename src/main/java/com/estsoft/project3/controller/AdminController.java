@@ -1,9 +1,13 @@
 package com.estsoft.project3.controller;
 
 
+import com.estsoft.project3.contact.Contact;
+import com.estsoft.project3.contact.ContactResponseDto;
+import com.estsoft.project3.contact.ContactService;
 import com.estsoft.project3.domain.User;
 import com.estsoft.project3.repository.UserRepository;
 import com.estsoft.project3.service.AdminService;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -20,11 +24,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AdminController {
 
     private final AdminService adminService;
-    private final UserRepository userRepository;
+    private final ContactService contactService;
 
-    public AdminController(AdminService adminService, UserRepository userRepository) {
+    public AdminController(AdminService adminService, ContactService contactService) {
         this.adminService = adminService;
-        this.userRepository = userRepository;
+        this.contactService = contactService;
     }
 
     @GetMapping("/admin")
@@ -52,6 +56,23 @@ public class AdminController {
         @RequestParam Long score) {
         adminService.updateUserGradeAndScore(userId, grade, score);
         return "redirect:/admin";
+    }
+
+    @GetMapping("/admin/contact")
+    public String showAllContacts(@RequestParam(name = "sort", defaultValue = "newest") String sort,
+        Model model) {
+        boolean newestFirst = sort.equalsIgnoreCase("newest");
+
+        List<Contact> contacts = contactService.getAllContactsSortedByDate(newestFirst);
+
+        List<ContactResponseDto> responseDto = contacts.stream()
+            .map(ContactResponseDto::new)
+            .collect(Collectors.toList());
+
+        model.addAttribute("contacts", responseDto);
+        model.addAttribute("sort", sort);
+
+        return "adminContact";
     }
 
 }
