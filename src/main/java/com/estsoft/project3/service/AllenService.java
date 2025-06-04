@@ -7,6 +7,8 @@ import com.estsoft.project3.repository.AllenRepository;
 import com.estsoft.project3.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AllenService {
     private final AllenRepository allenRepository;
@@ -19,11 +21,27 @@ public class AllenService {
 
     //Insert Allen
     public void insertAllen(AllenRequest allenRequest) {
-        User user = userRepository.findById(allenRequest.getUserId())
+        Long userId = allenRequest.getUserId();
+        String category = allenRequest.getCategory();
+        String inputText = allenRequest.getInputText();
+        String summary = allenRequest.getSummary();
+
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("유저 없음"));
 
-        Allen allen = new Allen(user, allenRequest.getCategory(), allenRequest.getInputText(), allenRequest.getSummary());
-        allenRepository.save(allen);
+        List<Allen> allen = allenRepository.findAllByUserUserIdAndCategoryAndInputText(userId,category,inputText);
+
+        if (allen.isEmpty()) {
+            allenRepository.save(new Allen(user, category, inputText, summary));
+        }
+    }
+
+    //Get Allen
+    public Allen GetLastAllenByUserAndCatAndInput (Long userId, String category, String inputText) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("유저 없음"));
+
+        return allenRepository.findFirstByUserUserIdAndCategoryAndInputTextStartingWithOrderByCreatedDateDesc(userId, category, inputText);
     }
 
 }
