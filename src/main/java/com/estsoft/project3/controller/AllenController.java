@@ -60,33 +60,43 @@ public class AllenController {
                     "단어: " + inputText;
         } else if (Objects.equals(category, "일기 퀴즈")) {
             inputText = getNextQuestionInput (userId, category, inputText);
-            content = "TOEIC Reading " + inputText + " 예시 문제를 만들어 주세요. " +
-                    "문제는 반드시 1개만 생성해 주세요. " +
-                    "지문, 질문, 선택지 4개 (A, B, C, D), 정답을 아래 형식으로 명확히 구분해 주세요:\n\n" +
-                    "지문:\n\n" +
-                    "질문:\n\n" +
-                    "선택지:\n\n" +
-                    "정답:";
+
+            content = "Generate one TOEIC Reading question for " + inputText + "\n\n" +
+                    "Please provide the output with these clearly labeled sections:\n";
+
+            if (inputText.contains("Part 5")) {
+                content += "Passage: (the incomplete sentence with a blank)\n\n" +
+                        "Question: (the question asking which option best completes the sentence)\n\n";
+            } else if (inputText.contains("Part 6")) {
+                content += "Passage: (a short passage with one or more blanks)\n\n" +
+                        "Question: (which option best completes each blank)\n\n";
+            } else if (inputText.contains("Part 7")) {
+                content += "Passage: (the full reading passage or text)\n\n" +
+                        "Question: (the comprehension question)\n\n";
+            }
+
+            content += "Choices: (list options A), B), C), D))\n\n" +
+                    "Answer: (the correct choice)";
+
         } else if (Objects.equals(category, "듣기 퀴즈")) {
             inputText = getNextQuestionInput (userId, category, inputText);
 
+            content = "Generate one TOEIC Listening question for " + inputText + "\n\n" +
+                    "For each question, please provide these clearly labeled sections:\n";
+
             if (inputText.contains("Part 2")) {
-                content = "TOEIC Listening " + inputText + " 예시 문제를 만들어 주세요.\n\n" +
-                        "파트 2는 한 사람의 질문 또는 말에 대한 응답을 고르는 형식입니다.\n" +
-                        "스크립트는 질문 또는 말 한 문장만 작성해 주세요.\n\n" +
-                        "스크립트:\n\n" +
-                        "질문:\n\n" +
-                        "선택지:\n\n" +
-                        "정답:";
-            } else if (inputText.contains("Part 3") || inputText.contains("Part 4")) {
-                content = "TOEIC Listening " + inputText + " 예시 문제를 만들어 주세요.\n\n" +
-                        "파트 3과 4는 두 명 이상의 대화 또는 설명문 형식입니다.\n" +
-                        "스크립트에는 반드시 2명 이상의 화자가 포함되어야 하며, 실제 대화처럼 자연스럽게 작성해 주세요.\n\n" +
-                        "스크립트:\n\n" +
-                        "질문:\n\n" +
-                        "선택지:\n\n" +
-                        "정답:";
+                content += "Passage: (the spoken question prompt)\n\n" +
+                        "Question: (a comprehension question about the passage)\n\n";
+            } else if (inputText.contains("Part 3")){
+                content = "Passage: (the conversation transcript)\n\n" +
+                        "Question: (the question asked)\n\n";
+            } else {
+                content = "Passage: (the short talk)\n\n" +
+                        "Question: (the question asked)\n\n";
             }
+
+            content += "Choices: (list options A), B), C), D))\n\n" +
+                    "Answer: (the correct choice)";
         }
 
         String raw = allenApiService.getAnswer(content);
