@@ -1,7 +1,31 @@
+let manVoice = null;
+let womanVoice = null;
+
+function loadVoicesAndSet() {
+    const voices = speechSynthesis.getVoices();
+
+    // Try matching by voice name (adjust to match what your browser lists)
+    manVoice = voices.find(v => v.name.includes("David") || v.name.includes("Google US English"));
+    womanVoice = voices.find(v => v.name.includes("Zira") || v.name.includes("Google US English Female") || v.name.includes("Samantha"));
+
+    if (!manVoice) console.warn("No man voice found.");
+    if (!womanVoice) console.warn("No woman voice found.");
+}
+
+// Ensure voices are loaded
+if (typeof speechSynthesis !== "undefined") {
+    if (speechSynthesis.getVoices().length > 0) {
+        loadVoicesAndSet();
+    } else {
+        speechSynthesis.onvoiceschanged = loadVoicesAndSet;
+    }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     const categorySelect = document.getElementById('category-hidden');
     const inputText = document.getElementById('input-text');
-    const partNameSelect = document.getElementById('partName-select');
+    const readingPartSelect = document.getElementById('readingPart-select');
+    const listeningPartSelect = document.getElementById('listeningPart-select');
     const inputResultGuide = document.getElementById('input-result-guide');
 
     const searchBtn = document.getElementById("search-btn");
@@ -10,6 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const resultBox = document.getElementById("result-box");
     const resultText = document.getElementById("result-text");
 
+    const playQuestionBtn = document.getElementById("play-question-btn");
     const nextQuestionBtn = document.getElementById("next-question-btn");
     const stopQuestionBtn = document.getElementById("stop-question-btn");
 
@@ -37,17 +62,19 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll('[data-category]').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
-        resultText.innerHTML = "";
+        resultBox.style.display = "none";
 
         if (["문법","문장 체크", "어휘 목록", "어휘 설명"].includes(category)) {
             inputResultGuide.style.display = "inline";
+
             if (category === "문법") {
                 inputText.style.display = "none";
             } else {
                 inputText.style.display = "inline";
             }
+
             inputText.value = "";
-            partNameSelect.style.display = "none";
+            readingPartSelect.style.display = "none";
             searchBtn.style.display = "inline";
             startBtn.style.display = "none";
         } else {
@@ -55,9 +82,16 @@ document.addEventListener("DOMContentLoaded", function () {
             inputText.style.display = "none";
             searchBtn.style.display = "none";
 
-            partNameSelect.disabled = false;
+            if (category === "일기 퀴즈") {
+                readingPartSelect.disabled = false;
+                readingPartSelect.style.display = "inline";
+                listeningPartSelect.style.display = "none";
+            } else {
+                listeningPartSelect.disabled = false;
+                listeningPartSelect.style.display = "inline";
+                readingPartSelect.style.display = "none";
+            }
             startBtn.disabled = false;
-            partNameSelect.style.display = "inline";
             startBtn.style.display = "inline";
         }
 
@@ -119,13 +153,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (startBtn) {
         startBtn.addEventListener("click", (e) => {
-            partNameSelect.disabled = true;
+            let inputVal = "";
+
+            if (categorySelect.value === "일기 퀴즈") {
+                readingPartSelect.disabled = true;
+                inputVal = readingPartSelect.value;
+            } else {
+                listeningPartSelect.disabled = true;
+                inputVal = listeningPartSelect.value;
+            }
             startBtn.disabled = true;
 
             nextQuestionBtn.disabled = false;
             stopQuestionBtn.disabled = false;
 
-            callAllenAPI(partNameSelect.value);
+            document.querySelectorAll('[data-category]').forEach(btn => {
+                btn.classList.add("disabled-category");
+                btn.setAttribute("data-disabled", "true");
+            });
+
+            callAllenAPI(inputVal);
         });
     }
 
@@ -140,7 +187,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         hasCalledAllen = true;
 
-        fetch("/api/allen", {
+        fetch("/api/askAllen", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -155,18 +202,22 @@ document.addEventListener("DOMContentLoaded", function () {
                     const errorData = await response.json();
                     alert(errorData.errorMessage);
                 }
-                return category === "일기 퀴즈" ? response.json() : response.text();
+
+                return (category === "일기 퀴즈" || category === "듣기 퀴즈") ? response.json() : response.text();
             })
             .then(data => {
-                if (category === "일기 퀴즈") {
+                if (category === "일기 퀴즈" || category === "듣기 퀴즈") {
                     renderQuizData(data);
-                } else {
+                    resultBox.style.display = "block";
+                }else {
                     resultText.innerHTML = data;
+                    resultBox.style.display = "block";
+                    return saveAllenInfo(category, input, data);
                 }
-                resultBox.style.display = "block";
+
             })
             .catch(error => {
-                resultText.innerHTML = "<p class='text-danger'>${error.message}</p>";
+                resultText.innerHTML = `<p class='text-danger'>${error.message}</p>`;
                 resultBox.style.display = "block";
             })
             .finally(() => {
@@ -176,9 +227,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
-    //Render quiz data
+    function saveAllenInfo(category, inputText, summary) {
+        let userId = document.getElementById("user-id");
+
+        return fetch("/api/allen", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                userId: userId.value,
+                category: category,
+                inputText: inputText,
+                summary: summary
+            })
+        });
+    }
+
+    let currentQuizData = null;
+    let isSpeechCancelled = false;
+
+    //Render reading quiz data
     function renderQuizData(data) {
-        const { passage, question, answerChoices, correctAnswer } = data;
+        currentQuizData = data; // Save for playback
+
+        const { passage, question, answerChoices, correctAnswer, allenInputText } = data;
 
         const passageHTML = `<p><strong>Passage:</strong><br>${passage}</p>`;
         const questionHTML = `<p><strong>Question:</strong><br>${question}</p>`;
@@ -187,11 +260,17 @@ document.addEventListener("DOMContentLoaded", function () {
         <input type="radio" name="answer" value="${key}" id="choice-${key}" style="margin-right: 8px; cursor: pointer;">${key}) ${value}</label><br>`).join('');
         const feedbackHTML = `<div id="quiz-feedback" class="mt-2"></div>`;
 
-        resultText.innerHTML = passageHTML + questionHTML + `<div id="quiz-options">${optionsHTML}</div>` + feedbackHTML;
+        if (categorySelect.value === "일기 퀴즈") {
+            resultText.innerHTML = passageHTML + questionHTML + `<div id="quiz-options">${optionsHTML}</div>` + feedbackHTML;
+        } else {
+            resultText.innerHTML = `<div id="quiz-options">${optionsHTML}</div>` + feedbackHTML;
+            playQuestionBtn.disabled = false;
+            playQuestionBtn.style.display = "inline-block";
+        }
 
-        // Hide the "Next Question" and "Stop Question" button initially
+        // Hide the "Next Question" button initially
         nextQuestionBtn.style.display = "none";
-        stopQuestionBtn.style.display = "none";
+        stopQuestionBtn.style.display = "inline-block";
 
         // Attach event listener to each radio input
         document.querySelectorAll('input[name="answer"]').forEach(input => {
@@ -208,26 +287,127 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Optional: disable all options after selection
                 document.querySelectorAll('input[name="answer"]').forEach(input => input.disabled = true);
 
-                // Show the "Next Question" and "Stop Question" button after answer
+                // Show the "Next Question" button after answer
                 nextQuestionBtn.style.display = "inline-block";
-                stopQuestionBtn.style.display = "inline-block";
+                isSpeechCancelled = true;
+                speechSynthesis.cancel();
+
+                const summary = `Question: ${question}\nSelected Answer: ${selected}\nCorrect Answer: ${correctAnswer}`;
+                saveAllenInfo(categorySelect.value, allenInputText, summary)
+                    .then(response => {
+                        if (!response.ok) {
+                            console.warn("Failed to save answer");
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Error saving answer:", err);
+                    });
             });
         });
     }
 
+    // Play listening passage and question
+    if (playQuestionBtn) {
+        playQuestionBtn.addEventListener("click", (e) => {
+            speechSynthesis.cancel(); // stop any ongoing speech
+            isSpeechCancelled = false;
+            playQuestionBtn.disabled = true; //disable button when reading
+
+            const rawPassage = currentQuizData?.passage || "";
+            const passageText = rawPassage.replace(/<[^>]+>/g, '').trim();  //remove tags
+            const questionText = currentQuizData?.question || "";
+
+            const lines = [];
+
+            if (passageText) {
+                lines.push(...passageText.split('\n').filter(line => line.trim()));
+            }
+
+            if (questionText) {
+                lines.push("Question: " + questionText);
+            }
+
+            let index = 0;
+
+            function speakNext() {
+                if (isSpeechCancelled || index >= lines.length) {
+                    playQuestionBtn.disabled = false; // Enable button after reading last line
+                    return;
+                }
+
+                const rawLine = String(lines[index] || "").trim();
+                index++;
+
+                if (!rawLine) {
+                    speakNext();
+                    return;
+                }
+
+                const utterance = new SpeechSynthesisUtterance();
+                utterance.lang = "en-US";
+                utterance.rate = 0.95;
+
+                if (rawLine.startsWith("Man:")) {
+                    utterance.voice = manVoice;
+                    utterance.text = rawLine.replace("Man:", "").trim();
+                } else if (rawLine.startsWith("Woman:")) {
+                    utterance.voice = womanVoice;
+                    utterance.text = rawLine.replace("Woman:", "").trim();
+                } else {
+                    utterance.voice = womanVoice; // default voice
+                    utterance.text = rawLine;
+                }
+
+                // Skip next if cancel was triggered mid-speech
+                utterance.onend = () => {
+                    if (!isSpeechCancelled) {
+                        speakNext();
+                    }
+                };
+
+                speechSynthesis.speak(utterance);
+            }
+
+            speakNext();
+        });
+    }
+
+
     if (nextQuestionBtn) {
         nextQuestionBtn.addEventListener("click", (e) => {
-            callAllenAPI(partNameSelect.value);
+            speechSynthesis.cancel();
+
+            let inputVal = "";
+            if (categorySelect.value === "일기 퀴즈") {
+                inputVal = readingPartSelect.value;
+            } else {
+                inputVal = listeningPartSelect.value;
+            }
+
+            callAllenAPI(inputVal);
         });
     }
 
     if (stopQuestionBtn) {
         stopQuestionBtn.addEventListener("click", (e) => {
-            partNameSelect.disabled = false;
+            if (categorySelect.value === "일기 퀴즈") {
+                readingPartSelect.disabled = false;
+            } else {
+                speechSynthesis.cancel();
+                isSpeechCancelled = true;
+
+                playQuestionBtn.disabled = true;
+                listeningPartSelect.disabled = false;
+            }
             startBtn.disabled = false;
 
             nextQuestionBtn.disabled = true;
             stopQuestionBtn.disabled = true;
+
+            document.querySelectorAll('[data-category]').forEach(btn => {
+                btn.classList.remove("disabled-category");
+                btn.removeAttribute("data-disabled");
+            });
         });
     }
 
