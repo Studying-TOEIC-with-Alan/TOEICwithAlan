@@ -94,6 +94,27 @@
             <button type="button" class="btn btn-danger btn-sm" id="deleteBtn">🗑 삭제</button>
         </div>
     </div>
+
+    <div class="mt-2">
+        <label for="statusDropdown"><strong>상태 변경</strong></label>
+        <select id="statusDropdown"
+                class="form-control"
+                th:attr="data-contact-id=${contact.contactId}"
+                onchange="updateStatus(this)">
+            <option value="PENDING"
+                    th:selected="${contact.status == T(com.estsoft.project3.contact.Contact.Status).PENDING}">
+                대기중
+            </option>
+            <option value="IN_PROGRESS"
+                    th:selected="${contact.status == T(com.estsoft.project3.contact.Contact.Status).IN_PROGRESS}">
+                진행중
+            </option>
+            <option value="COMPLETED"
+                    th:selected="${contact.status == T(com.estsoft.project3.contact.Contact.Status).COMPLETED}">
+                완료
+            </option>
+        </select>
+    </div>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -116,6 +137,32 @@
             });
         }
     });
+</script>
+<script>
+    function updateStatus() {
+        const dropdown = document.getElementById("statusDropdown");
+        const status = dropdown.value;
+        const contactId = dropdown.dataset.contactId;
+
+        fetch(`/api/contacts/${contactId}/status`, { // ✅ 경로 수정됨
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({status: status}) // ✅ status: string
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("상태가 성공적으로 업데이트되었습니다.");
+            } else {
+                alert("상태 업데이트에 실패했습니다.");
+            }
+        })
+        .catch(error => {
+            console.error("에러 발생:", error);
+            alert("요청 중 오류가 발생했습니다.");
+        });
+    }
 </script>
 <script src="/js/review.js"></script>
 </body>
