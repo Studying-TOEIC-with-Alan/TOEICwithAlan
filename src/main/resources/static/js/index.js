@@ -314,11 +314,7 @@ document.addEventListener("DOMContentLoaded", function () {
             playQuestionBtn.disabled = true; //disable button when reading
 
             const rawPassage = currentQuizData?.passage || "";
-            const withoutTags = rawPassage.replace(/<[^>]+>/g, '').trim();  //remove tags
-
-            const parser = new DOMParser();
-            const passageText = parser.parseFromString(withoutTags, 'text/html').documentElement.textContent; // Decode HTML entities like &quot;, &amp;, etc.
-
+            const passageText = rawPassage.replace(/<[^>]+>/g, '').trim();  //remove tags
             const questionText = currentQuizData?.question || "";
 
             const lines = [];

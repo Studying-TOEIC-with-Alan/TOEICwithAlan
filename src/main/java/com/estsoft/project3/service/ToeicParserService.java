@@ -20,16 +20,16 @@ public class ToeicParserService {
         for (String line : lines) {
             line = line.trim();
 
-            if (line.contains("Passage:")) {
+            if (line.contains("지문:") || line.contains("스크립트:")) {
                 currentSection = "passage";
                 continue;
-            } else if ( line.contains("Question:")) {
+            } else if (line.contains("질문:")) {
                 currentSection = "question";
                 continue;
-            } else if (line.contains("Choices:")) {
+            } else if (line.contains("선택지:")) {
                 currentSection = "choices";
                 continue;
-            } else if (line.contains("Answer:")) {
+            } else if (line.contains("정답:")) {
                 currentSection = "answer";
                 continue;
             }
@@ -65,6 +65,6 @@ public class ToeicParserService {
         quizQuestion.setQuestion(questionBuilder.toString().trim());
         quizQuestion.setAnswerChoices(choices);
 
-       return quizQuestion;
+        return quizQuestion;
     }
 }
