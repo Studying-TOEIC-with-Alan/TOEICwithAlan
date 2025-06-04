@@ -47,21 +47,24 @@ CREATE TABLE chat (
 );
 
 CREATE TABLE review (
-    review_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    review_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
-    content TEXT NOT NULL,
-    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+    title VARCHAR(255),
+    content TEXT,
+    create_date DATETIME,
+    update_date DATETIME,
+
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE inquiry (
-    inquiry_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE contact (
+    contact_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
-    content TEXT NOT NULL,
-    status VARCHAR(10),
-    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_by VARCHAR(50) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+    title VARCHAR(255),
+    content TEXT,
+    create_date DATETIME,
+    update_date DATETIME,
+    status ENUM('PENDING', 'IN_PROGRESS', 'COMPLETED'),
+
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
 );
