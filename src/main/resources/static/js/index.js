@@ -296,9 +296,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 saveAllenInfo(categorySelect.value, allenInputText, summary)
                     .then(response => {
                         if (!response.ok) {
-                            console.warn("Failed to save answer to history.");
-                        } else {
-                            console.log("User answer saved.");
+                            console.warn("Failed to save answer");
                         }
                     })
                     .catch(err => {
@@ -328,8 +326,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (questionText) {
                 lines.push("Question: " + questionText);
             }
-            console.log(passageText);
-            console.log(questionText);
+
             let index = 0;
 
             function speakNext() {
