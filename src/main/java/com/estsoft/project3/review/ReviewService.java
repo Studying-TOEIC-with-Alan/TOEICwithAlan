@@ -21,7 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class ReviewService {
 
-    private final com.estsoft.project3.review.ReviewRepository reviewRepository;
+    private final ReviewRepository reviewRepository;
     private final ImageStorageService imageStorageService;
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
@@ -29,18 +29,22 @@ public class ReviewService {
     @Transactional
     public ReviewResponseDto saveReview(User user,
         ReviewRequestDto requestDto) {
-        Review review = requestDto.toEntity(user);
+        try {
+            Review review = requestDto.toEntity(user);
 
-        reviewRepository.save(review);
+            reviewRepository.save(review);
 
-        if (requestDto.getImages() != null) {
-            for (ImageDto dto : requestDto.getImages()) {
-                Image image = dto.toEntity(review);
-                imageRepository.save(image);
+            if (requestDto.getImages() != null) {
+                for (ImageDto dto : requestDto.getImages()) {
+                    Image image = dto.toEntity(review);
+                    imageRepository.save(image);
+                }
             }
-        }
 
-        return new ReviewResponseDto(review);
+            return new ReviewResponseDto(review);
+        } catch (Exception ex) {
+            throw new IllegalArgumentException("리뷰 저장 중 문제가 발생했습니다.");
+        }
     }
 
     public List<Review> getAllReviewsSortedByDate(boolean newestFirst) {
@@ -62,7 +66,7 @@ public class ReviewService {
             .orElseThrow(() -> new IllegalArgumentException("리뷰를 찾을 수 없습니다. id=" + id));
 
         if (!currentUser.isOwner(review)) {
-            throw new AccessDeniedException("권한이 없습니다.");
+            throw new AccessDeniedException("수정 권한이 없습니다.");
         }
 
         review.update(requestDto.getTitle(), requestDto.getContent());

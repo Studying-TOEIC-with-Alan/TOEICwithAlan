@@ -2,12 +2,16 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const editorElement = document.querySelector('#editor');
     const uploadedImages = [];
-    let quill;
 
+    let quill;
     if (editorElement) {
+        const editorType = editorElement.dataset.type;
+        const placeholderText = editorType === 'review'
+            ? '1. 사용한 공부 방법 / 전략 \n2. 효과 / 결과'
+            : '1. 문의 내용을 자세히 적어주세요 \n2. 연락처를 남겨주세요';
         quill = new Quill('#editor', {
             theme: 'snow',
-            placeholder: '1. 사용한 공부 방법 / 전략 \n2. 효과 / 결과',
+            placeholder: placeholderText,
             modules: {
                 toolbar: {
                     container: [
@@ -123,8 +127,8 @@ window.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (!response.ok) {
-                    const errText = await response.text();
-                    throw new Error(`HTTP ${response.status} - ${errText}`);
+                    const errorData = await response.json();
+                    throw new Error(errorData.message);
                 }
 
                 alert(isEditMode ? '수정이 완료되었습니다!' : '등록이 완료되었습니다!');
@@ -133,8 +137,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
             } catch (error) {
                 console.error('업로드 실패:', error.message);
-                alert(isEditMode ? '수정에 실패했습니다. 다시 시도해주세요.'
-                    : '등록에 실패했습니다. 다시 시도해주세요.');
+                alert(error.message);
             }
         });
     }
@@ -161,15 +164,15 @@ window.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (!response.ok) {
-                    const errText = await response.text();
-                    throw new Error(`삭제 실패: ${errText}`);
+                    const errorData = await response.json();
+                    throw new Error(errorData.message);
                 }
 
                 alert('삭제가 완료되었습니다.');
                 window.location.href = `/${type}s`;
             } catch (err) {
                 console.error('삭제 중 오류:', err);
-                alert('삭제에 실패했습니다. 다시 시도해주세요.');
+                alert(err.message);
             }
         });
     }

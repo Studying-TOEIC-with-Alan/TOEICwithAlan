@@ -16,8 +16,8 @@ public class ReviewRequestDto {
     private String title;
     private List<ImageDto> images;
 
-    public com.estsoft.project3.review.Review toEntity(User user) {
-        return com.estsoft.project3.review.Review.builder()
+    public Review toEntity(User user) {
+        return Review.builder()
             .user(user)
             .content(content)
             .title(title)

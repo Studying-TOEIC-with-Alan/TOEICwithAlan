@@ -1,5 +1,6 @@
 package com.estsoft.project3.domain;
 
+import com.estsoft.project3.contact.Contact;
 import com.estsoft.project3.review.Review;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -64,6 +65,10 @@ public class User {
 
     public boolean isOwner(Review review) {
         return this.userId.equals(review.getUser().getUserId());
+    }
+
+    public boolean isOwner(Contact contact) {
+        return this.userId.equals(contact.getUser().getUserId());
     }
 
     public boolean isAdmin() {
