@@ -12,4 +12,5 @@ public class QuizQuestion {
     private String question;
     private Map<String, String> answerChoices;
     private String correctAnswer;
+    private String allenInputText;
 }

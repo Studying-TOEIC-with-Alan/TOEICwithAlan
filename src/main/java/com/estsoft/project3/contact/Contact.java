@@ -57,12 +57,15 @@ public class Contact {
     }
 
     public enum Status {
-        PENDING, IN_PROGRESS, COMPLETED
+        OPEN, IN_PROGRESS, CLOSED
     }
 
     @PrePersist
     public void prePersist() {
         this.createDate = LocalDateTime.now();
         this.updateDate = LocalDateTime.now();
+        if (this.status == null) {
+            this.status = Status.OPEN;
+        }
     }
 }

@@ -16,8 +16,15 @@ p {
     margin: 10px 0;
 }
 
-#category-select, #partName-select {
+#category-select, #readingPart-select, #listeningPart-select {
     max-width: 200px;
+}
+
+/* disable category select but still show active button*/
+.disabled-category {
+    pointer-events: none;
+    opacity: 1;
+    cursor: default;
 }
 
 .input-text {
@@ -35,7 +42,7 @@ p {
     font-size: 12px;
 }
 
-#result-box, #tilTitle, #tilContent, #partName-select {
+#result-box, #tilTitle, #tilContent, #readingPart-select, #listeningPart-select {
     border-radius: 10px;
 }
 

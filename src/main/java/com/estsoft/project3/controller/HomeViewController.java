@@ -19,8 +19,9 @@ public class HomeViewController {
             model.addAttribute("nickname", sessionUser.getNickname());
         }
 
-        model.addAttribute("categories", List.of("문장 체크","문법", "어휘 목록", "어휘 설명", "일기 퀴즈"));
-        model.addAttribute("partList", List.of("Part 5","Part 6", "Part 7"));
+        model.addAttribute("categories", List.of("문장 체크","문법", "어휘 목록", "어휘 설명", "듣기 퀴즈", "일기 퀴즈"));
+        model.addAttribute("listeningParts", List.of("Part 2","Part 3","Part 4"));
+        model.addAttribute("readingParts", List.of("Part 5","Part 6", "Part 7"));
 
         return "index";
     }

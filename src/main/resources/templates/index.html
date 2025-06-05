@@ -33,8 +33,11 @@
 
                 <!--Quiz type-->
                 <div class="mb-3">
-                <select id="partName-select" class="custom-select" name="partName" style="display: none;">
-                    <option th:each="part : ${partList}" th:value="${part}" th:text="${part}" th:selected="${part == partName}"></option>
+                <select id="readingPart-select" class="custom-select" name="readingPartName" style="display: none;">
+                    <option th:each="readingPart : ${readingParts}" th:value="${readingPart}" th:text="${readingPart}" th:selected="${readingPart == readingPartName}"></option>
+                </select>
+                <select id="listeningPart-select" class="custom-select" name="listeningPartName" style="display: none;">
+                    <option th:each="listeningPart : ${listeningParts}" th:value="${listeningPart}" th:text="${listeningPart}" th:selected="${listeningPart == listeningPartName}"></option>
                 </select>
                 <button th:attr="disabled=${userId == null}" type="submit" id="start-btn" class="btn btn-light rounded-pill" style="display: none;">▶️</button>
                 </div>
@@ -50,8 +53,19 @@
         <!-- Show result -->
         <div id="result-box" class="card w-100 p-3 mb-5 text-left" style="display: none;">
             <div id ="result-text" class="w-100 result-text"></div>
-            <button id="next-question-btn" class="btn btn-light rounded-pill border mb-3" style="display: none;">👉 Next</button>
-            <button id="stop-question-btn" class="btn btn-light rounded-pill border mb-3" style="display: none;">🛑 Stop</button>
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- appear at left side -->
+                <div class ="me-auto">
+                    <button id="play-question-btn" class="btn btn-light rounded-pill border mb-3" style="display: none;">🔊 Play</button>
+                </div>
+
+                <!-- appear at right side -->
+                <div>
+                    <button id="next-question-btn" class="btn btn-light rounded-pill border mb-3" style="display: none;">👉🏻 Next</button>
+                    <button id="stop-question-btn" class="btn btn-light rounded-pill border mb-3" style="display: none;">🛑 End</button>
+                </div>
+            </div>
+
         </div>
         <!-- Loading spinner -->
         <div id="loading-spinner" class="text-center mb-3" style="display: none;">

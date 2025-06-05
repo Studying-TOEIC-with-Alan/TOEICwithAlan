@@ -20,16 +20,16 @@ public class ToeicParserService {
         for (String line : lines) {
             line = line.trim();
 
-            if (line.contains("지문:")) {
+            if (line.contains("Passage:")) {
                 currentSection = "passage";
                 continue;
-            } else if (line.contains("질문:")) {
+            } else if ( line.contains("Question:")) {
                 currentSection = "question";
                 continue;
-            } else if (line.contains("선택지:")) {
+            } else if (line.contains("Choices:")) {
                 currentSection = "choices";
                 continue;
-            } else if (line.contains("정답:")) {
+            } else if (line.contains("Answer:")) {
                 currentSection = "answer";
                 continue;
             }
@@ -43,7 +43,7 @@ public class ToeicParserService {
                     questionBuilder.append(line).append(" ");
                     break;
                 case "choices":
-                    if (line.matches("^[A-D]\\)\\s+.*")) {
+                    if (line.matches("^[A-D][).]\\s+.*")) {     //cater for both A) and A. styles
                         String key = line.substring(0, 1);
                         String value = line.substring(3).trim();
                         choices.put(key, value);
@@ -51,7 +51,9 @@ public class ToeicParserService {
                     break;
                 case "answer":
                     if (!line.isEmpty()) {
-                        if (line.matches("^[A-D]\\)\\s+.*")) {
+                        line = line.replaceAll("^\\*\\*(.*?)\\*\\*$", "$1").trim();
+
+                        if (line.matches("^[A-D][).]\\s+.*")) {     //cater for both A) and A. styles
                             quizQuestion.setCorrectAnswer(line.substring(0, 1));
                         }
                     }
@@ -63,6 +65,6 @@ public class ToeicParserService {
         quizQuestion.setQuestion(questionBuilder.toString().trim());
         quizQuestion.setAnswerChoices(choices);
 
-        return quizQuestion;
+       return quizQuestion;
     }
 }
