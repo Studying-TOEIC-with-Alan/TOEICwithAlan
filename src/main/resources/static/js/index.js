@@ -50,18 +50,22 @@ document.addEventListener("DOMContentLoaded", function () {
     const tilTitle = document.getElementById("tilTitle");
     const tilContent = document.getElementById("tilContent");
 
+
+    // *** allen part ***
     updatePlaceholder();
-    defaultMode();
 
     let hasCalledAllen = false;
 
+    // When select category
     window.selectCategory = function(btn) {
+        //1. Activate selected category button
         const category = btn.getAttribute("data-category");
         document.getElementById("category-hidden").value = category;
 
         document.querySelectorAll('[data-category]').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
+        //2. Display or hide items based on selected category
         resultBox.style.display = "none";
 
         if (["문법","문장 체크", "어휘 목록", "어휘 설명"].includes(category)) {
@@ -75,8 +79,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
             inputText.value = "";
             readingPartSelect.style.display = "none";
+            listeningPartSelect.style.display = "none";
             searchBtn.style.display = "inline";
             startBtn.style.display = "none";
+
+            updatePlaceholder(category);    //update placeholder based on selected category (for non quiz type only)
         } else {
             inputResultGuide.style.display = "none";
             inputText.style.display = "none";
@@ -95,24 +102,14 @@ document.addEventListener("DOMContentLoaded", function () {
             startBtn.style.display = "inline";
         }
 
-        //Reset Allen state
+        //3. Reset Allen state
         if (hasCalledAllen) {
             resetAllenState();
             hasCalledAllen = false;
         }
 
-        updatePlaceholder(category);
     }
 
-    function resetAllenState() {
-        fetch(`/api/allen`, {
-            method: 'DELETE'
-        }).catch((err) => {
-            console.warn('Failed to reset conversation:', err);
-        });
-    }
-
-    //Update placeholder when user select category
     function updatePlaceholder(category) {
         const placeholders = {
             "문장 체크": "문장을 입력하세요...",
@@ -123,12 +120,21 @@ document.addEventListener("DOMContentLoaded", function () {
         inputText.placeholder = placeholders[category] || "Start typing...";
     }
 
+    function resetAllenState() {
+        fetch(`/api/allen`, {
+            method: 'DELETE'
+        }).catch((err) => {
+            console.warn('Failed to reset conversation:', err);
+        });
+    }
+
+    //Search button for non-quiz category
     if (searchBtn) {
         searchBtn.addEventListener("click", (e) => {
             e.preventDefault();
             const input = inputText.value.trim();
 
-            // Validation before call allen api
+            // Input validation before call allen api
             if (categorySelect.value !== "문법" && !validateEnglishInput(input)) {
                 inputText.focus();
                 return;
@@ -138,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    //Validate input to allen must be in english alphabet
+    //Validate input must be in english alphabet
     function validateEnglishInput(value) {
         if (value === "") {
             alert("입력란이 비어 있습니다. 내용을 입력해주세요");
@@ -151,6 +157,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return true;
     }
 
+    //Quiz start button (reading and listening)
     if (startBtn) {
         startBtn.addEventListener("click", (e) => {
             let inputVal = "";
@@ -176,7 +183,47 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Submit to call allen api
+    //Quiz next question button (reading and listening)
+    if (nextQuestionBtn) {
+        nextQuestionBtn.addEventListener("click", (e) => {
+            speechSynthesis.cancel();
+
+            let inputVal = "";
+            if (categorySelect.value === "일기 퀴즈") {
+                inputVal = readingPartSelect.value;
+            } else {
+                inputVal = listeningPartSelect.value;
+            }
+
+            callAllenAPI(inputVal);
+        });
+    }
+
+    //Quiz stop quiz button (reading and listening)
+    if (stopQuestionBtn) {
+        stopQuestionBtn.addEventListener("click", (e) => {
+            if (categorySelect.value === "일기 퀴즈") {
+                readingPartSelect.disabled = false;
+            } else {
+                speechSynthesis.cancel();
+                isSpeechCancelled = true;
+
+                playQuestionBtn.disabled = true;
+                listeningPartSelect.disabled = false;
+            }
+            startBtn.disabled = false;
+
+            nextQuestionBtn.disabled = true;
+            stopQuestionBtn.disabled = true;
+
+            document.querySelectorAll('[data-category]').forEach(btn => {
+                btn.classList.remove("disabled-category");
+                btn.removeAttribute("data-disabled");
+            });
+        });
+    }
+
+    // Call allen api with input
     function callAllenAPI(input) {
         let category = categorySelect.value;
         resultText.innerHTML = "";
@@ -227,27 +274,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
-    function saveAllenInfo(category, inputText, summary) {
-        let userId = document.getElementById("user-id");
-
-        return fetch("/api/allen", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                userId: userId.value,
-                category: category,
-                inputText: inputText,
-                summary: summary
-            })
-        });
-    }
-
     let currentQuizData = null;
     let isSpeechCancelled = false;
 
-    //Render reading quiz data
+    //Render reading and listening quiz data
     function renderQuizData(data) {
         currentQuizData = data; // Save for playback
 
@@ -306,7 +336,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Play listening passage and question
+    // Play question (only for listening quiz)
     if (playQuestionBtn) {
         playQuestionBtn.addEventListener("click", (e) => {
             speechSynthesis.cancel(); // stop any ongoing speech
@@ -376,46 +406,27 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    function saveAllenInfo(category, inputText, summary) {
+        let userId = document.getElementById("user-id");
 
-    if (nextQuestionBtn) {
-        nextQuestionBtn.addEventListener("click", (e) => {
-            speechSynthesis.cancel();
-
-            let inputVal = "";
-            if (categorySelect.value === "일기 퀴즈") {
-                inputVal = readingPartSelect.value;
-            } else {
-                inputVal = listeningPartSelect.value;
-            }
-
-            callAllenAPI(inputVal);
+        return fetch("/api/allen", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                userId: userId.value,
+                category: category,
+                inputText: inputText,
+                summary: summary
+            })
         });
     }
 
-    if (stopQuestionBtn) {
-        stopQuestionBtn.addEventListener("click", (e) => {
-            if (categorySelect.value === "일기 퀴즈") {
-                readingPartSelect.disabled = false;
-            } else {
-                speechSynthesis.cancel();
-                isSpeechCancelled = true;
-
-                playQuestionBtn.disabled = true;
-                listeningPartSelect.disabled = false;
-            }
-            startBtn.disabled = false;
-
-            nextQuestionBtn.disabled = true;
-            stopQuestionBtn.disabled = true;
-
-            document.querySelectorAll('[data-category]').forEach(btn => {
-                btn.classList.remove("disabled-category");
-                btn.removeAttribute("data-disabled");
-            });
-        });
-    }
-
+    // *** TIL part ***
     // Display note writing
+    tilDefaultMode();
+
     if (writeNoteButton) {
         writeNoteButton.addEventListener('click', e => {
             writeNoteButton.style.display = "none";
@@ -432,7 +443,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Cancel note writing
     if (cancelNoteButton) {
         cancelNoteButton.addEventListener('click', e => {
-            defaultMode();
+            tilDefaultMode();
         })
     }
 
@@ -469,12 +480,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 tilContent.value = "";
             })
 
-            defaultMode();
+            tilDefaultMode();
         })
     }
 
     //Default state of writing note
-    function defaultMode() {
+    function tilDefaultMode() {
         writeNoteButton.style.display = "inline";
         saveNoteButton.style.display = "none";
         cancelNoteButton.style.display = "none";
