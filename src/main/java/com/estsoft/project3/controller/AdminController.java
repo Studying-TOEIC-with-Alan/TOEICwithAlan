@@ -18,6 +18,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -90,6 +91,21 @@ public class AdminController {
         model.addAttribute("nickname", user.getNickname());
 
         return "adminContact";
+    }
+
+    @PostMapping("/admin/contact/update")
+    public String updateContactStatus(@RequestParam Long contactId,
+        @RequestParam String status) {
+        contactService.updateContactStatus(contactId, status);
+        return "redirect:/admin/contact";
+    }
+
+    @GetMapping("/admin/contact/view/{contactId}")
+    public String viewContactDetail(@PathVariable Long contactId, Model model) {
+        Contact contact = contactService.getContactById(contactId);
+        ContactResponseDto dto = new ContactResponseDto(contact);
+        model.addAttribute("contact", dto);
+        return "contact-detail";
     }
 
 }

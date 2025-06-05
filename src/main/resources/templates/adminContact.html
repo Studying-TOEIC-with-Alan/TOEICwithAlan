@@ -38,30 +38,32 @@
             </thead>
             <tbody>
             <tr th:each="contact : ${contacts}">
-                <td th:text="${contact.contactId}"></td>
-                <td th:text="${contact.title}"></td>
-                <td th:text="${contact.nickname}"></td>
-                <td>
-                    <form th:action="@{/admin/contact/update}" method="post" style="margin: 0;"
-                          class="d-flex align-items-center">
+                <form th:action="@{/admin/contact/update}" method="post" style="display: contents;">
+                    <td th:text="${contact.contactId}"></td>
+                    <td>
+                        <a th:href="@{/admin/contact/view/{id}(id=${contact.contactId})}"
+                           th:text="${contact.title}" style="text-decoration: none; color: inherit;"></a>
+                    </td>
+                    <td th:text="${contact.nickname}"></td>
+                    <td>
                         <select name="status" class="form-control form-control-sm">
-                            <option th:value="PENDING" th:selected="${contact.status == 'PENDING'}">
+                            <option th:value="OPEN" th:selected="${contact.status == 'OPEN'}">
                                 미처리
                             </option>
                             <option th:value="IN_PROGRESS"
                                     th:selected="${contact.status == 'IN_PROGRESS'}">처리중
                             </option>
-                            <option th:value="COMPLETED"
-                                    th:selected="${contact.status == 'COMPLETED'}">처리완료
+                            <option th:value="CLOSED"
+                                    th:selected="${contact.status == 'CLOSED'}">처리완료
                             </option>
                         </select>
-                    </form>
-                </td>
-                <td th:text="${#temporals.format(contact.createDate, 'yyyy-MM-dd HH:mm')}"></td>
-                <td>
-                    <input type="hidden" name="contactId" th:value="${contact.contactId}"/>
-                    <button type="submit" class="btn btn-success btn-sm ml-2">수정</button>
-                </td>
+                    </td>
+                    <td th:text="${#temporals.format(contact.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td>
+                        <input type="hidden" name="contactId" th:value="${contact.contactId}"/>
+                        <button type="submit" class="btn btn-success btn-sm ml-2">수정</button>
+                    </td>
+                </form>
             </tr>
             </tbody>
         </table>
