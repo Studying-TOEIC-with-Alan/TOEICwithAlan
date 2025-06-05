@@ -30,7 +30,7 @@ public class WebSecurityConfig {
         httpSecurity
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/images/**", "/css/**", "/js/**", "/home", "/login").permitAll()
-                .requestMatchers("/admin/**","/admin").hasRole("ADMIN")
+                .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/review/**").authenticated()
                 .anyRequest().authenticated()
             )

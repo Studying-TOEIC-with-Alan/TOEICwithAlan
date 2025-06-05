@@ -15,13 +15,13 @@
     <div class="admin-container">
         <div class="admin-button-group" style="margin-bottom: 20px;">
             <a href="/admin" class="admin-btn">회원관리</a>
-            <a href="/adminContact" class="admin-btn">민원관리</a>
+            <a href="/admin/contact" class="admin-btn">민원관리</a>
         </div>
 
         <h2>민원 관리</h2>
 
         <form method="get" action="/admin" class="search-form">
-            <input type="text" name="nickname" th:value="${nickname}" placeholder="닉네임 검색"/>
+            <input type="text" name="nickname" placeholder="닉네임 검색"/>
             <button type="submit">검색</button>
         </form>
 
@@ -33,27 +33,35 @@
                 <th>닉네임</th>
                 <th>처리 상태</th>
                 <th>작성 일자</th>
+                <th>수정</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="contact : ${contacts}">
-                <form th:action="@{/admin/update}" method="post">
-                    <td th:text="${contact.contactId}"></td>
-                    <td th:text="${contact.title}"></td>
-                    <td th:text="${contact.user.nickname}"></td>
-                    <td>
-                        <select name="status">
-                            <option th:value="PENDING" th:selected="${contact.status == 'PENDING'}">미처리</option>
-                            <option th:value="IN_PROGRESS" th:selected="${contact.status == 'IN_PROGRESS'}">처리중</option>
-                            <option th:value="COMPLETED" th:selected="${contact.status == 'COMPLETED'}">처리완료</option>
+                <td th:text="${contact.contactId}"></td>
+                <td th:text="${contact.title}"></td>
+                <td th:text="${contact.nickname}"></td>
+                <td>
+                    <form th:action="@{/admin/contact/update}" method="post" style="margin: 0;"
+                          class="d-flex align-items-center">
+                        <select name="status" class="form-control form-control-sm">
+                            <option th:value="PENDING" th:selected="${contact.status == 'PENDING'}">
+                                미처리
+                            </option>
+                            <option th:value="IN_PROGRESS"
+                                    th:selected="${contact.status == 'IN_PROGRESS'}">처리중
+                            </option>
+                            <option th:value="COMPLETED"
+                                    th:selected="${contact.status == 'COMPLETED'}">처리완료
+                            </option>
                         </select>
-                    </td>
-                    <td th:text="${#temporals.format(contact.createDate, 'yyyy-MM-dd HH:mm')}"></td>
-                    <td>
-                        <input type="hidden" name="userId" th:value="${contact.user.userId}"/>
-                        <button type="submit">수정</button>
-                    </td>
-                </form>
+                    </form>
+                </td>
+                <td th:text="${#temporals.format(contact.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+                <td>
+                    <input type="hidden" name="contactId" th:value="${contact.contactId}"/>
+                    <button type="submit" class="btn btn-success btn-sm ml-2">수정</button>
+                </td>
             </tr>
             </tbody>
         </table>

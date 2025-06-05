@@ -2,6 +2,7 @@ package com.estsoft.project3.controller;
 
 
 import com.estsoft.project3.contact.Contact;
+import com.estsoft.project3.contact.ContactRequestDto;
 import com.estsoft.project3.contact.ContactResponseDto;
 import com.estsoft.project3.contact.ContactService;
 import com.estsoft.project3.domain.User;
@@ -25,10 +26,13 @@ public class AdminController {
 
     private final AdminService adminService;
     private final ContactService contactService;
+    private final UserRepository userRepository;
 
-    public AdminController(AdminService adminService, ContactService contactService) {
+    public AdminController(AdminService adminService, ContactService contactService,
+        UserRepository userRepository) {
         this.adminService = adminService;
         this.contactService = contactService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/admin")
@@ -40,6 +44,9 @@ public class AdminController {
         System.out.println("현재 사용자 이메일: " + principal.getAttribute("email"));
         System.out.println("현재 권한: " + principal.getAuthorities());
 
+        String email = principal.getAttribute("email");
+        User user = userRepository.findByEmail(email).orElseThrow();
+
         Page<User> userPage = (nickname == null || nickname.isBlank())
             ? adminService.findAll(pageable)
             : adminService.findByNicknameContaining(nickname, pageable);
@@ -47,6 +54,8 @@ public class AdminController {
         model.addAttribute("userPage", userPage);
         model.addAttribute("users", userPage.getContent());
         model.addAttribute("nickname", nickname);
+        model.addAttribute("userId", user.getUserId());
+        model.addAttribute("nickname", user.getNickname());
 
         return "admin";
     }
@@ -60,10 +69,16 @@ public class AdminController {
 
     @GetMapping("/admin/contact")
     public String showAllContacts(@RequestParam(name = "sort", defaultValue = "newest") String sort,
-        Model model) {
+        Model model, @AuthenticationPrincipal OAuth2User principal) {
+
+        System.out.println("현재 권한: " + principal.getAuthorities());
+
         boolean newestFirst = sort.equalsIgnoreCase("newest");
 
         List<Contact> contacts = contactService.getAllContactsSortedByDate(newestFirst);
+
+        String email = principal.getAttribute("email");
+        User user = userRepository.findByEmail(email).orElseThrow();
 
         List<ContactResponseDto> responseDto = contacts.stream()
             .map(ContactResponseDto::new)
@@ -71,6 +86,8 @@ public class AdminController {
 
         model.addAttribute("contacts", responseDto);
         model.addAttribute("sort", sort);
+        model.addAttribute("userId", user.getUserId());
+        model.addAttribute("nickname", user.getNickname());
 
         return "adminContact";
     }

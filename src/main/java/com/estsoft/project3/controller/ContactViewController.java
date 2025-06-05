@@ -4,6 +4,7 @@ import com.estsoft.project3.contact.Contact;
 import com.estsoft.project3.contact.ContactResponseDto;
 import com.estsoft.project3.contact.ContactService;
 import com.estsoft.project3.domain.User;
+import com.estsoft.project3.repository.UserRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,9 @@ public class ContactViewController {
     @GetMapping("/contacts/{id}")
     public String showReviewDetail(@PathVariable Long id, Model model) {
         Contact contact = contactService.getContactById(id);
+
         model.addAttribute("contact", new ContactResponseDto(contact));
+
         return "contact-detail";
     }
 

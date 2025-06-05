@@ -49,7 +49,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         // OAuth2User 반환 (세션용)
         return new DefaultOAuth2User(
-            Collections.singleton(new SimpleGrantedAuthority("ROLE_" + user.getRole())),
+            Collections.singleton(new SimpleGrantedAuthority(user.getRole().name())),
             attributes,
             "email" // principal 이름으로 쓸 key
         );
