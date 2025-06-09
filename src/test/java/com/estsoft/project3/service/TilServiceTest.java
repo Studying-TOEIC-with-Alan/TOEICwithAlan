@@ -10,6 +10,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
@@ -68,12 +71,13 @@ class TilServiceTest {
         tilRepository.save(savedTil1);
         Til savedTil2 = new Til(user, "Title1", "Summary1");
         tilRepository.save(savedTil2);
+        Pageable pageable = PageRequest.of(0, 10);
 
         //when:
-        List<Til> tilList = tilService.getTILsByUserId(user.getUserId());
+        Page<Til> tilPage = tilService.getTILsByUserId(user.getUserId(), pageable);
 
         //then:
-        assert tilList.size() == 2;
+        assertEquals(2, tilPage.getTotalElements());
     }
 
     @Test

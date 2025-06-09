@@ -53,8 +53,7 @@ CREATE TABLE review (
     content TEXT,
     create_date DATETIME,
     update_date DATETIME,
-
-    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE contact (
@@ -65,6 +64,5 @@ CREATE TABLE contact (
     create_date DATETIME,
     update_date DATETIME,
     status ENUM('PENDING', 'IN_PROGRESS', 'COMPLETED'),
-
-    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );

@@ -11,8 +11,8 @@
                         <span class="name">Allen</span>
                     </a>
                 </div>
-                <a class="menu-link ml-3" th:href="@{/review}">리뷰</a>
-                <a class="menu-link ml-3" th:href="@{/myPage}">내 페이지</a>
+                <a class="menu-link ml-3" th:href="@{/reviews}">리뷰</a>
+                <a th:if="${userId != null}" class="menu-link ml-3" th:href="@{/myPage}">내 페이지</a>
                 <a class="menu-link ml-3" th:if="${role == 'ROLE_ADMIN'}" th:href="@{/admin}">관리자</a>
             </div>
 
