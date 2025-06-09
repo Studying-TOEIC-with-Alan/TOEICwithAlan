@@ -3,6 +3,7 @@ package com.estsoft.project3.controller;
 import com.estsoft.project3.contact.Contact;
 import com.estsoft.project3.contact.ContactResponseDto;
 import com.estsoft.project3.contact.ContactService;
+import com.estsoft.project3.domain.Role;
 import com.estsoft.project3.domain.User;
 import com.estsoft.project3.repository.UserRepository;
 import java.util.List;
@@ -47,12 +48,37 @@ public class ContactViewController {
         return "contact";
     }
 
+    @GetMapping("/contact")
+    public String showAllContacts(@RequestParam(name = "sort", defaultValue = "newest") String sort,
+        Model model) {
+        boolean newestFirst = sort.equalsIgnoreCase("newest");
+
+        List<Contact> contacts = contactService.getAllContactsSortedByDate(newestFirst);
+
+        List<ContactResponseDto> responseDto = contacts.stream()
+            .map(ContactResponseDto::new)
+            .collect(Collectors.toList());
+
+        model.addAttribute("contacts", responseDto);
+        model.addAttribute("sort", sort);
+
+        return "contacts";
+    }
+
     @GetMapping("/contacts/{id}")
-    public String showReviewDetail(@PathVariable Long id, Model model) {
+    public String showContactDetail(@PathVariable Long id, Model model,
+        @AuthenticationPrincipal OAuth2User principal) {
         Contact contact = contactService.getContactById(id);
+        ContactResponseDto responseDto = new ContactResponseDto(contact);
 
-        model.addAttribute("contact", new ContactResponseDto(contact));
+        model.addAttribute("contact", responseDto);
 
+        String currentUserEmail = principal.getName();
+        boolean isOwner = contact.getUser().getEmail().equals(currentUserEmail);
+        boolean isAdmin = contact.getUser().getRole() == Role.ROLE_ADMIN;
+
+        model.addAttribute("hasAccess", isOwner);
+        model.addAttribute("hasDeleteAccess", isOwner || isAdmin);
         return "contact-detail";
     }
 

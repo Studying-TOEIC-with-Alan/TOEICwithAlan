@@ -120,7 +120,14 @@
         <ul style="list-style: none;" class="contact-list pl-1">
             <li th:each="contact : ${contacts}" class="mb-3">
                 <div class="row align-items-center mb-2 mx-2 border-bottom">
-                    <div class="col-7 text-truncate text-start pl-5 mb-0">
+                    <div class="col-1 text-truncate pl-2 mb-2 text-left">
+                        <small th:switch="${contact.status.name()}">
+                            <span th:case="'OPEN'">대기중</span>
+                            <span th:case="'IN_PROGRESS'">진행중</span>
+                            <span th:case="'CLOSED'">완료</span>
+                        </small>
+                    </div>
+                    <div class="col-6 text-truncate text-start pl-5 mb-0">
                         <a th:href="@{/contacts/{id}(id=${contact.contactId})}"
                            th:text="${#strings.length(contact.title) > 30} ? ${#strings.substring(contact.title, 0, 30)} + '...' : ${contact.title}"
                            style="text-decoration: underline; cursor: pointer;">
@@ -184,7 +191,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.reviewContent').forEach(div => {
+        document.querySelectorAll('.contactContent').forEach(div => {
             div.querySelectorAll('img').forEach(img => img.remove());
 
             let text = div.textContent || div.innerText;

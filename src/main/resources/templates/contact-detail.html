@@ -84,39 +84,21 @@
 
         <hr>
 
-        <div th:utext="${contact.content}"></div>
+        <div id="content" th:utext="${contact.content}"></div>
 
     </div>
     <div class="mt-4 d-flex justify-content-between align-items-center">
         <button type="button" class="btn btn-secondary btn-sm" id="backBtn">← 목록으로</button>
         <div>
-            <button type="button" class="btn btn-success btn-sm" id="editBtn">✏ 수정</button>
-            <button type="button" class="btn btn-danger btn-sm" id="deleteBtn">🗑 삭제</button>
+            <th:block th:if="${hasAccess}">
+                <button type="button" class="btn btn-success btn-sm" id="editBtn">✏ 수정</button>
+            </th:block>
+            <th:block th:if="${hasDeleteAccess}">
+                <button type="button" class="btn btn-danger btn-sm" id="deleteBtn">🗑 삭제</button>
+            </th:block>
         </div>
     </div>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const editBtn = document.getElementById('editBtn');
-        const contactId = document.body.dataset.contactId;
-
-        if (editBtn) {
-            editBtn.addEventListener('click', () => {
-                if (!contactId) {
-                    alert('수정할 리뷰 ID가 없습니다.');
-                    return;
-                }
-                window.location.href = `/contacts/${contactId}/edit`;
-            });
-        }
-        const backBtn = document.getElementById('backBtn');
-        if (backBtn) {
-            backBtn.addEventListener('click', () => {
-                window.location.href = '/contacts';
-            });
-        }
-    });
-</script>
 <script src="/js/review.js"></script>
 </body>
 </html>

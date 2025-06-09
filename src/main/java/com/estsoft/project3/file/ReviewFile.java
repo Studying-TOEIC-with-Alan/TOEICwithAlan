@@ -1,6 +1,5 @@
-package com.estsoft.project3.Image;
+package com.estsoft.project3.file;
 
-import com.estsoft.project3.contact.Contact;
 import com.estsoft.project3.review.Review;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,7 +20,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Image {
+public class ReviewFile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +34,4 @@ public class Image {
     @JoinColumn(name = "review_id")
     private Review review;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "contact_id")
-    private Contact contact;
 }
