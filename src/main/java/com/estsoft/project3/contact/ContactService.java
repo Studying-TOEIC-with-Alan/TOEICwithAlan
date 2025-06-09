@@ -136,4 +136,13 @@ public class ContactService {
         return userRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
     }
+
+    @Transactional
+    public void updateContactStatus(Long contactId, String status) {
+        Contact contact = contactRepository.findById(contactId)
+            .orElseThrow(() -> new IllegalArgumentException("해당 ID의 민원이 존재하지 않습니다: " + contactId));
+
+        contact.setStatus(Contact.Status.valueOf(status));
+        contactRepository.save(contact);
+    }
 }

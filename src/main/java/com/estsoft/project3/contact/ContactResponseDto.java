@@ -14,7 +14,7 @@ public class ContactResponseDto {
     private Long grade;
     private String title;
     private String content;
-    private Contact.Status status;
+    private String status;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
 
@@ -23,7 +23,7 @@ public class ContactResponseDto {
         this.userId = contact.getUser().getUserId();
         this.title = contact.getTitle();
         this.content = contact.getContent();
-        this.status = contact.getStatus();
+        this.status = contact.getStatus() != null ? contact.getStatus().name() : "OPEN";
         this.createDate = contact.getCreateDate();
         this.updateDate = contact.getUpdateDate();
         this.nickname = contact.getUser().getNickname();
