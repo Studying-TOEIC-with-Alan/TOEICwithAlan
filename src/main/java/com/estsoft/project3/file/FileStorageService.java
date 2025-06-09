@@ -1,4 +1,4 @@
-package com.estsoft.project3.Image;
+package com.estsoft.project3.file;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,7 +14,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @RequiredArgsConstructor
 @Service
-public class ImageStorageService {
+public class FileStorageService {
 
     private final S3Client s3Client;
 
@@ -25,18 +25,26 @@ public class ImageStorageService {
     private String region;
 
     public String uploadSingleFile(MultipartFile file) throws IOException {
-        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        String originalFilename = file.getOriginalFilename();
+        String extension = "";
+
+        if (originalFilename != null && originalFilename.contains(".")) {
+            extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        }
+
+        String fileName = UUID.randomUUID().toString() + extension;
+        String filePath = "upload/" + fileName;
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
             .bucket(bucketName)
-            .key(fileName)
+            .key(filePath)
             .contentType(file.getContentType())
             .build();
 
         s3Client.putObject(putObjectRequest,
             RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
 
-        return String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, fileName);
+        return filePath;
     }
 
     public void deleteImagesByKeys(List<String> keys) {
@@ -45,10 +53,12 @@ public class ImageStorageService {
         }
 
         for (String key : keys) {
-            System.out.println("삭제할 S3 파일: " + key);
+            String fullKey = key.startsWith("upload/") ? key : "upload/" + key;
+            System.out.println("삭제 시도 키: " + fullKey);
+            
             DeleteObjectRequest request = DeleteObjectRequest.builder()
                 .bucket(bucketName)
-                .key(key)
+                .key(fullKey)
                 .build();
 
             s3Client.deleteObject(request);

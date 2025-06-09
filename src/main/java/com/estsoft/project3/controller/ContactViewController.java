@@ -3,6 +3,7 @@ package com.estsoft.project3.controller;
 import com.estsoft.project3.contact.Contact;
 import com.estsoft.project3.contact.ContactResponseDto;
 import com.estsoft.project3.contact.ContactService;
+import com.estsoft.project3.domain.Role;
 import com.estsoft.project3.domain.User;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,9 +65,19 @@ public class ContactViewController {
     }
 
     @GetMapping("/contacts/{id}")
-    public String showReviewDetail(@PathVariable Long id, Model model) {
+    public String showContactDetail(@PathVariable Long id, Model model,
+        @AuthenticationPrincipal OAuth2User principal) {
         Contact contact = contactService.getContactById(id);
-        model.addAttribute("contact", new ContactResponseDto(contact));
+        ContactResponseDto responseDto = new ContactResponseDto(contact);
+
+        model.addAttribute("contact", responseDto);
+
+        String currentUserEmail = principal.getName();
+        boolean isOwner = contact.getUser().getEmail().equals(currentUserEmail);
+        boolean isAdmin = contact.getUser().getRole() == Role.ROLE_ADMIN;
+
+        model.addAttribute("hasAccess", isOwner);
+        model.addAttribute("hasDeleteAccess", isOwner || isAdmin);
         return "contact-detail";
     }
 

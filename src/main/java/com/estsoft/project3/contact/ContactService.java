@@ -1,10 +1,10 @@
 package com.estsoft.project3.contact;
 
-import com.estsoft.project3.Image.Image;
-import com.estsoft.project3.Image.ImageDto;
-import com.estsoft.project3.Image.ImageRepository;
-import com.estsoft.project3.Image.ImageStorageService;
 import com.estsoft.project3.domain.User;
+import com.estsoft.project3.file.ContactFile;
+import com.estsoft.project3.file.ContactFileRepository;
+import com.estsoft.project3.file.FileDto;
+import com.estsoft.project3.file.FileStorageService;
 import com.estsoft.project3.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -22,8 +22,8 @@ import org.springframework.web.server.ResponseStatusException;
 public class ContactService {
 
     private final ContactRepository contactRepository;
-    private final ImageStorageService imageStorageService;
-    private final ImageRepository imageRepository;
+    private final FileStorageService fileStorageService;
+    private final ContactFileRepository contactFileRepository;
     private final UserRepository userRepository;
 
     @Transactional
@@ -34,9 +34,9 @@ public class ContactService {
             contactRepository.save(contact);
 
             if (requestDto.getImages() != null) {
-                for (ImageDto dto : requestDto.getImages()) {
-                    Image image = dto.toEntity(contact);
-                    imageRepository.save(image);
+                for (FileDto dto : requestDto.getImages()) {
+                    ContactFile image = dto.toEntity(contact);
+                    contactFileRepository.save(image);
                 }
             }
 
@@ -59,17 +59,51 @@ public class ContactService {
     }
 
     @Transactional
-    public Contact updateContact(Long id, ContactRequestDto requestDto, User currentUser) {
-        Contact contact = contactRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("글을 찾을 수 없습니다. id=" + id));
+    public Contact updateContact(Long contactId, ContactRequestDto dto, User user) {
+        Contact contact = contactRepository.findById(contactId)
+            .orElseThrow(() -> new IllegalArgumentException("해당 문의가 존재하지 않습니다."));
 
-        if (!currentUser.isOwner(contact)) {
-            throw new AccessDeniedException("수정 권한이 없습니다.");
+        if (!contact.getUser().getUserId().equals(user.getUserId())) {
+            throw new AccessDeniedException("문의 작성자만 수정할 수 있습니다.");
         }
 
-        contact.update(requestDto.getTitle(), requestDto.getContent());
-        return contactRepository.save(contact);
+        contact.update(dto.getTitle(), dto.getContent());
+
+        List<ContactFile> existingImages = contactFileRepository.findByContact_ContactId(
+            contactId);
+        List<String> newFilePaths = dto.getImages().stream()
+            .map(com.estsoft.project3.file.FileDto::getFilePath)
+            .collect(Collectors.toList());
+
+        List<String> s3KeysToDelete = existingImages.stream()
+            .filter(img -> !newFilePaths.contains(img.getFilePath()))
+            .map(com.estsoft.project3.file.ContactFile::getFilePath)
+            .collect(Collectors.toList());
+
+        fileStorageService.deleteImagesByKeys(s3KeysToDelete);
+
+        for (ContactFile image : existingImages) {
+            if (!newFilePaths.contains(image.getFilePath())) {
+                contactFileRepository.delete(image);
+            }
+        }
+
+        for (FileDto fileDto : dto.getImages()) {
+            boolean alreadyExists = existingImages.stream()
+                .anyMatch(img -> img.getFilePath().equals(fileDto.getFilePath()));
+
+            if (!alreadyExists) {
+                ContactFile newImage = new ContactFile();
+                newImage.setFilename(fileDto.getFilename());
+                newImage.setFilePath(fileDto.getFilePath());
+                newImage.setContact(contact);
+                contactFileRepository.save(newImage);
+            }
+        }
+
+        return contact;
     }
+
 
     @Transactional
     public void deleteContact(Long contactId, User currentUser) {
@@ -81,14 +115,14 @@ public class ContactService {
             throw new AccessDeniedException("삭제 권한이 없습니다.");
         }
 
-        List<Image> images = contact.getImages();
+        List<ContactFile> images = contact.getImages();
 
         if (images != null && !images.isEmpty()) {
             List<String> imageKeys = images.stream()
-                .map(Image::getFilename)
+                .map(com.estsoft.project3.file.ContactFile::getFilename)
                 .collect(Collectors.toList());
 
-            imageStorageService.deleteImagesByKeys(imageKeys);
+            fileStorageService.deleteImagesByKeys(imageKeys);
         }
 
         contactRepository.delete(contact);

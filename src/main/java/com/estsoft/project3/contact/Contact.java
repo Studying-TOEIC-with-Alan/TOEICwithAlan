@@ -1,7 +1,7 @@
 package com.estsoft.project3.contact;
 
-import com.estsoft.project3.Image.Image;
 import com.estsoft.project3.domain.User;
+import com.estsoft.project3.file.ContactFile;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -47,7 +47,7 @@ public class Contact {
     private Status status;
 
     @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Image> images = new ArrayList<>();
+    private List<ContactFile> images = new ArrayList<>();
 
     public void update(String title, String content) {
         this.title = title;
@@ -62,7 +62,6 @@ public class Contact {
     @PrePersist
     public void prePersist() {
         this.createDate = LocalDateTime.now();
-        this.updateDate = LocalDateTime.now();
         if (this.status == null) {
             this.status = Status.OPEN;
         }

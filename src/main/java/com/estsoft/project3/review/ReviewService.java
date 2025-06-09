@@ -1,10 +1,10 @@
 package com.estsoft.project3.review;
 
-import com.estsoft.project3.Image.Image;
-import com.estsoft.project3.Image.ImageDto;
-import com.estsoft.project3.Image.ImageRepository;
-import com.estsoft.project3.Image.ImageStorageService;
 import com.estsoft.project3.domain.User;
+import com.estsoft.project3.file.FileDto;
+import com.estsoft.project3.file.FileStorageService;
+import com.estsoft.project3.file.ReviewFile;
+import com.estsoft.project3.file.ReviewFileRepository;
 import com.estsoft.project3.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -22,8 +22,8 @@ import org.springframework.web.server.ResponseStatusException;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final ImageStorageService imageStorageService;
-    private final ImageRepository imageRepository;
+    private final FileStorageService fileStorageService;
+    private final ReviewFileRepository reviewFileRepository;
     private final UserRepository userRepository;
 
     @Transactional
@@ -35,9 +35,9 @@ public class ReviewService {
             reviewRepository.save(review);
 
             if (requestDto.getImages() != null) {
-                for (ImageDto dto : requestDto.getImages()) {
-                    Image image = dto.toEntity(review);
-                    imageRepository.save(image);
+                for (FileDto dto : requestDto.getImages()) {
+                    ReviewFile image = dto.toEntity(review);
+                    reviewFileRepository.save(image);
                 }
             }
 
@@ -60,17 +60,48 @@ public class ReviewService {
     }
 
     @Transactional
-    public Review updateReview(Long id,
-        ReviewRequestDto requestDto, User currentUser) {
-        Review review = reviewRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("리뷰를 찾을 수 없습니다. id=" + id));
+    public Review updateReview(Long reviewId, ReviewRequestDto dto, User user) {
+        Review review = reviewRepository.findById(reviewId)
+            .orElseThrow(() -> new IllegalArgumentException("해당 리뷰가 존재하지 않습니다."));
 
-        if (!currentUser.isOwner(review)) {
-            throw new AccessDeniedException("수정 권한이 없습니다.");
+        if (!review.getUser().getUserId().equals(user.getUserId())) {
+            throw new AccessDeniedException("리뷰 작성자만 수정할 수 있습니다.");
         }
 
-        review.update(requestDto.getTitle(), requestDto.getContent());
-        return reviewRepository.save(review);
+        review.update(dto.getTitle(), dto.getContent());
+
+        List<ReviewFile> existingImages = reviewFileRepository.findByReview_ReviewId(reviewId);
+        List<String> newFilePaths = dto.getImages().stream()
+            .map(com.estsoft.project3.file.FileDto::getFilePath)
+            .collect(Collectors.toList());
+
+        List<String> s3KeysToDelete = existingImages.stream()
+            .filter(img -> !newFilePaths.contains(img.getFilePath()))
+            .map(ReviewFile::getFilePath)
+            .collect(Collectors.toList());
+
+        fileStorageService.deleteImagesByKeys(s3KeysToDelete);
+
+        for (ReviewFile image : existingImages) {
+            if (!newFilePaths.contains(image.getFilePath())) {
+                reviewFileRepository.delete(image);
+            }
+        }
+
+        for (FileDto fileDto : dto.getImages()) {
+            boolean alreadyExists = existingImages.stream()
+                .anyMatch(img -> img.getFilePath().equals(fileDto.getFilePath()));
+
+            if (!alreadyExists) {
+                ReviewFile newImage = new ReviewFile();
+                newImage.setFilename(fileDto.getFilename());
+                newImage.setFilePath(fileDto.getFilePath());
+                newImage.setReview(review);
+                reviewFileRepository.save(newImage);
+            }
+        }
+
+        return review;
     }
 
     @Transactional
@@ -82,14 +113,14 @@ public class ReviewService {
             throw new AccessDeniedException("삭제 권한이 없습니다.");
         }
 
-        List<Image> images = review.getImages();
+        List<ReviewFile> images = review.getImages();
 
         if (images != null && !images.isEmpty()) {
             List<String> imageKeys = images.stream()
-                .map(Image::getFilename)
+                .map(ReviewFile::getFilename)
                 .collect(Collectors.toList());
 
-            imageStorageService.deleteImagesByKeys(imageKeys);
+            fileStorageService.deleteImagesByKeys(imageKeys);
         }
 
         reviewRepository.delete(review);
