@@ -1,5 +1,6 @@
 package com.estsoft.project3.controller;
 
+import com.estsoft.project3.domain.Role;
 import com.estsoft.project3.review.Review;
 import com.estsoft.project3.review.ReviewResponseDto;
 import com.estsoft.project3.review.ReviewService;
@@ -63,9 +64,19 @@ public class ReviewViewController {
     }
 
     @GetMapping("/reviews/{id}")
-    public String showReviewDetail(@PathVariable Long id, Model model) {
+    public String showReviewDetail(@PathVariable Long id, Model model,
+        @AuthenticationPrincipal OAuth2User principal) {
         Review review = reviewService.getReviewById(id);
-        model.addAttribute("review", new ReviewResponseDto(review));
+        ReviewResponseDto responseDto = new ReviewResponseDto(review);
+
+        model.addAttribute("review", responseDto);
+
+        String currentUserEmail = principal.getName();
+        boolean isOwner = review.getUser().getEmail().equals(currentUserEmail);
+        boolean isAdmin = review.getUser().getRole() == Role.ROLE_ADMIN;
+
+        model.addAttribute("hasAccess", isOwner);
+        model.addAttribute("hasDeleteAccess", isOwner || isAdmin);
         return "review-detail";
     }
 }
