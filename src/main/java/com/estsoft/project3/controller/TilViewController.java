@@ -4,10 +4,14 @@ import com.estsoft.project3.domain.Til;
 import com.estsoft.project3.dto.SessionUser;
 import com.estsoft.project3.service.TilService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -20,11 +24,15 @@ public class TilViewController {
     }
 
     @GetMapping("/til")
-    public String showTil(Model model, HttpSession httpSession) {
+    public String showTil(@RequestParam(defaultValue = "0") int page,
+                          @RequestParam(defaultValue = "10") int size,
+                          Model model,
+                          HttpSession httpSession) {
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
         Long userId = sessionUser.getUserId();
 
-        List<Til> tilList = tilService.getTILsByUserId(userId);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Til> tilList = tilService.getTILsByUserId(userId, pageable);
 
         //For header
         model.addAttribute("userId", userId);
@@ -33,6 +41,8 @@ public class TilViewController {
 
         //For TIL
         model.addAttribute("tilList", tilList);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", tilList.getTotalPages());
         return "til";
     }
 

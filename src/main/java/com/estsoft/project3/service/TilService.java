@@ -5,6 +5,8 @@ import com.estsoft.project3.domain.User;
 import com.estsoft.project3.dto.TilRequest;
 import com.estsoft.project3.repository.TilRepository;
 import com.estsoft.project3.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,11 +32,11 @@ public class TilService {
     }
 
     //Get TIL list by user id
-    public List<Til> getTILsByUserId(Long userId) {
+    public Page<Til> getTILsByUserId(Long userId, Pageable pageable) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("유저 없음"));
 
-        return tilRepository.findAllByUserUserIdOrderByUpdatedDateDesc(userId);
+        return tilRepository.findAllByUserUserIdOrderByUpdatedDateDesc(userId, pageable);
     }
 
     //Get single TIL
