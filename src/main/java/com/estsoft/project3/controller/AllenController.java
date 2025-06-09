@@ -29,12 +29,44 @@ public class AllenController {
     @Autowired
     private ToeicParserService toeicParserService;
 
+    @PostMapping("/api/allen")
+    public ResponseEntity<Void> insertAllen (@RequestBody AllenRequest request) {
+        allenService.insertAllen(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/api/resetAllen")
+    public ResponseEntity<Void> resetState () {
+        allenApiService.resetState();
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/api/askAllen")
-    public ResponseEntity<?> askQuestion(@RequestParam String category, @RequestParam String inputText, HttpSession httpSession) {
+    public ResponseEntity<?> askAllen(@RequestParam String category, @RequestParam String inputText, HttpSession httpSession) {
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
         Long userId = sessionUser.getUserId();
 
         // Set input content to allen api based on selected category
+        String content = SetAllenInputContent(category, inputText, userId);
+
+        String raw = allenApiService.getAnswer(content);
+
+        if (Objects.equals(category, "일기 퀴즈") || Objects.equals(category, "듣기 퀴즈")) {
+            //Parse toeic question to split passage, question, choices, and correct answer
+            QuizQuestion quiz = toeicParserService.parse(raw);
+
+            quiz.setAllenInputText(inputText);
+
+            return ResponseEntity.ok(quiz); // return as JSON
+        } else {
+            // Markdown to HTML for other categories
+            String formattedResponse = raw.replace("\n", "<br>");   //replace \n to HTML enter
+
+            return ResponseEntity.ok(convertMarkdownToHtml(formattedResponse));
+        }
+    }
+
+    private String SetAllenInputContent(String category, String inputText, Long userId) {
         String content = "";
 
         if (Objects.equals(category, "문법")) {
@@ -77,7 +109,6 @@ public class AllenController {
 
             content += "Choices: (list options A), B), C), D))\n\n" +
                     "Answer: (the correct choice)";
-
         } else if (Objects.equals(category, "듣기 퀴즈")) {
             inputText = getNextQuestionInput (userId, category, inputText);
 
@@ -99,22 +130,7 @@ public class AllenController {
                     "Answer: (the correct choice)";
         }
 
-        String raw = allenApiService.getAnswer(content);
-
-        if (Objects.equals(category, "일기 퀴즈") || Objects.equals(category, "듣기 퀴즈")) {
-            //Parse toeic question to split passage, question, choices, and correct answer
-            QuizQuestion quiz = toeicParserService.parse(raw);
-
-            quiz.setPassage(convertMarkdownToHtml(quiz.getPassage()));
-            quiz.setAllenInputText(inputText);
-
-            return ResponseEntity.ok(quiz); // return as JSON
-        } else {
-            // Markdown to HTML for other categories
-            String formattedResponse = raw.replace("\n", "<br>");   //replace \n to HTML enter
-
-            return ResponseEntity.ok(convertMarkdownToHtml(formattedResponse));
-        }
+        return content;
     }
 
     //TOEIC Question start number for each part
@@ -173,18 +189,6 @@ public class AllenController {
         Node document = parser.parse(trimmedMarkdown);
         HtmlRenderer renderer = HtmlRenderer.builder().build();
         return renderer.render(document);
-    }
-
-    @PostMapping("/api/allen")
-    public ResponseEntity<Void> insertAllen (@RequestBody AllenRequest request) {
-        allenService.insertAllen(request);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/api/allen")
-    public ResponseEntity<Void> resetState () {
-        allenApiService.resetState();
-        return ResponseEntity.ok().build();
     }
 
 }
