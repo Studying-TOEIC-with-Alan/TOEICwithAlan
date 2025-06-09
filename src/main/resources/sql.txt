@@ -1,8 +1,10 @@
 DROP TABLE IF EXISTS allen;
 DROP TABLE IF EXISTS til;
-DROP TABLE IF EXISTS chat;
+DROP TABLE IF EXISTS chat_message;
+DROP TABLE IF EXISTS contact_file;
+DROP TABLE IF EXISTS review_file;
 DROP TABLE IF EXISTS review;
-DROP TABLE IF EXISTS inquiry;
+DROP TABLE IF EXISTS contact;
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
@@ -43,8 +45,7 @@ CREATE TABLE chat_message (
     room_id INT NOT NULL,
     message TEXT NOT NULL,
     sent_at DATETIME NOT NULL,
-
-    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE review (
@@ -64,7 +65,7 @@ CREATE TABLE contact (
     content TEXT,
     create_date DATETIME,
     update_date DATETIME,
-    status ENUM('PENDING', 'IN_PROGRESS', 'COMPLETED'),
+    status ENUM('OPEN', 'IN_PROGRESS', 'CLOSED'),
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
