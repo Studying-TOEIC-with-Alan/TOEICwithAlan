@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function resetAllenState() {
-        fetch(`/api/allen`, {
+        fetch(`/api/resetAllen`, {
             method: 'DELETE'
         }).catch((err) => {
             console.warn('Failed to reset conversation:', err);
@@ -283,7 +283,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const { passage, question, answerChoices, correctAnswer, allenInputText } = data;
 
-        const passageHTML = `<p><strong>Passage:</strong><br>${passage}</p>`;
+        const passageHTML = `<p><strong>Passage:</strong><br>${marked.parse(passage)}</p>`;
         const questionHTML = `<p><strong>Question:</strong><br>${question}</p>`;
         const optionsHTML = Object.entries(answerChoices).map(([key, value]) =>
         `<label for="choice-${key}" style="display: inline-flex; align-items: center; margin-bottom: 8px; cursor: pointer;">
