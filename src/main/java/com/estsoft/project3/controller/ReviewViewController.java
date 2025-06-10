@@ -1,9 +1,13 @@
 package com.estsoft.project3.controller;
 
 import com.estsoft.project3.domain.Role;
+import com.estsoft.project3.domain.User;
+import com.estsoft.project3.dto.SessionUser;
 import com.estsoft.project3.review.Review;
 import com.estsoft.project3.review.ReviewResponseDto;
 import com.estsoft.project3.review.ReviewService;
+import com.estsoft.project3.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +23,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ReviewViewController {
 
     private final ReviewService reviewService;
+    private final UserService userService;
+
 
     @Autowired
-    public ReviewViewController(ReviewService reviewService) {
+    public ReviewViewController(ReviewService reviewService, UserService userService) {
         this.reviewService = reviewService;
+        this.userService = userService;
     }
 
     @GetMapping("/reviews/new")
@@ -48,8 +55,11 @@ public class ReviewViewController {
 
     @GetMapping("/reviews")
     public String showAllReviews(@RequestParam(name = "sort", defaultValue = "newest") String sort,
-        Model model) {
+        Model model, HttpSession httpSession) {
         boolean newestFirst = sort.equalsIgnoreCase("newest");
+        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
+        Long userId = sessionUser.getUserId();
+        User user = userService.getUserById(userId);
 
         List<Review> reviews = reviewService.getAllReviewsSortedByDate(newestFirst);
 
@@ -59,6 +69,10 @@ public class ReviewViewController {
 
         model.addAttribute("reviews", responseDto);
         model.addAttribute("sort", sort);
+        model.addAttribute("userId", sessionUser.getUserId());
+        model.addAttribute("role", String.valueOf(sessionUser.getRole()));
+        model.addAttribute("nickname", sessionUser.getNickname());
+        model.addAttribute("user", user);
 
         return "review-main";
     }

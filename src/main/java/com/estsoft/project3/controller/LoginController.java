@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,13 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class LoginController {
 
     private final UserRepository userRepository;
-    private final HttpSession httpSession;
 
-    public LoginController(UserRepository userRepository, HttpSession httpSession) {
+    public LoginController(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.httpSession = httpSession;
     }
-
 
     @GetMapping("/login")
     public String showLoginPage() {
@@ -52,12 +48,10 @@ public class LoginController {
         return "redirect:/";
     }
 
-
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
     }
-
 
 }
