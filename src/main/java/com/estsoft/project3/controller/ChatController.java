@@ -35,9 +35,10 @@ public class ChatController {
     @PostMapping("/send")
     public ResponseEntity<Void> sendMessage(
         @RequestParam int roomId,
-        @RequestBody String message,
+        @RequestBody Map<String, String> body,
         @AuthenticationPrincipal OAuth2User principal
     ) {
+        String message = body.get("message");
         String email = principal.getAttribute("email");
         User user = userRepository.findByEmail(email).orElseThrow();
         if (!canEnter(user.getGrade(), roomId)) {

@@ -2,6 +2,16 @@ const params = new URLSearchParams(window.location.search);
 const roomId = params.get('roomId');
 let myNickname = null;
 
+function formatDate(isoString) {
+    const date = new Date(isoString);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const hour = date.getHours().toString().padStart(2, '0');
+    const minute = date.getMinutes().toString().padStart(2, '0');
+    return `${year}-${month}-${day} ${hour}:${minute}`;
+}
+
 function fetchMyInfo() {
     return fetch('/api/chat/users/me')
     .then(res => res.json())
@@ -32,8 +42,7 @@ function createMessageElement(msg) {
 
     const timeDiv = document.createElement('div');
     timeDiv.classList.add('timestamp');
-    timeDiv.textContent = msg.sentAt;
-
+    timeDiv.textContent = formatDate(msg.sentAt);
     messageDiv.appendChild(contentDiv);
 
     wrapper.appendChild(messageDiv);
@@ -67,7 +76,7 @@ function sendMessage() {
     fetch(`/api/chat/send?roomId=${roomId}`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(message)
+        body: JSON.stringify({message})
     }).then(() => {
         input.value = '';
         fetchMessages();
@@ -93,5 +102,14 @@ function longPoll() {
 
 fetchMyInfo().then(() => {
     fetchMessages();
-    longPoll();
+    setTimeout(() => {
+        longPoll();
+    }, 500);
+    document.getElementById('chat-input').addEventListener('keydown',
+        function (event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
 });
