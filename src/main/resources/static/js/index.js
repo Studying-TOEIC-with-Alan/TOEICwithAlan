@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
             inputText.style.display = "none";
             searchBtn.style.display = "none";
 
-            if (category === "일기 퀴즈") {
+            if (category === "읽기 퀴즈") {
                 readingPartSelect.disabled = false;
                 readingPartSelect.style.display = "inline";
                 listeningPartSelect.style.display = "none";
@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
         startBtn.addEventListener("click", (e) => {
             let inputVal = "";
 
-            if (categorySelect.value === "일기 퀴즈") {
+            if (categorySelect.value === "읽기 퀴즈") {
                 readingPartSelect.disabled = true;
                 inputVal = readingPartSelect.value;
             } else {
@@ -189,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
             speechSynthesis.cancel();
 
             let inputVal = "";
-            if (categorySelect.value === "일기 퀴즈") {
+            if (categorySelect.value === "읽기 퀴즈") {
                 inputVal = readingPartSelect.value;
             } else {
                 inputVal = listeningPartSelect.value;
@@ -202,7 +202,7 @@ document.addEventListener("DOMContentLoaded", function () {
     //Quiz stop quiz button (reading and listening)
     if (stopQuestionBtn) {
         stopQuestionBtn.addEventListener("click", (e) => {
-            if (categorySelect.value === "일기 퀴즈") {
+            if (categorySelect.value === "읽기 퀴즈") {
                 readingPartSelect.disabled = false;
             } else {
                 speechSynthesis.cancel();
@@ -250,10 +250,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     alert(errorData.errorMessage);
                 }
 
-                return (category === "일기 퀴즈" || category === "듣기 퀴즈") ? response.json() : response.text();
+                return (category === "읽기 퀴즈" || category === "듣기 퀴즈") ? response.json() : response.text();
             })
             .then(data => {
-                if (category === "일기 퀴즈" || category === "듣기 퀴즈") {
+                if (category === "읽기 퀴즈" || category === "듣기 퀴즈") {
                     renderQuizData(data);
                     resultBox.style.display = "block";
                 }else {
@@ -290,7 +290,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <input type="radio" name="answer" value="${key}" id="choice-${key}" style="margin-right: 8px; cursor: pointer;">${key}) ${value}</label><br>`).join('');
         const feedbackHTML = `<div id="quiz-feedback" class="mt-2"></div>`;
 
-        if (categorySelect.value === "일기 퀴즈") {
+        if (categorySelect.value === "읽기 퀴즈") {
             resultText.innerHTML = passageHTML + questionHTML + `<div id="quiz-options">${optionsHTML}</div>` + feedbackHTML;
         } else {
             resultText.innerHTML = `<div id="quiz-options">${optionsHTML}</div>` + feedbackHTML;
