@@ -69,23 +69,22 @@ public class AdminController {
     }
 
     @GetMapping("/admin/contact")
-    public String showAllContacts(@RequestParam(name = "sort", defaultValue = "newest") String sort,
-        Model model, @AuthenticationPrincipal OAuth2User principal) {
+    public String showAllContacts(
+        @RequestParam(name = "sort", defaultValue = "newest") String sort,
+        @PageableDefault(size = 10) Pageable pageable,
+        Model model,
+        @AuthenticationPrincipal OAuth2User principal) {
 
         System.out.println("현재 권한: " + principal.getAuthorities());
-
         boolean newestFirst = sort.equalsIgnoreCase("newest");
 
-        List<Contact> contacts = contactService.getAllContactsSortedByDate(newestFirst);
+        Page<ContactResponseDto> dtoPage = adminService.getPagedContactsForAdmin(newestFirst,
+            pageable);
 
         String email = principal.getAttribute("email");
         User user = userRepository.findByEmail(email).orElseThrow();
 
-        List<ContactResponseDto> responseDto = contacts.stream()
-            .map(ContactResponseDto::new)
-            .collect(Collectors.toList());
-
-        model.addAttribute("contacts", responseDto);
+        model.addAttribute("contactPage", dtoPage); // Page 객체
         model.addAttribute("sort", sort);
         model.addAttribute("userId", user.getUserId());
         model.addAttribute("nickname", user.getNickname());
