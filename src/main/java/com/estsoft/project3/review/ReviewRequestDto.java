@@ -1,7 +1,7 @@
 package com.estsoft.project3.review;
 
-import com.estsoft.project3.Image.ImageDto;
 import com.estsoft.project3.domain.User;
+import com.estsoft.project3.file.FileDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +14,7 @@ public class ReviewRequestDto {
 
     private String content;
     private String title;
-    private List<ImageDto> images;
+    private List<FileDto> images;
 
     public Review toEntity(User user) {
         return Review.builder()

@@ -1,8 +1,10 @@
 DROP TABLE IF EXISTS allen;
 DROP TABLE IF EXISTS til;
-DROP TABLE IF EXISTS chat;
+DROP TABLE IF EXISTS chat_message;
+DROP TABLE IF EXISTS contact_file;
+DROP TABLE IF EXISTS review_file;
 DROP TABLE IF EXISTS review;
-DROP TABLE IF EXISTS inquiry;
+DROP TABLE IF EXISTS contact;
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
@@ -37,13 +39,13 @@ CREATE TABLE til (
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE chat (
-    chat_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE chat_message (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
-    content TEXT NOT NULL,
-    room VARCHAR(50) NOT NULL,
-    sent_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+    room_id INT NOT NULL,
+    message TEXT NOT NULL,
+    sent_at DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE review (
@@ -53,8 +55,7 @@ CREATE TABLE review (
     content TEXT,
     create_date DATETIME,
     update_date DATETIME,
-
-    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE contact (
@@ -64,7 +65,22 @@ CREATE TABLE contact (
     content TEXT,
     create_date DATETIME,
     update_date DATETIME,
-    status ENUM('PENDING', 'IN_PROGRESS', 'COMPLETED'),
+    status ENUM('OPEN', 'IN_PROGRESS', 'CLOSED'),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
 
-    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+CREATE TABLE contact_file (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    filename VARCHAR(255) NOT NULL,
+    file_path VARCHAR(500) NOT NULL,
+    contact_id BIGINT NOT NULL,
+    FOREIGN KEY (contact_id) REFERENCES contact(id) ON DELETE CASCADE
+);
+
+CREATE TABLE review_file (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    filename VARCHAR(255) NOT NULL,
+    file_path VARCHAR(500) NOT NULL,
+    review_id BIGINT NOT NULL,
+    FOREIGN KEY (review_id) REFERENCES review(id) ON DELETE CASCADE
 );

@@ -1,7 +1,7 @@
 package com.estsoft.project3.review;
 
-import com.estsoft.project3.Image.Image;
 import com.estsoft.project3.domain.User;
+import com.estsoft.project3.file.ReviewFile;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -42,7 +42,7 @@ public class Review {
     private LocalDateTime updateDate;
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Image> images = new ArrayList<>();
+    private List<ReviewFile> images = new ArrayList<>();
 
     public void update(String title, String content) {
         this.title = title;

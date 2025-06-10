@@ -1,4 +1,4 @@
-package com.estsoft.project3.Image;
+package com.estsoft.project3.file;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

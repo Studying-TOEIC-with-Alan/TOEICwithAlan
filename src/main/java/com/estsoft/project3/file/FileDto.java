@@ -1,4 +1,4 @@
-package com.estsoft.project3.Image;
+package com.estsoft.project3.file;
 
 import com.estsoft.project3.contact.Contact;
 import com.estsoft.project3.review.Review;
@@ -11,21 +11,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ImageDto {
+public class FileDto {
 
     private String filePath;
     private String filename;
 
-    public Image toEntity(Review review) {
-        return Image.builder()
+    public ReviewFile toEntity(Review review) {
+        return ReviewFile.builder()
             .filePath(this.filePath)
             .filename(this.filename)
             .review(review)
             .build();
     }
 
-    public Image toEntity(Contact contact) {
-        return Image.builder()
+    public ContactFile toEntity(Contact contact) {
+        return com.estsoft.project3.file.ContactFile.builder()
             .filename(this.filename)
             .filePath(this.filePath)
             .contact(contact)
