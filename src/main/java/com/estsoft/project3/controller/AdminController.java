@@ -32,7 +32,7 @@ public class AdminController {
     private final ContactService contactService;
     private final UserRepository userRepository;
 
-    public AdminController(AdminService adminService, ContactService contactService) {
+    public AdminController(AdminService adminService, ContactService contactService, UserRepository userRepository) {
         this.adminService = adminService;
         this.contactService = contactService;
         this.userRepository = userRepository;
