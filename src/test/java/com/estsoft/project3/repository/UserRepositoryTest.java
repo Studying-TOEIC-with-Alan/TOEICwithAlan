@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,37 +23,58 @@ class UserRepositoryTest {
     @Autowired
     UserRepository userRepository;
 
-    private User createTestUser(String provider, String email, String nickname, String isActive) {
+    private User createTestUser(String provider, String email, String nickname, String isActive, LocalDate terminationDate) {
         User user = new User();
         user.setProvider(provider);
         user.setEmail(email);
         user.setNickname(nickname);
         user.setRole(Role.ROLE_USER);
         user.setIsActive(isActive);
+        user.setTerminationDate(terminationDate);
         return userRepository.save(user);
     }
 
     @Test
-    void findByEmail() {
+    void findByEmailAndIsActive() {
         //given:
-        User savedUser = createTestUser("google", "email@test.com", "Nickname", "Y");
+        User savedUser1 = createTestUser("google", "email@test.com", "Nickname1", "Y", LocalDate.now());
+        User savedUser2 = createTestUser("google", "email@test.com", "Nickname2", "N", LocalDate.now());
 
         //when:
-        Optional<User> userInfo = userRepository.findByEmail("email@test.com");
+        Optional<User> userInfo = userRepository.findByEmailAndIsActive("email@test.com","Y");
 
         //then:
         assert userInfo.isPresent();
-        assertEquals(savedUser.getProvider(), userInfo.get().getProvider());
-        assertEquals(savedUser.getEmail(), userInfo.get().getEmail());
-        assertEquals(savedUser.getNickname(), userInfo.get().getNickname());
-        assertEquals(savedUser.getRole(), userInfo.get().getRole());
-        assertEquals(savedUser.getIsActive(), userInfo.get().getIsActive());
+        assertEquals(savedUser1.getProvider(), userInfo.get().getProvider());
+        assertEquals(savedUser1.getEmail(), userInfo.get().getEmail());
+        assertEquals(savedUser1.getNickname(), userInfo.get().getNickname());
+        assertEquals(savedUser1.getRole(), userInfo.get().getRole());
+        assertEquals(savedUser1.getIsActive(), userInfo.get().getIsActive());
+    }
+
+    @Test
+    void findByEmailAndIsActiveAndTerminationDateAfter() {
+        //given:
+        User savedUser1 = createTestUser("google", "email@test.com", "Nickname1", "N", LocalDate.now().minusDays(8));
+        User savedUser2 = createTestUser("google", "email@test.com", "Nickname2", "N", LocalDate.now().minusDays(3));
+        LocalDate terminateAfter = LocalDate.now().minusDays(7);
+
+        //when:
+        Optional<User> userInfo = userRepository.findByEmailAndIsActiveAndTerminationDateAfter("email@test.com","N", terminateAfter);
+
+        //then:
+        assert userInfo.isPresent();
+        assertEquals(savedUser2.getProvider(), userInfo.get().getProvider());
+        assertEquals(savedUser2.getEmail(), userInfo.get().getEmail());
+        assertEquals(savedUser2.getNickname(), userInfo.get().getNickname());
+        assertEquals(savedUser2.getRole(), userInfo.get().getRole());
+        assertEquals(savedUser2.getIsActive(), userInfo.get().getIsActive());
     }
 
     @Test
     void findByUserIdAndIsActive() {
         //given:
-        User savedUser = createTestUser("google", "email@test.com", "Nickname", "Y");
+        User savedUser = createTestUser("google", "email@test.com", "Nickname", "Y", LocalDate.now());
 
         //when:
         Optional<User> userInfo = userRepository.findByUserIdAndIsActive(savedUser.getUserId(), "Y");
@@ -69,7 +91,7 @@ class UserRepositoryTest {
     @Test
     void findByNickname() {
         //given:
-        User savedUser = createTestUser("google", "email@test.com", "Nickname", "Y");
+        User savedUser = createTestUser("google", "email@test.com", "Nickname", "Y", LocalDate.now());
 
         //when:
         User userInfo = userRepository.findByNickname("Nickname");
@@ -86,9 +108,9 @@ class UserRepositoryTest {
     @Test
     void findByNicknameContaining() {
         //given:
-        User savedUser1 = createTestUser("google", "email1@test.com", "Nickname1", "Y");
-        User savedUser2 = createTestUser("kakao", "email2@test.com", "OtherName1", "Y");
-        User savedUser3 = createTestUser("facebook", "email2@test.com", "OtherName2", "Y");
+        User savedUser1 = createTestUser("google", "email1@test.com", "Nickname1", "Y", LocalDate.now());
+        User savedUser2 = createTestUser("kakao", "email2@test.com", "OtherName1", "Y", LocalDate.now());
+        User savedUser3 = createTestUser("facebook", "email2@test.com", "OtherName2", "Y", LocalDate.now());
         Pageable pageable = PageRequest.of(0, 10);
 
         //when:
@@ -108,9 +130,9 @@ class UserRepositoryTest {
     @Test
     void findAll() {
         //given:
-        User savedUser1 = createTestUser("google", "email1@test.com", "Nickname1", "Y");
-        User savedUser2 = createTestUser("kakao", "email2@test.com", "Nickname2", "Y");
-        User savedUser3 = createTestUser("facebook", "email3@test.com", "Nickname3", "Y");
+        User savedUser1 = createTestUser("google", "email1@test.com", "Nickname1", "Y", LocalDate.now());
+        User savedUser2 = createTestUser("kakao", "email2@test.com", "Nickname2", "Y", LocalDate.now());
+        User savedUser3 = createTestUser("facebook", "email3@test.com", "Nickname3", "Y", LocalDate.now());
         Pageable pageable1 = PageRequest.of(0, 10);
         Pageable pageable2 = PageRequest.of(1, 2);
 
