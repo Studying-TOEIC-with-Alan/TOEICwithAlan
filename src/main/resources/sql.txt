@@ -45,7 +45,7 @@ CREATE TABLE chat_message (
     room_id INT NOT NULL,
     message TEXT NOT NULL,
     sent_at DATETIME NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE review (
