@@ -6,9 +6,12 @@ import com.estsoft.project3.contact.ContactRequestDto;
 import com.estsoft.project3.contact.ContactResponseDto;
 import com.estsoft.project3.contact.ContactService;
 import com.estsoft.project3.domain.User;
+import com.estsoft.project3.dto.SessionUser;
 import com.estsoft.project3.repository.UserRepository;
 import com.estsoft.project3.service.AdminService;
 import java.util.stream.Collectors;
+
+import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -29,8 +32,7 @@ public class AdminController {
     private final ContactService contactService;
     private final UserRepository userRepository;
 
-    public AdminController(AdminService adminService, ContactService contactService,
-        UserRepository userRepository) {
+    public AdminController(AdminService adminService, ContactService contactService) {
         this.adminService = adminService;
         this.contactService = contactService;
         this.userRepository = userRepository;
@@ -39,14 +41,9 @@ public class AdminController {
     @GetMapping("/admin")
     public String adminPage(@RequestParam(required = false) String nickname,
         @PageableDefault(size = 10) Pageable pageable,
-        @AuthenticationPrincipal OAuth2User principal,
-        Model model) {
-
-        System.out.println("현재 사용자 이메일: " + principal.getAttribute("email"));
-        System.out.println("현재 권한: " + principal.getAuthorities());
-
-        String email = principal.getAttribute("email");
-        User user = userRepository.findByEmail(email).orElseThrow();
+        Model model,
+        HttpSession httpSession) {
+        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
 
         Page<User> userPage = (nickname == null || nickname.isBlank())
             ? adminService.findAll(pageable)
@@ -54,9 +51,9 @@ public class AdminController {
 
         model.addAttribute("userPage", userPage);
         model.addAttribute("users", userPage.getContent());
-        model.addAttribute("nickname", nickname);
-        model.addAttribute("userId", user.getUserId());
-        model.addAttribute("nickname", user.getNickname());
+        model.addAttribute("userId", sessionUser.getUserId());
+        model.addAttribute("role", String.valueOf(sessionUser.getRole()));
+        model.addAttribute("nickname", sessionUser.getNickname());
 
         return "admin";
     }
@@ -73,7 +70,9 @@ public class AdminController {
         @RequestParam(name = "sort", defaultValue = "newest") String sort,
         @PageableDefault(size = 10) Pageable pageable,
         Model model,
-        @AuthenticationPrincipal OAuth2User principal) {
+        @AuthenticationPrincipal OAuth2User principal, HttpSession httpSession) {
+
+        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
 
         System.out.println("현재 권한: " + principal.getAuthorities());
         boolean newestFirst = sort.equalsIgnoreCase("newest");
@@ -86,8 +85,9 @@ public class AdminController {
 
         model.addAttribute("contactPage", dtoPage); // Page 객체
         model.addAttribute("sort", sort);
-        model.addAttribute("userId", user.getUserId());
-        model.addAttribute("nickname", user.getNickname());
+        model.addAttribute("userId", sessionUser.getUserId());
+        model.addAttribute("role", String.valueOf(sessionUser.getRole()));
+        model.addAttribute("nickname", sessionUser.getNickname());
 
         return "adminContact";
     }

@@ -10,6 +10,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -52,6 +54,9 @@ public class User {
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdDate;
 
+    @Column
+    private LocalDate terminationDate;
+
     @Builder
     public User(String provider, String email, String nickname, Role role, String isActive) {
         this.provider = provider;
@@ -61,6 +66,8 @@ public class User {
         this.isActive = isActive;
         this.grade = 0L;
         this.score = 0L;
+        this.createdDate = LocalDateTime.now();
+        this.terminationDate = null;
     }
 
     public boolean isOwner(Review review) {

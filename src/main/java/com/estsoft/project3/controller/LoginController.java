@@ -39,7 +39,7 @@ public class LoginController {
         }
 
         String email = principal.getAttribute("email");
-        User user = userRepository.findByEmail(email).orElseThrow();
+        User user = userRepository.findByEmailAndIsActive(email,"Y").orElseThrow();
 
         user.setNickname(nickname);
         userRepository.save(user);
