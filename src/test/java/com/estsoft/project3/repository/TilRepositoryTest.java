@@ -61,7 +61,9 @@ class TilRepositoryTest {
 
         //then:
         assert tilPage != null;
+        assertEquals(1,tilPage.getTotalPages());
         assertEquals(2, tilPage.getTotalElements());
+        assertEquals(2,tilPage.getContent().size());
 
         List<Til> tilList = tilPage.getContent();
         assertEquals("Title2", tilList.get(0).getTitle());
