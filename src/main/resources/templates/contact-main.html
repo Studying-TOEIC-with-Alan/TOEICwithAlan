@@ -121,7 +121,7 @@
             <li th:each="contact : ${contacts}" class="mb-3">
                 <div class="row align-items-center mb-2 mx-2 border-bottom">
                     <div class="col-1 text-truncate pl-2 mb-2 text-left">
-                        <small th:switch="${contact.status.name()}">
+                        <small th:switch="${contact.status}">
                             <span th:case="'OPEN'">대기중</span>
                             <span th:case="'IN_PROGRESS'">진행중</span>
                             <span th:case="'CLOSED'">완료</span>

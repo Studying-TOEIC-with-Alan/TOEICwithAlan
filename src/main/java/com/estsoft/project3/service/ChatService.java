@@ -4,10 +4,12 @@ import com.estsoft.project3.domain.ChatMessage;
 import com.estsoft.project3.domain.User;
 import com.estsoft.project3.dto.ChatMessageDto;
 import com.estsoft.project3.repository.ChatMessageRepository;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -61,6 +63,12 @@ public class ChatService {
         }
 
         return result;
+    }
+
+    @Scheduled(fixedRate = 3600000)
+    public void deleteOldMessages() {
+        LocalDateTime cutoff = LocalDateTime.now().minusMonths(1);
+        chatMessageRepository.deleteBySentAtBefore(cutoff);
     }
 }
 
