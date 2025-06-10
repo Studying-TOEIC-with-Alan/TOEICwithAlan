@@ -35,7 +35,7 @@ public class ChatViewController {
         @RequestParam("roomId") int roomId,
         Model model) {
         String email = principal.getAttribute("email");
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmailAndIsActive(email,"Y")
             .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
         Long grade = user.getGrade();
 

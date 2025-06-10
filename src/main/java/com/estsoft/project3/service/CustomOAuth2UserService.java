@@ -14,8 +14,10 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,16 +38,10 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         String provider = userRequest.getClientRegistration().getRegistrationId();
 
         // 기존 회원인지 확인
-        User user = userRepository.findByEmail(email)
-            .orElseGet(() -> userRepository.save(
-                User.builder()
-                    .provider(provider)
-                    .email(email)
-                    .nickname(null)
-                    .role(Role.ROLE_USER)
-                    .isActive("Y")
-                    .build()
-            ));
+        User user = userRepository.findByEmailAndIsActive(email, "Y")
+                .orElseGet(() -> getOrRestoreTerminatedUser(email, provider)
+                        .orElseGet(() -> createNewUser(email, provider))
+                );
 
         // OAuth2User 반환 (세션용)
         return new DefaultOAuth2User(
@@ -54,5 +50,27 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             "email" // principal 이름으로 쓸 key
         );
 
+    }
+
+    private Optional<User> getOrRestoreTerminatedUser(String email, String provider) {
+        return userRepository.findByEmailAndIsActiveAndTerminationDateAfter(
+                email,
+                "N",
+                LocalDate.now().minusDays(7)
+        ).map(user -> {
+            user.setIsActive("Y");
+            user.setTerminationDate(null);
+            return userRepository.save(user);
+        });
+    }
+
+    private User createNewUser(String email, String provider) {
+        return userRepository.save(User.builder()
+                .provider(provider)
+                .email(email)
+                .nickname(null)
+                .role(Role.ROLE_USER)
+                .isActive("Y")
+                .build());
     }
 }

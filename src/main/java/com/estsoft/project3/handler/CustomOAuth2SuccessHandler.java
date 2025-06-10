@@ -27,7 +27,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         String email = (String) oAuth2User.getAttributes().get("email");
 
-        User user = userRepository.findByEmail(email).orElseThrow();
+        User user = userRepository.findByEmailAndIsActive(email, "Y").orElseThrow();
 
         request.getSession().setAttribute("user", new SessionUser(user));
         System.out.println("로그인 성공 후 세션 저장됨: " + user.getNickname());

@@ -40,7 +40,7 @@ public class ChatController {
     ) {
         String message = body.get("message");
         String email = principal.getAttribute("email");
-        User user = userRepository.findByEmail(email).orElseThrow();
+        User user = userRepository.findByEmailAndIsActive(email,"Y").orElseThrow();
         if (!canEnter(user.getGrade(), roomId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
@@ -54,7 +54,7 @@ public class ChatController {
         @AuthenticationPrincipal OAuth2User principal
     ) {
         String email = principal.getAttribute("email");
-        User user = userRepository.findByEmail(email).orElseThrow();
+        User user = userRepository.findByEmailAndIsActive(email,"Y").orElseThrow();
         if (!canEnter(user.getGrade(), roomId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
@@ -67,7 +67,7 @@ public class ChatController {
         @AuthenticationPrincipal OAuth2User principal
     ) {
         String email = principal.getAttribute("email");
-        User user = userRepository.findByEmail(email).orElseThrow();
+        User user = userRepository.findByEmailAndIsActive(email,"Y").orElseThrow();
         if (!canEnter(user.getGrade(), roomId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
@@ -85,7 +85,7 @@ public class ChatController {
         }
 
         String email = principal.getAttribute("email");
-        Optional<User> userOptional = userRepository.findByEmail(email);
+        Optional<User> userOptional = userRepository.findByEmailAndIsActive(email,"Y");
         if (userOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

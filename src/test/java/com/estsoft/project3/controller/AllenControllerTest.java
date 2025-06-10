@@ -145,7 +145,7 @@ class AllenControllerTest {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("user", sessionUser);
 
-        String category = "일기 퀴즈";
+        String category = "읽기 퀴즈";
         String inputText = "Part 5";
         String mockedRawResponse = "TOEIC Reading question for Part 5";
 

@@ -51,7 +51,7 @@ public class AllenController {
 
         String raw = allenApiService.getAnswer(content);
 
-        if (Objects.equals(category, "일기 퀴즈") || Objects.equals(category, "듣기 퀴즈")) {
+        if (Objects.equals(category, "읽기 퀴즈") || Objects.equals(category, "듣기 퀴즈")) {
             //Parse toeic question to split passage, question, choices, and correct answer
             QuizQuestion quiz = toeicParserService.parse(raw);
 
@@ -90,7 +90,7 @@ public class AllenController {
                     "3. 비슷한 단어와 차이점 (있다면)\n" +
                     "4. 예문 2~3개 (영어 + 한국어 해석)\n" +
                     "단어: " + inputText;
-        } else if (Objects.equals(category, "일기 퀴즈")) {
+        } else if (Objects.equals(category, "읽기 퀴즈")) {
             inputText = getNextQuestionInput (userId, category, inputText);
 
             content = "Generate one TOEIC Reading question for " + inputText + "\n\n" +
