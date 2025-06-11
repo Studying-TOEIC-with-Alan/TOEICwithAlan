@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TIL Detail</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/base.css">
@@ -25,13 +26,13 @@
                 <div id="til-content-text" th:text="${til.summary}" style="white-space: pre-line;"></div>
                 <textarea id="til-content-input" th:text="${til.summary}" maxlength="1000"></textarea>
             </div>
-            <div class="d-flex justify-content-between mb-3">
-                <a href="/til" class="btn btn-secondary rounded-pill border mb-3">← TIL</a>
+            <div class="d-flex justify-content-between">
+                <a href="/til" class="btn btn-secondary border mb-3">← 목록으로</a>
                 <div>
-                    <button type="submit" id="edit-note-button" class="btn btn-warning rounded-pill border mb-3">✏️ 수정</button>
-                    <button type="submit" id="delete-note-button" class="btn btn-danger rounded-pill border mb-3">🗑️ 삭제</button>
-                    <button type="submit" id="save-note-button" class="btn btn-success rounded-pill border mb-3">💾 저장</button>
-                    <button type="submit" id="cancel-note-button" class="btn btn-secondary rounded-pill border mb-3">❌ 취소</button>
+                    <button type="submit" id="edit-note-button" class="btn btn-warning border mb-3">✏️ 수정</button>
+                    <button type="submit" id="delete-note-button" class="btn btn-danger border mb-3">🗑️ 삭제</button>
+                    <button type="submit" id="save-note-button" class="btn btn-success border mb-3">💾 저장</button>
+                    <button type="submit" id="cancel-note-button" class="btn btn-secondary border mb-3">❌ 취소</button>
                 </div>
             </div>
         </div>

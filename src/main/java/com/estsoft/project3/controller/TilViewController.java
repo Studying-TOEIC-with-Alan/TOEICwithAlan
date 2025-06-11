@@ -50,8 +50,12 @@ public class TilViewController {
 
         Til til = tilService.getTIL(tilId);
 
+        //For header
         model.addAttribute("userId", sessionUser.getUserId());
         model.addAttribute("role", sessionUser.getRole());
+        model.addAttribute("nickname", sessionUser.getNickname());
+
+        //For TIL content
         model.addAttribute("til", til);
 
         return "tilDetail";

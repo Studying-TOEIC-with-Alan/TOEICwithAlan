@@ -1,19 +1,14 @@
 package com.estsoft.project3.controller;
 
-
 import com.estsoft.project3.contact.Contact;
-import com.estsoft.project3.contact.ContactRequestDto;
 import com.estsoft.project3.contact.ContactResponseDto;
 import com.estsoft.project3.contact.ContactService;
 import com.estsoft.project3.domain.User;
 import com.estsoft.project3.dto.SessionUser;
-import com.estsoft.project3.repository.UserRepository;
 import com.estsoft.project3.service.AdminService;
-import java.util.stream.Collectors;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Pageable;
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,12 +25,10 @@ public class AdminController {
 
     private final AdminService adminService;
     private final ContactService contactService;
-    private final UserRepository userRepository;
 
-    public AdminController(AdminService adminService, ContactService contactService, UserRepository userRepository) {
+    public AdminController(AdminService adminService, ContactService contactService) {
         this.adminService = adminService;
         this.contactService = contactService;
-        this.userRepository = userRepository;
     }
 
     @GetMapping("/admin")
