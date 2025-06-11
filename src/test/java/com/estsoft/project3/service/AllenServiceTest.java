@@ -2,11 +2,9 @@ package com.estsoft.project3.service;
 
 import com.estsoft.project3.domain.Allen;
 import com.estsoft.project3.domain.Role;
-import com.estsoft.project3.domain.Til;
 import com.estsoft.project3.domain.User;
 import com.estsoft.project3.dto.AllenRequest;
 import com.estsoft.project3.repository.AllenRepository;
-import com.estsoft.project3.repository.TilRepository;
 import com.estsoft.project3.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,9 +26,6 @@ class AllenServiceTest {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private TilRepository tilRepository;
 
     @Autowired
     private AllenService allenService;
