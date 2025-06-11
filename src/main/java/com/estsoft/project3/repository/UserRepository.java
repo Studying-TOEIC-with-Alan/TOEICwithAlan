@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByEmail(String email);
     Optional<User> findByEmailAndIsActive(String email, String isActive);
     Optional<User> findByEmailAndIsActiveAndTerminationDateAfter(String email, String isActive, LocalDate terminationDate);
     Optional<User> findByUserIdAndIsActive(Long userId, String isActive);

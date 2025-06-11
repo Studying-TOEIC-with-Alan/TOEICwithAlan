@@ -119,10 +119,10 @@ public class AllenController {
                 content += "Passage: (the spoken question prompt)\n\n" +
                         "Question: (a comprehension question about the passage)\n\n";
             } else if (inputText.contains("Part 3")){
-                content = "Passage: (the conversation transcript)\n\n" +
+                content += "Passage: (the conversation transcript)\n\n" +
                         "Question: (the question asked)\n\n";
-            } else {
-                content = "Passage: (the short talk)\n\n" +
+            } else if (inputText.contains("Part 4")){
+                content += "Passage: (the short talk)\n\n" +
                         "Question: (the question asked)\n\n";
             }
 
