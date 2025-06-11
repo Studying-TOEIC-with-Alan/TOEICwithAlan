@@ -81,9 +81,6 @@ public class AdminController {
         Page<ContactResponseDto> dtoPage = adminService.getPagedContactsForAdmin(newestFirst,
             pageable);
 
-        String email = principal.getAttribute("email");
-        User user = userRepository.findByEmail(email).orElseThrow();
-
         model.addAttribute("contactPage", dtoPage); // Page 객체
         model.addAttribute("sort", sort);
         model.addAttribute("userId", sessionUser.getUserId());
