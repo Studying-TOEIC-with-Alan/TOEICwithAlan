@@ -54,6 +54,7 @@ public class AdminController {
         model.addAttribute("userId", sessionUser.getUserId());
         model.addAttribute("role", String.valueOf(sessionUser.getRole()));
         model.addAttribute("nickname", sessionUser.getNickname());
+        model.addAttribute("isActive", sessionUser.getIsActive());
 
         return "admin";
     }

@@ -15,6 +15,7 @@ public class SessionUser implements Serializable {
     private Long score;
     private final Long userId;
     private Long grade;
+    private String isActive;
 
     public SessionUser(User user){
         this.nickname = user.getNickname();
@@ -22,6 +23,7 @@ public class SessionUser implements Serializable {
         this.score = user.getScore();
         this.userId = user.getUserId();
         this.grade = user.getGrade();
+        this.isActive = user.getIsActive();
     }
 
 

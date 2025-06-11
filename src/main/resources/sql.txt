@@ -17,7 +17,7 @@ CREATE TABLE users (
     grade BIGINT DEFAULT 0,
     score BIGINT DEFAULT 0,
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    termination_date DATE NULL;
+    termination_date DATE NULL
 );
 
 CREATE TABLE allen (
