@@ -2,6 +2,7 @@ package com.estsoft.project3.controller;
 
 
 import com.estsoft.project3.contact.Contact;
+import com.estsoft.project3.contact.ContactRequestDto;
 import com.estsoft.project3.contact.ContactResponseDto;
 import com.estsoft.project3.contact.ContactService;
 import com.estsoft.project3.domain.User;
@@ -29,10 +30,12 @@ public class AdminController {
 
     private final AdminService adminService;
     private final ContactService contactService;
+    private final UserRepository userRepository;
 
-    public AdminController(AdminService adminService, ContactService contactService) {
+    public AdminController(AdminService adminService, ContactService contactService, UserRepository userRepository) {
         this.adminService = adminService;
         this.contactService = contactService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/admin")
@@ -51,6 +54,7 @@ public class AdminController {
         model.addAttribute("userId", sessionUser.getUserId());
         model.addAttribute("role", String.valueOf(sessionUser.getRole()));
         model.addAttribute("nickname", sessionUser.getNickname());
+        model.addAttribute("isActive", sessionUser.getIsActive());
 
         return "admin";
     }
@@ -63,19 +67,24 @@ public class AdminController {
     }
 
     @GetMapping("/admin/contact")
-    public String showAllContacts(@RequestParam(name = "sort", defaultValue = "newest") String sort,
-        Model model, HttpSession httpSession) {
+    public String showAllContacts(
+        @RequestParam(name = "sort", defaultValue = "newest") String sort,
+        @PageableDefault(size = 10) Pageable pageable,
+        Model model,
+        @AuthenticationPrincipal OAuth2User principal, HttpSession httpSession) {
+
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
 
+        System.out.println("현재 권한: " + principal.getAuthorities());
         boolean newestFirst = sort.equalsIgnoreCase("newest");
 
-        List<Contact> contacts = contactService.getAllContactsSortedByDate(newestFirst);
+        Page<ContactResponseDto> dtoPage = adminService.getPagedContactsForAdmin(newestFirst,
+            pageable);
 
-        List<ContactResponseDto> responseDto = contacts.stream()
-            .map(ContactResponseDto::new)
-            .collect(Collectors.toList());
+        String email = principal.getAttribute("email");
+        User user = userRepository.findByEmail(email).orElseThrow();
 
-        model.addAttribute("contacts", responseDto);
+        model.addAttribute("contactPage", dtoPage); // Page 객체
         model.addAttribute("sort", sort);
         model.addAttribute("userId", sessionUser.getUserId());
         model.addAttribute("role", String.valueOf(sessionUser.getRole()));
