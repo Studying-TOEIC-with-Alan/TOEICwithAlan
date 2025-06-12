@@ -2,100 +2,46 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title</title>
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/header.css">
-    <style>
-      html, body {
-        height: 100%;
-        margin: 0;
-      }
-
-      body {
-        background: url('/images/section-bg.png');
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-      }
-
-      .title_box {
-        width: 50%;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 5%;
-        padding-left: 1%;
-        display: flex;
-        flex-direction: column;
-        border-radius: 20px;
-      }
-
-      .box {
-        width: 50%;
-        height: 70%;
-        margin-left: auto;
-        margin-right: auto;
-        padding: 2%;
-        display: flex;
-        flex-direction: column;
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08), 0 6px 6px rgba(0, 0, 0, 0.05);
-        transform: translateZ(0);
-      }
-
-      #main-content {
-        width: 100%;
-        flex: 1;
-        display: flex;
-        overflow: hidden;
-        margin-left: auto;
-        margin-right: auto;
-        flex-direction: column;
-        padding: 10px;
-        overflow-y: auto;
-      }
-
-      input, button {
-        margin-bottom: 10px;
-      }
-    </style>
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/review.css">
 </head>
-<body data-type="contact"
-      th:attr="data-contact-id=${contact != null} ? ${contact.contactId} : null">
-<div th:replace="header :: siteHeader"></div>
-<div class="title_box">
-    <h4 class="title">Contacts</h4>
-</div>
-<div class="box mb-3">
-    <div id="main-content" class="solid-bg">
-        <h3 th:text="${contact.title}">제목</h3>
+<body data-type="contact" th:attr="data-contact-id=${contact != null} ? ${contact.contactId} : null">
+<div th:replace="~{header :: siteHeader}"></div>
+<div id="main-content" class="row justify-content-center">
+    <div class="col-md-10 text-center">
+        <h3 class="mb-3 mt-5 mb-5 font-weight-bold text-white">Contacts</h3>
+        <div class="box mb-3 text-left">
+            <div class="flex-grow-1">
+                <h3 th:text="${contact.title}">제목</h3>
+                <div class="mb-2 text-muted">
+                    <span th:text="${contact.nickname}">닉네임</span>
+                    <span th:if="${contact.grade == 0}">🐣</span>
+                    <span th:if="${contact.grade == 1}">🐥</span>
+                    <span th:if="${contact.grade == 2}">🦅</span>
+                    <span th:if="${contact.grade == 3}">🦉</span>
+                    |
+                    <small th:text="${#temporals.format(contact.createDate, 'yyyy-MM-dd HH:mm')}">작성일</small>
+                </div>
+                <hr>
+                <div id="content" th:utext="${contact.content}"></div>
+            </div>
 
-        <div class="mb-2 text-muted">
-            <span th:text="${contact.nickname}">닉네임</span>
-            <span th:if="${contact.grade == 0}">🐣</span>
-            <span th:if="${contact.grade == 1}">🐥</span>
-            <span th:if="${contact.grade == 2}">🦅</span>
-            <span th:if="${contact.grade == 3}">🦉</span>
-            |
-            <small
-                th:text="${#temporals.format(contact.createDate, 'yyyy-MM-dd HH:mm')}">작성일</small>
-        </div>
-
-        <hr>
-
-        <div id="content" th:utext="${contact.content}"></div>
-
-    </div>
-    <div class="mt-4 d-flex justify-content-between align-items-center">
-        <button type="button" class="btn btn-secondary btn-sm" id="backBtn">← 목록으로</button>
-        <div>
-            <th:block th:if="${hasAccess}">
-                <button type="button" class="btn btn-success btn-sm" id="editBtn">✏ 수정</button>
-            </th:block>
-            <th:block th:if="${hasDeleteAccess}">
-                <button type="button" class="btn btn-danger btn-sm" id="deleteBtn">🗑 삭제</button>
-            </th:block>
+            <div class="mt-4 d-flex justify-content-between align-items-center">
+                <button type="button" class="btn btn-secondary btn-sm" id="backBtn">← 목록으로</button>
+                <div>
+                    <th:block th:if="${hasAccess}">
+                        <button type="button" class="btn btn-warning btn-sm" id="editBtn">✏️ 수정</button>
+                    </th:block>
+                    <th:block th:if="${hasDeleteAccess}">
+                        <button type="button" class="btn btn-danger btn-sm" id="deleteBtn">🗑️ 삭제</button>
+                    </th:block>
+                </div>
+            </div>
         </div>
     </div>
 </div>
