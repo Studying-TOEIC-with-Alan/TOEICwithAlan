@@ -1,8 +1,8 @@
-name: Java CI with Gradle
+name: Java CI with Gradle + S3 + EC2 Deploy
 
 on:
   push:
-    branches: [ "main" ]  
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -30,49 +30,32 @@ jobs:
       - name: Build without tests
         run: ./gradlew build -x test
 
-  dependency-submission:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - name: Upload to S3
+        uses: jakejarvis/s3-sync-action@master
         with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
-
-      - name: Generate and submit dependency graph
-        uses: gradle/actions/dependency-submission@v3.1.0
-
-      - name: Run Gradle to generate dependencies
-        run: ./gradlew dependencies
+          args: --acl private --follow-symlinks
+          bucket: ${{ secrets.S3_BUCKET_NAME }}
+          source_dir: build/libs
+        env:
+          AWS_S3_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-northeast-2
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Copy JAR to EC2
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_KEY }}
-          source: "build/libs/*.jar"
-          target: "/home/ec2-user/app/"
-
-      - name: Run JAR on EC2
+      - name: Run JAR from S3 on EC2
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
+            sudo yum install -y aws-cli
+            mkdir -p app
+            aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/project3-0.0.1-SNAPSHOT.jar ./app/app.jar
             pkill -f 'java' || true
-            nohup java -jar /home/ec2-user/app/*.jar > app.log 2>&1 &
+            nohup java -jar ./app/app.jar > app.log 2>&1 &
