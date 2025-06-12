@@ -30,29 +30,27 @@ jobs:
       - name: Build without tests
         run: ./gradlew build -x test
 
-      - name: Upload to S3
-        uses: jakejarvis/s3-sync-action@master
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          args: --acl private --follow-symlinks
-          bucket: ${{ secrets.S3_BUCKET_NAME }}
-          source_dir: build/libs
-        env:
-          AWS_S3_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ap-northeast-2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Upload JAR to S3
+        run: aws s3 cp build/libs/project3-0.0.1-SNAPSHOT.jar s3://${{ secrets.S3_BUCKET_NAME }}/project3-0.0.1-SNAPSHOT.jar
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Run JAR from S3 on EC2
+      - name: SSH to EC2 and run JAR from S3
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_KEY }}
+          host: ${{ secrets.EC2_HOST }}     
+          username: ${{ secrets.EC2_USER }}     
+          key: ${{ secrets.EC2_KEY }}            
           script: |
             sudo yum install -y aws-cli
             mkdir -p app
