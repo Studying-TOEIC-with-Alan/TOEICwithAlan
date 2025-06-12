@@ -2,94 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title</title>
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css"/>
     <link rel="stylesheet" href="/css/header.css">
-    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet"/>
-    <style>
-      html, body {
-        height: 100%;
-        margin: 0;
-      }
-
-      body {
-        background: url('/images/section-bg.png');
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-      }
-
-      .title_box {
-        width: 50%;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 5%;
-        padding-left: 1%;
-        display: flex;
-        flex-direction: column;
-        border-radius: 20px;
-      }
-
-      .box {
-        width: 50%;
-        height: 70%;
-        margin-left: auto;
-        margin-right: auto;
-        padding: 2%;
-        display: flex;
-        flex-direction: column;
-        background: white;
-        border-radius: 20px;
-      }
-
-      #main-content {
-        width: 100%;
-        flex: 1;
-        display: flex;
-        margin-left: auto;
-        margin-right: auto;
-        flex-direction: column;
-        padding: 10px;
-        overflow: hidden;
-      }
-
-      #editor {
-        flex: 1;
-        background-color: #ffffff;
-        overflow-y: auto;
-      }
-
-      input, button {
-        margin-bottom: 10px;
-      }
-
-      #title {
-        height: 50px;
-        font-size: 1rem;
-        padding: 10px 12px;
-      }
-
-      #editor {
-        font-size: 0.9rem;
-      }
-    </style>
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/review.css">
 </head>
 <body data-type="contact" th:attr="data-contact-id=${contact != null ? contact.contactId : null}">
-<div th:replace="header :: siteHeader"></div>
-<div class="title_box">
-    <h4 class="title" th:text="${contact != null ? '수정하기' : '작성하기'}">작성하기</h4>
-</div>
-<div class="box">
-    <div id="main-content" class="solid-bg">
-        <input type="text" id="title" placeholder="문의 /등급 /불편"
-               th:value="${contact != null ? contact.title : ''}"/>
-        <div id="editor"></div>
-        <div class="d-flex justify-content-end mt-2">
-            <button id="submitBtn" class="btn btn-success me-2 mr-1"
-                    th:text="${contact != null} ? '수정' : '저장'">저장
-            </button>
-            <button id="cancelBtn" class="btn btn-danger">취소</button>
+<div th:replace="~{header :: siteHeader}"></div>
+<div id="main-content" class="row justify-content-center">
+    <div class="col-md-10">
+        <h3 class="mb-3 mt-5 mb-5 font-weight-bold text-white text-center" th:text="${contact != null ? '수정하기' : '작성하기'}">작성하기</h3>
+        <div class="box mb-3">
+            <input type="text" id="title" placeholder="문의 /등급 /불편"
+                   th:value="${contact != null ? contact.title : ''}"/>
+            <div id="editor"></div>
+            <div class="d-flex justify-content-end mt-2">
+                <button id="submitBtn" class="btn btn-success me-2 mr-1">💾 저장
+                </button>
+                <button id="cancelBtn" class="btn btn-danger">❌ 취소</button>
+            </div>
         </div>
     </div>
 </div>
