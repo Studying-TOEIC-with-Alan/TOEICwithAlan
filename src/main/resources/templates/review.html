@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Modify</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css"/>
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/review.css">
+</head>
+<body data-type="review" th:attr="data-review-id=${review != null ? review.reviewId : null}">
+<div th:replace="~{header :: siteHeader}"></div>
+<div id="main-content" class="row justify-content-center">
+    <div class="col-md-10">
+        <h3 class="mb-3 mt-5 mb-5 font-weight-bold text-white text-center"
+            th:text="${review != null ? '수정하기' : '작성하기'}">작성하기</h3>
+        <div class="box mb-3">
+            <input type="text" id="title" placeholder="달성 점수 표시 600점, 700점"
+                   th:value="${review != null ? review.title : ''}"/>
+            <div id="editor"></div>
+            <div class="d-flex justify-content-end mt-2">
+                <button id="submitBtn" class="btn btn-success me-2 mr-1">💾 저장</button>
+                <button id="cancelBtn" class="btn btn-danger">❌ 취소</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+<script src="/js/review.js"></script>
+<script>
+    const cancelBtn = document.getElementById('cancelBtn');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', () => {
+            window.location.href = '/reviews';
+        });
+    }
+</script>
+</body>
+</html>

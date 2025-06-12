@@ -1,0 +1,77 @@
+ol, ul {
+    padding-left: 20px;
+}
+
+li {
+    display: list-item;
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+li > * {
+    display: inline;
+}
+
+p {
+    margin: 10px 0;
+}
+
+#grammarType-select, #readingPart-select, #listeningPart-select {
+    max-width: 200px;
+}
+
+/* disable category select but still show active button*/
+.disabled-category {
+    pointer-events: none;
+    opacity: 1;
+    cursor: default;
+}
+
+.input-text {
+    width: 100%;
+    max-width: 500px;
+    height: 38px;
+}
+
+.result-text {
+    white-space: normal;
+    word-break: break-word;
+}
+
+#result-text h1,
+#result-text h2,
+#result-text h3 {
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.result-text ol {
+    padding-left: 1.5em;
+    list-style-position: outside; /* put numbers outside the text block */
+}
+
+.result-text li {
+    margin-left: 20px;
+    text-indent: 5px; /* keeps lines aligned for multiple lines */
+}
+
+.result-text p {
+    margin-bottom: 1em; /* spacing between paragraphs */
+}
+
+.guide-text {
+    font-size: 12px;
+}
+
+#result-box, #tilTitle, #tilContent, #grammarType-select, #readingPart-select, #listeningPart-select {
+    border-radius: 10px;
+}
+
+#tilTitle {
+    width: 50%;
+}
+
+#tilContent {
+    width: 100%;
+    min-height: 200px;
+}

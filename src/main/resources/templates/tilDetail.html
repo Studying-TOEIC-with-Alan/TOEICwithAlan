@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIL Detail</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css"/>
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/til.css">
+</head>
+<body>
+<div th:replace="~{header :: siteHeader}"></div>
+<div id="main-content" class="row justify-content-center">
+    <div class="col-md-10">
+        <h3 class="mb-3 mt-5 mb-5 font-weight-bold text-white text-center">Today I Learned</h3>
+
+        <div id="til-container" class="p-3">
+            <div id="til-header" class="border-bottom mb-2">
+                <input type="hidden" id="til-id" name="tilId" th:value="${tilId}" />
+                <div id="til-title-text" th:text="${til.title}" class="font-weight-bold til-title"></div>
+                <input type="text" id="til-title-input" th:value="${til.title}" class="til-title" maxlength="20" />
+                <div id="til-date" th:text="${#temporals.format(til.updatedDate, 'yyyy-MM-dd HH:mm:ss')}" class="til-date text-muted small" ></div>
+            </div>
+            <div class="mb-5">
+                <div id="til-content-text" th:text="${til.summary}" style="white-space: pre-line;"></div>
+                <textarea id="til-content-input" th:text="${til.summary}" maxlength="1000"></textarea>
+            </div>
+            <div class="d-flex justify-content-between">
+                <a href="/til" class="btn btn-secondary border mb-3">← 목록으로</a>
+                <div>
+                    <button type="submit" id="edit-note-button" class="btn btn-warning border mb-3">✏️ 수정</button>
+                    <button type="submit" id="delete-note-button" class="btn btn-danger border mb-3">🗑️ 삭제</button>
+                    <button type="submit" id="save-note-button" class="btn btn-success border mb-3">💾 저장</button>
+                    <button type="submit" id="cancel-note-button" class="btn btn-secondary border mb-3">❌ 취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/tilDetail.js"></script>
+</body>
+</html>

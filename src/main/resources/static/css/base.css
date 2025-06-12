@@ -1,0 +1,8 @@
+#main-content {
+    width: 100vw;
+    min-height: calc(100vh - 65px);
+    background-image: url('../images/section-bg.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}

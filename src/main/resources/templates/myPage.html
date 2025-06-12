@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 페이지</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/mypage.css">
+</head>
+<body>
+<div th:replace="~{header :: siteHeader}"></div>
+<div id="main-content" class="row justify-content-center">
+    <div class="col-md-10 text-center">
+        <div id="profile-container" class="mt-5 mb-5 p-5">
+            <img th:src="@{/images/user-icon.png}" class="user-icon-img mb-3" alt="User Icon"/>
+            <input type="hidden" id="user-id" name="userId" th:value="${user.userId}"/>
+            <div class="mb-4">
+                <div id="nickname-default-group" class="mb-2">
+                    <span id="profile-nickname-text" th:text="${user.nickname}"
+                          class="font-weight-bold"> </span> 님 반갑습니다!
+                    <button id="nickname-edit-btn" class="btn btn-link p-0">✏️</button>
+                </div>
+                <div id="nickname-edit-group" class="mb-2">
+                    <input type="text" id="profile-nickname-input" th:value="${user.nickname}"
+                           class="font-weight-bold pl-2 pr-2" maxlength="100" autocomplete="off"/>
+                    <button id="nickname-save-btn" class="btn btn-link p-0">✔️</button>
+                    <button id="nickname-cancel-btn" class="btn btn-link p-0">✖️</button>
+                </div>
+
+                <div id="profile-grade" th:text="${user.grade+ ' 등급'}"
+                     class="font-weight-bold mb-2"></div>
+                <div id="profile-joinDate"
+                     th:text="${#temporals.format(user.createdDate, 'yyyy-MM-dd HH:mm:ss')}"
+                     class="font-weight-bold"></div>
+            </div>
+
+            <button type="submit" id="terminate-account-button"
+                    class="btn btn-danger rounded-pill border">🗑️ 탈퇴하기
+            </button>
+        </div>
+        <div id="menu-container" class="p-0">
+            <a href="/til" class="mb-5">
+                <div id="my-til-button">
+                    <img th:src="@{/images/til-icon.png}" alt="My TIL" class="menu-icon mb-2"/>
+                    <span>My TIL</span>
+                </div>
+            </a>
+            <a href="javascript:void(0)" onclick="openChatPopup()" class="mb-5">
+                <div id="chat-button">
+                    <img th:src="@{/images/chat-icon.png}" alt="My TIL" class="menu-icon mb-2"/>
+                    <span>Chat</span>
+                </div>
+            </a>
+            <a href="/contacts" class="mb-5">
+                <div id="contact-button">
+                    <img th:src="@{/images/contact-us-icon.png}" alt="My TIL"
+                         class="menu-icon mb-2"/>
+                    <span>Contact Us</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<script src="/js/myPage.js"></script>
+<script>
+    function openChatPopup() {
+        const popupWidth = 800;
+        const popupHeight = 800;
+        const left = (screen.width / 2) - (popupWidth / 2);
+        const top = (screen.height / 2) - (popupHeight / 2);
+
+        window.open(
+            '/chat',
+            'ChatPopup',
+            `width=${popupWidth},height=${popupHeight},top=${top},left=${left},resizable=no,scrollbars=yes`
+        );
+    }
+</script>
+
+</body>
+</html>

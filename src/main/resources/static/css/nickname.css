@@ -1,0 +1,65 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-image: url('/images/section-bg.png');
+    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main.nickname-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nickname-container {
+    background-color: white;
+    padding: 40px 60px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    min-width: 300px;
+}
+
+.nickname-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.nickname-container label {
+    font-weight: bold;
+    font-size: 18px;
+    color: #333;
+}
+
+.nickname-container input[type="text"] {
+    padding: 10px 14px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.nickname-container input[type="text"]:focus {
+    border-color: #007bff;
+}
+
+.nickname-container button {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.nickname-container button:hover {
+    background-color: #0056b3;
+}

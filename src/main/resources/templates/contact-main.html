@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/review.css">
+</head>
+<body data-type="contact-main">
+<div th:replace="~{header :: siteHeader}"></div>
+<div id="main-content" class="row justify-content-center">
+    <div class="col-md-10 text-center">
+        <h3 class="mb-3 mt-5 mb-5 font-weight-bold text-white">Contacts</h3>
+        <div class="box mb-3">
+            <form method="get" action="/contacts" class="mb-4 d-flex justify-content-end">
+                <label for="sort" class="me-2 align-self-center"></label>
+                <select id="sort" name="sort" onchange="this.form.submit()" class="form-select w-auto">
+                    <option value="newest" th:selected="${sort == 'newest'}">최신순</option>
+                    <option value="oldest" th:selected="${sort == 'oldest'}">오래된순</option>
+                </select>
+            </form>
+            <div class="row mb-2 mx-2 bottom-line2 pb-3 mt-2">
+                <div class="col-2"></div>
+                <div class="col-6 text-center font-weight-bold">제목</div>
+                <div class="col-2 text-center font-weight-bold">닉네임</div>
+                <div class="col-2 text-center font-weight-bold">작성일</div>
+            </div>
+            <ul style="list-style: none;" class="data-list pl-1">
+                <li th:each="contact : ${contacts}" class="mb-3">
+                    <div class="row align-items-center mb-2 mx-2 border-bottom">
+                        <div class="col-2 text-left">
+                            <small th:switch="${contact.status}">
+                                <span th:case="'OPEN'">대기중</span>
+                                <span th:case="'IN_PROGRESS'">진행중</span>
+                                <span th:case="'CLOSED'">완료</span>
+                            </small>
+                        </div>
+                        <div class="col-6 text-truncate text-start mb-0">
+                            <a th:href="@{/contacts/{id}(id=${contact.contactId})}"
+                               th:text="${#strings.length(contact.title) > 30} ? ${#strings.substring(contact.title, 0, 30)} + '...' : ${contact.title}"
+                               style="text-decoration: underline; cursor: pointer;">
+                            </a>
+                            <div class="contactContent only-p text-muted small mt-1"
+                                 th:utext="${contact.content}"></div>
+                        </div>
+                        <div class="col-2 text-center">
+                            <p>
+                                <span th:text="${contact.nickname}">닉네임</span>
+                                <span style="margin-left: 2px;" th:if="${contact.grade == 0}" th:text="'🐣'">🐣</span>
+                                <span style="margin-left: 2px;" th:if="${contact.grade == 1}" th:text="'🐥'">🐥</span>
+                                <span style="margin-left: 2px;" th:if="${contact.grade == 2}" th:text="'🦅'">🦅</span>
+                                <span style="margin-left: 2px;" th:if="${contact.grade == 3}" th:text="'🦉'">🦉</span>
+                            </p>
+                        </div>
+                        <div class="col-2 text-center">
+                            <p th:text="${#temporals.format(contact.createDate, 'yyyy-MM-dd HH:mm')}">
+                                작성일
+                            </p>
+                        </div>
+                    </div>
+                    <div th:id="'hidden-content-' + ${contact.contactId}" style="display:none;">
+                        <div class="bottom-line2">
+                            <h5 th:text="${contact.title}"></h5>
+                            <p>
+                                <small th:text="${contact.nickname}">닉네임</small>
+                                <small style="margin-left: 2px;" th:if="${contact.grade == 0}" th:text="'🐣'">🐣</small>
+                                <small style="margin-left: 2px;" th:if="${contact.grade == 1}" th:text="'🐥'">🐥</small>
+                                <small style="margin-left: 2px;" th:if="${contact.grade == 2}" th:text="'🦅'">🦅</small>
+                                <small style="margin-left: 2px;" th:if="${contact.grade == 3}" th:text="'🦉'">🦉</small>
+                                <small th:text="${#temporals.format(contact.createDate, 'yyyy-MM-dd HH:mm')}"> 작성일</small>
+                            </p>
+                        </div>
+                        <div>
+                            <p th:utext="${contact.content}"></p>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-primary" id="writeBtn">작성하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('writeBtn').addEventListener('click', () => {
+        window.location.href = '/contacts/new';
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.contactContent').forEach(div => {
+            div.querySelectorAll('img').forEach(img => img.remove());
+
+            let text = div.textContent || div.innerText;
+            if (text.length > 10) {
+                text = text.substring(0, 10) + '...';
+            }
+
+            div.textContent = text;
+        });
+    });
+</script>
+</body>
+</html>

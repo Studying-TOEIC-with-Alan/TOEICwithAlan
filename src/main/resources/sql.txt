@@ -1,0 +1,87 @@
+DROP TABLE IF EXISTS allen;
+DROP TABLE IF EXISTS til;
+DROP TABLE IF EXISTS chat_message;
+DROP TABLE IF EXISTS contact_file;
+DROP TABLE IF EXISTS review_file;
+DROP TABLE IF EXISTS review;
+DROP TABLE IF EXISTS contact;
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
+    user_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    provider VARCHAR(20) NOT NULL,
+    email VARCHAR(300) NOT NULL,
+    nickname VARCHAR(100),
+    role ENUM('ROLE_ADMIN','ROLE_USER') NOT NULL DEFAULT 'ROLE_USER',
+    is_active VARCHAR(1) NOT NULL DEFAULT 'Y',
+    grade BIGINT DEFAULT 0,
+    score BIGINT DEFAULT 0,
+    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    termination_date DATE NULL
+);
+
+CREATE TABLE allen (
+    allen_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    category VARCHAR(10) NOT NULL,
+    input_text TEXT NOT NULL,
+    summary TEXT NOT NULL,
+    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE til (
+    til_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    summary TEXT NOT NULL,
+    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE chat_message (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    room_id INT NOT NULL,
+    message TEXT NOT NULL,
+    sent_at DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE review (
+    review_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    title VARCHAR(255),
+    content TEXT,
+    create_date DATETIME,
+    update_date DATETIME,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE contact (
+    contact_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    title VARCHAR(255),
+    content TEXT,
+    create_date DATETIME,
+    update_date DATETIME,
+    status ENUM('OPEN', 'IN_PROGRESS', 'CLOSED'),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE contact_file (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    filename VARCHAR(255) NOT NULL,
+    file_path VARCHAR(500) NOT NULL,
+    contact_id BIGINT NOT NULL,
+    FOREIGN KEY (contact_id) REFERENCES contact(id) ON DELETE CASCADE
+);
+
+CREATE TABLE review_file (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    filename VARCHAR(255) NOT NULL,
+    file_path VARCHAR(500) NOT NULL,
+    review_id BIGINT NOT NULL,
+    FOREIGN KEY (review_id) REFERENCES review(id) ON DELETE CASCADE
+);

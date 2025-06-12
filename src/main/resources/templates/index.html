@@ -2,14 +2,103 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEIC With Allen</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/index.css">
 </head>
 <body>
-<div th:replace="header :: siteHeader"></div>
-<div id="main-content" class="solid-bg">
+<div th:replace="~{header :: siteHeader}"></div>
+<div id="main-content" class="row justify-content-center">
+    <div class="col-md-10 mb-5 text-center">
+        <h3 class="mb-5 mt-5 font-weight-bold text-white">Easy English, Everyday</h3>
 
+        <div id="ask-allen-form" class="mb-5">
+            <!--Category selection button-->
+            <div class="btn-group mb-3" role="group" aria-label="Category Buttons">
+                <button th:each="cat : ${categories}"
+                        th:text="${cat}"
+                        th:class="'btn btn-outline-light rounded-pill mr-2 ' + (${cat} == ${category} ? 'active' : '')"
+                        th:attr="data-category=${cat}, onclick='selectCategory(this)'">
+                </button>
+            </div>
+            <input type="hidden" name="category" id="category-hidden" th:value="${category}" />
+
+            <div class="form-group">
+                <!--Question type-->
+                <input type="text" class="rounded-pill input-text pl-3 pr-3" id="input-text" name="inputText" th:value="${inputText}" style="display: none;" placeholder="Start typing..." autocomplete="off"/>
+
+                <!--Selection type-->
+                <select id="grammarType-select" class="custom-select" name="grammarTypeName" style="display: none;">
+                    <option th:each="grammarType : ${grammarTypes}" th:value="${grammarType}" th:text="${grammarType}" th:selected="${grammarType == grammarTypeName}"></option>
+                </select>
+
+                <button th:attr="disabled=${userId == null}" type="submit" id="search-btn" class="btn btn-light rounded-pill" style="display: none;">🔍</button>
+
+                <!--Quiz type-->
+                <div class="mb-3">
+                    <select id="readingPart-select" class="custom-select" name="readingPartName" style="display: none;">
+                        <option th:each="readingPart : ${readingParts}" th:value="${readingPart}" th:text="${readingPart}" th:selected="${readingPart == readingPartName}"></option>
+                    </select>
+                    <select id="listeningPart-select" class="custom-select" name="listeningPartName" style="display: none;">
+                        <option th:each="listeningPart : ${listeningParts}" th:value="${listeningPart}" th:text="${listeningPart}" th:selected="${listeningPart == listeningPartName}"></option>
+                    </select>
+                    <button th:attr="disabled=${userId == null}" type="submit" id="start-btn" class="btn btn-light rounded-pill" style="display: none;">▶️</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="input-result-guide" class="guide-text text-white mb-5">
+            <p>1. 메뉴를 선택하세요!</p>
+            <p>2. 검색 내용을 입력해주세요.</p>
+            <p>3. 내 마음대로 노트를 작성하세요</p>
+        </div>
+
+        <!-- Show result -->
+        <div id="result-box" class="card w-100 p-3 mb-5 text-left" style="display: none;">
+            <div id ="result-text" class="w-100 result-text"></div>
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- appear at left side -->
+                <div class ="me-auto">
+                    <button id="play-question-btn" class="btn btn-light rounded-pill border mb-3" style="display: none;">🔊 Play</button>
+                </div>
+
+                <!-- appear at right side -->
+                <div>
+                    <button id="next-question-btn" class="btn btn-light rounded-pill border mb-3" style="display: none;">👉🏻 Next</button>
+                    <button id="stop-question-btn" class="btn btn-light rounded-pill border mb-3" style="display: none;">🛑 End</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading spinner -->
+        <div id="loading-spinner" class="text-center mb-3" style="display: none;">
+            <div class="spinner-border text-light" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+
+
+        <!-- writing note -->
+        <input type="hidden" id="user-id" name="userId" th:value="${userId}" />
+        <button th:attr="disabled=${userId == null}" type="submit" id="write-note-button" class="btn btn-light rounded-pill border mb-3">✏️ 노트 작성</button>
+        <button type="submit" id="save-note-button" class="btn btn-primary rounded-pill border mb-3">💾 노트 저장</button>
+        <button type="submit" id="cancel-note-button" class="btn btn-secondary rounded-pill border mb-3">❌ 취소</button><br>
+        <div id="tilTitleGroup">
+            <label for="tilTitle" class="font-weight-bold d-block text-white">Title</label>
+            <input type="text" id="tilTitle" name="tilTitle" maxlength="20" />
+        </div><br>
+
+        <div id="tilContentGroup">
+            <label for="tilContent" class="font-weight-bold d-block text-white">Content</label>
+            <textarea id="tilContent" name="tilContent" maxlength="1000"></textarea>
+        </div>
+    </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="/js/index.js"></script>
 </body>
 </html>
