@@ -47,6 +47,10 @@ public class UserService {
             user.setIsActive(userRequest.getIsActive());
         }
 
+        if(userRequest.getTerminationDate() != null) {
+            user.setTerminationDate(userRequest.getTerminationDate());
+        }
+
         userRepository.save(user);
     }
 

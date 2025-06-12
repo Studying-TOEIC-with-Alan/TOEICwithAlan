@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-
 @Controller
 public class TilViewController {
     private final TilService tilService;
@@ -52,8 +50,12 @@ public class TilViewController {
 
         Til til = tilService.getTIL(tilId);
 
+        //For header
         model.addAttribute("userId", sessionUser.getUserId());
         model.addAttribute("role", sessionUser.getRole());
+        model.addAttribute("nickname", sessionUser.getNickname());
+
+        //For TIL content
         model.addAttribute("til", til);
 
         return "tilDetail";

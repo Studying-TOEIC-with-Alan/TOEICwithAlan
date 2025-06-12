@@ -72,7 +72,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        isActive: "N"
+                        isActive: "N",
+                        terminationDate: new Date().toISOString().split("T")[0]
                     })
                 }).then(async (response) => {
                     if (!response.ok) {

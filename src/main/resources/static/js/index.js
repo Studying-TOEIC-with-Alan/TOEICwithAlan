@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
             inputText.style.display = "none";
             searchBtn.style.display = "none";
 
-            if (category === "일기 퀴즈") {
+            if (category === "읽기 퀴즈") {
                 readingPartSelect.disabled = false;
                 readingPartSelect.style.display = "inline";
                 listeningPartSelect.style.display = "none";
@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
         startBtn.addEventListener("click", (e) => {
             let inputVal = "";
 
-            if (categorySelect.value === "일기 퀴즈") {
+            if (categorySelect.value === "읽기 퀴즈") {
                 readingPartSelect.disabled = true;
                 inputVal = readingPartSelect.value;
             } else {
@@ -189,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
             speechSynthesis.cancel();
 
             let inputVal = "";
-            if (categorySelect.value === "일기 퀴즈") {
+            if (categorySelect.value === "읽기 퀴즈") {
                 inputVal = readingPartSelect.value;
             } else {
                 inputVal = listeningPartSelect.value;
@@ -202,24 +202,30 @@ document.addEventListener("DOMContentLoaded", function () {
     //Quiz stop quiz button (reading and listening)
     if (stopQuestionBtn) {
         stopQuestionBtn.addEventListener("click", (e) => {
-            if (categorySelect.value === "일기 퀴즈") {
-                readingPartSelect.disabled = false;
-            } else {
-                speechSynthesis.cancel();
-                isSpeechCancelled = true;
+            beforeQuizMode ();
+        });
+    }
 
-                playQuestionBtn.disabled = true;
-                listeningPartSelect.disabled = false;
-            }
-            startBtn.disabled = false;
+    function beforeQuizMode () {
+        if (categorySelect.value === "읽기 퀴즈") {
+            readingPartSelect.disabled = false;
+        } else {
+            speechSynthesis.cancel();
+            isSpeechCancelled = true;
 
-            nextQuestionBtn.disabled = true;
-            stopQuestionBtn.disabled = true;
+            playQuestionBtn.disabled = true;
+            listeningPartSelect.disabled = false;
+        }
 
-            document.querySelectorAll('[data-category]').forEach(btn => {
-                btn.classList.remove("disabled-category");
-                btn.removeAttribute("data-disabled");
-            });
+        startBtn.disabled = false;
+        resultBox.style.display = "none";
+
+        nextQuestionBtn.disabled = true;
+        stopQuestionBtn.disabled = true;
+
+        document.querySelectorAll('[data-category]').forEach(btn => {
+            btn.classList.remove("disabled-category");
+            btn.removeAttribute("data-disabled");
         });
     }
 
@@ -248,12 +254,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (!response.ok) {
                     const errorData = await response.json();
                     alert(errorData.errorMessage);
+                    console.log("Response incomplete: " + errorData.errorMessage);
+                    beforeQuizMode();
+                } else {
+                    return (category === "읽기 퀴즈" || category === "듣기 퀴즈") ? response.json() : response.text();
                 }
-
-                return (category === "일기 퀴즈" || category === "듣기 퀴즈") ? response.json() : response.text();
             })
             .then(data => {
-                if (category === "일기 퀴즈" || category === "듣기 퀴즈") {
+                if (category === "읽기 퀴즈" || category === "듣기 퀴즈") {
                     renderQuizData(data);
                     resultBox.style.display = "block";
                 }else {
@@ -261,11 +269,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     resultBox.style.display = "block";
                     return saveAllenInfo(category, input, data);
                 }
-
             })
             .catch(error => {
-                resultText.innerHTML = `<p class='text-danger'>${error.message}</p>`;
-                resultBox.style.display = "block";
+                console.error("Fetch error:", error);
+                beforeQuizMode();
             })
             .finally(() => {
                 // Hide spinner after fetch completes
@@ -290,7 +297,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <input type="radio" name="answer" value="${key}" id="choice-${key}" style="margin-right: 8px; cursor: pointer;">${key}) ${value}</label><br>`).join('');
         const feedbackHTML = `<div id="quiz-feedback" class="mt-2"></div>`;
 
-        if (categorySelect.value === "일기 퀴즈") {
+        if (categorySelect.value === "읽기 퀴즈") {
             resultText.innerHTML = passageHTML + questionHTML + `<div id="quiz-options">${optionsHTML}</div>` + feedbackHTML;
         } else {
             resultText.innerHTML = `<div id="quiz-options">${optionsHTML}</div>` + feedbackHTML;

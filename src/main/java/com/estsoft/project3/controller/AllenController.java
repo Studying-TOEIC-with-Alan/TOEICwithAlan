@@ -45,17 +45,27 @@ public class AllenController {
     public ResponseEntity<?> askAllen(@RequestParam String category, @RequestParam String inputText, HttpSession httpSession) {
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
         Long userId = sessionUser.getUserId();
+        boolean isQuizType = Objects.equals(category, "읽기 퀴즈") || Objects.equals(category, "듣기 퀴즈");
 
-        // Set input content to allen api based on selected category
-        String content = SetAllenInputContent(category, inputText, userId);
+        //Change input text keyword for quiz
+        if (isQuizType) {
+            inputText = getNextQuestionInput (userId, category, inputText);
+        }
+
+        //Convert into input content to be sent to allen api based on selected category
+        String content = SetAllenInputContent(category, inputText);
 
         String raw = allenApiService.getAnswer(content);
 
-        if (Objects.equals(category, "일기 퀴즈") || Objects.equals(category, "듣기 퀴즈")) {
-            //Parse toeic question to split passage, question, choices, and correct answer
+        if (isQuizType) {
+            //Parse TOEIC question to split passage, question, choices, and correct answer
             QuizQuestion quiz = toeicParserService.parse(raw);
 
             quiz.setAllenInputText(inputText);
+
+            if (quiz.getPassage() == null || quiz.getQuestion() == null || quiz.getAnswerChoices().isEmpty() || quiz.getCorrectAnswer() == null) {
+                throw new RuntimeException("Invalid Quiz");
+            }
 
             return ResponseEntity.ok(quiz); // return as JSON
         } else {
@@ -66,7 +76,7 @@ public class AllenController {
         }
     }
 
-    private String SetAllenInputContent(String category, String inputText, Long userId) {
+    private String SetAllenInputContent(String category, String inputText) {
         String content = "";
 
         if (Objects.equals(category, "문법")) {
@@ -90,9 +100,7 @@ public class AllenController {
                     "3. 비슷한 단어와 차이점 (있다면)\n" +
                     "4. 예문 2~3개 (영어 + 한국어 해석)\n" +
                     "단어: " + inputText;
-        } else if (Objects.equals(category, "일기 퀴즈")) {
-            inputText = getNextQuestionInput (userId, category, inputText);
-
+        } else if (Objects.equals(category, "읽기 퀴즈")) {
             content = "Generate one TOEIC Reading question for " + inputText + "\n\n" +
                     "Please provide the output with these clearly labeled sections:\n";
 
@@ -110,8 +118,6 @@ public class AllenController {
             content += "Choices: (list options A), B), C), D))\n\n" +
                     "Answer: (the correct choice)";
         } else if (Objects.equals(category, "듣기 퀴즈")) {
-            inputText = getNextQuestionInput (userId, category, inputText);
-
             content = "Generate one TOEIC Listening question for " + inputText + "\n\n" +
                     "For each question, please provide these clearly labeled sections:\n";
 
@@ -119,10 +125,10 @@ public class AllenController {
                 content += "Passage: (the spoken question prompt)\n\n" +
                         "Question: (a comprehension question about the passage)\n\n";
             } else if (inputText.contains("Part 3")){
-                content = "Passage: (the conversation transcript)\n\n" +
+                content += "Passage: (the conversation transcript)\n\n" +
                         "Question: (the question asked)\n\n";
-            } else {
-                content = "Passage: (the short talk)\n\n" +
+            } else if (inputText.contains("Part 4")){
+                content += "Passage: (the short talk)\n\n" +
                         "Question: (the question asked)\n\n";
             }
 
