@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const saveNoteButton = document.getElementById("save-note-button");
     const cancelNoteButton = document.getElementById("cancel-note-button");
 
+    const tilHeader = document.getElementById("til-header");
+
     const tilTitleText = document.getElementById("til-title-text");
     const tilTitleInput = document.getElementById("til-title-input");
 
@@ -11,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const tilContentInput = document.getElementById("til-content-input");
 
     const tilId = document.getElementById("til-id");
+    const tilDate = document.getElementById("til-date");
 
     defaultMode();
 
@@ -26,6 +29,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             tilContentText.style.display = "none";
             tilContentInput.style.display = "inline";
+
+            tilDate.style.display = "none";
+            tilHeader.classList.remove("border-bottom");
         })
     }
 
@@ -78,6 +84,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         tilContentText.style.display = "inline";
         tilContentInput.style.display = "none";
+
+        tilDate.style.display = "block";
+        tilHeader.classList.add("border-bottom");
     }
 
 })

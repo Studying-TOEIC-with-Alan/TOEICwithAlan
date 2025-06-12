@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TIL Detail</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css"/>
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/til.css">
@@ -16,11 +17,11 @@
         <h3 class="mb-3 mt-5 mb-5 font-weight-bold text-white text-center">Today I Learned</h3>
 
         <div id="til-container" class="p-3">
-            <div class="border-bottom mb-5">
+            <div id="til-header" class="border-bottom mb-2">
                 <input type="hidden" id="til-id" name="tilId" th:value="${tilId}" />
                 <div id="til-title-text" th:text="${til.title}" class="font-weight-bold til-title"></div>
                 <input type="text" id="til-title-input" th:value="${til.title}" class="til-title" maxlength="20" />
-                <div th:text="${#temporals.format(til.updatedDate, 'yyyy-MM-dd HH:mm:ss')}" class="til-date text-muted small" ></div>
+                <div id="til-date" th:text="${#temporals.format(til.updatedDate, 'yyyy-MM-dd HH:mm:ss')}" class="til-date text-muted small" ></div>
             </div>
             <div class="mb-5">
                 <div id="til-content-text" th:text="${til.summary}" style="white-space: pre-line;"></div>

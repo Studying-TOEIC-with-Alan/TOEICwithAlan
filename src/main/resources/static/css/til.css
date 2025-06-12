@@ -12,6 +12,7 @@
 }
 
 .til-title{
+    height: 50px;
     text-align: left;
     font-size: 20px;
 }
@@ -20,18 +21,12 @@
     text-align: right;
 }
 
-/* tilDetail start*/
-#til-title-input, #til-content-input {
-    border-radius: 10px;
-}
-
-#til-title-input {
-    width: 50%;
-    border-radius: 10px;
+/* for tilDetail */
+#til-title-input, #til-content-input  {
+    width: 100%;
 }
 
 #til-content-input {
-    width: 100%;
     min-height: 200px;
 }
-/* tilDetail end*/
+/* for tilDetail */
