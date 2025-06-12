@@ -61,4 +61,4 @@ jobs:
             mkdir -p app
             aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/project3-0.0.1-SNAPSHOT.jar ./app/app.jar
             pkill -f 'java' || true
-            nohup java -jar ./app/app.jar > app.log 2>&1 &
+            nohup java -jar ./app/app.jar > app.log 2>&1 & disown
