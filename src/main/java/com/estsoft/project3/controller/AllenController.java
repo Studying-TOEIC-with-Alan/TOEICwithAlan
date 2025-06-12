@@ -15,8 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @RestController
 public class AllenController {
@@ -45,34 +44,53 @@ public class AllenController {
     public ResponseEntity<?> askAllen(@RequestParam String category, @RequestParam String inputText, HttpSession httpSession) {
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
         Long userId = sessionUser.getUserId();
+        Long userScore = sessionUser.getScore();
         boolean isQuizType = Objects.equals(category, "읽기 퀴즈") || Objects.equals(category, "듣기 퀴즈");
 
-        //Change input text keyword for quiz
+        //Change input text keyword
         if (isQuizType) {
             inputText = getNextQuestionInput (userId, category, inputText);
+        } else if (Objects.equals(category, "문법")) {
+            inputText = inputText + " for TOEIC score " + userScore;
         }
 
-        //Convert into input content to be sent to allen api based on selected category
-        String content = SetAllenInputContent(category, inputText);
+        //For non quiz type and has asked allen previously, get from DB
+        String savedSummary = "";
+        if (!isQuizType) {
+            Allen allen = allenService.GetLastAllenByUserAndCatAndInput(userId, category, inputText);
 
-        String raw = allenApiService.getAnswer(content);
+            if (allen != null) {
+                savedSummary = allen.getSummary();
+            }
+        }
+
+        String raw = "";
+        if (!savedSummary.isEmpty()) {
+            raw = savedSummary;
+        } else {
+            //Convert into input content to be sent to allen api based on selected category
+            String content = SetAllenInputContent(category, inputText);
+            raw = allenApiService.getAnswer(content);
+        }
 
         if (isQuizType) {
             //Parse TOEIC question to split passage, question, choices, and correct answer
             QuizQuestion quiz = toeicParserService.parse(raw);
 
-            quiz.setAllenInputText(inputText);
-
             if (quiz.getPassage() == null || quiz.getQuestion() == null || quiz.getAnswerChoices().isEmpty() || quiz.getCorrectAnswer() == null) {
                 throw new RuntimeException("Invalid Quiz");
             }
 
-            return ResponseEntity.ok(quiz); // return as JSON
-        } else {
-            // Markdown to HTML for other categories
-            String formattedResponse = raw.replace("\n", "<br>");   //replace \n to HTML enter
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("allenInputText", inputText);
+            resultMap.put("quizData", quiz);
 
-            return ResponseEntity.ok(convertMarkdownToHtml(formattedResponse));
+            return ResponseEntity.ok(resultMap);
+        } else {
+            Map<String, String> resultMap = new HashMap<>();
+            resultMap.put("allenInputText", inputText);
+            resultMap.put("allenContent", convertMarkdownToHtml(raw)); // Markdown to HTML
+            return ResponseEntity.ok(resultMap);
         }
     }
 
@@ -80,7 +98,8 @@ public class AllenController {
         String content = "";
 
         if (Objects.equals(category, "문법")) {
-            content = "TOEIC 시험에 자주 나오는 문법 항목 5가지를 중요도 순으로 정리해서 간단한 설명과 함께 알려줘";
+            content = "Please provide list of grammar under grammar type " + inputText + ".\n" +
+                    "Please provide explanations in Korean for each grammar, suitable for TOEIC learners.\n";
         } else if (Objects.equals(category, "문장 체크")) {
             content = "다음 영어 문장을 확인해 주세요.\n" +
                     "문장이 맞는지 틀린지 알려주세요.\n" +

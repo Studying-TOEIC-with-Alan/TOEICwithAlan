@@ -16,7 +16,7 @@ p {
     margin: 10px 0;
 }
 
-#category-select, #readingPart-select, #listeningPart-select {
+#grammarType-select, #readingPart-select, #listeningPart-select {
     max-width: 200px;
 }
 
@@ -34,15 +34,36 @@ p {
 }
 
 .result-text {
-    white-space: pre-wrap;
+    white-space: normal;
     word-break: break-word;
+}
+
+#result-text h1,
+#result-text h2,
+#result-text h3 {
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.result-text ol {
+    padding-left: 1.5em;
+    list-style-position: outside; /* put numbers outside the text block */
+}
+
+.result-text li {
+    margin-left: 20px;
+    text-indent: 5px; /* keeps lines aligned for multiple lines */
+}
+
+.result-text p {
+    margin-bottom: 1em; /* spacing between paragraphs */
 }
 
 .guide-text {
     font-size: 12px;
 }
 
-#result-box, #tilTitle, #tilContent, #readingPart-select, #listeningPart-select {
+#result-box, #tilTitle, #tilContent, #grammarType-select, #readingPart-select, #listeningPart-select {
     border-radius: 10px;
 }
 

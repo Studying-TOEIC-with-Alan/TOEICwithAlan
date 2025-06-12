@@ -30,17 +30,23 @@
             <div class="form-group">
                 <!--Question type-->
                 <input type="text" class="rounded-pill input-text pl-3 pr-3" id="input-text" name="inputText" th:value="${inputText}" style="display: none;" placeholder="Start typing..." autocomplete="off"/>
+
+                <!--Selection type-->
+                <select id="grammarType-select" class="custom-select" name="grammarTypeName" style="display: none;">
+                    <option th:each="grammarType : ${grammarTypes}" th:value="${grammarType}" th:text="${grammarType}" th:selected="${grammarType == grammarTypeName}"></option>
+                </select>
+
                 <button th:attr="disabled=${userId == null}" type="submit" id="search-btn" class="btn btn-light rounded-pill" style="display: none;">🔍</button>
 
                 <!--Quiz type-->
                 <div class="mb-3">
-                <select id="readingPart-select" class="custom-select" name="readingPartName" style="display: none;">
-                    <option th:each="readingPart : ${readingParts}" th:value="${readingPart}" th:text="${readingPart}" th:selected="${readingPart == readingPartName}"></option>
-                </select>
-                <select id="listeningPart-select" class="custom-select" name="listeningPartName" style="display: none;">
-                    <option th:each="listeningPart : ${listeningParts}" th:value="${listeningPart}" th:text="${listeningPart}" th:selected="${listeningPart == listeningPartName}"></option>
-                </select>
-                <button th:attr="disabled=${userId == null}" type="submit" id="start-btn" class="btn btn-light rounded-pill" style="display: none;">▶️</button>
+                    <select id="readingPart-select" class="custom-select" name="readingPartName" style="display: none;">
+                        <option th:each="readingPart : ${readingParts}" th:value="${readingPart}" th:text="${readingPart}" th:selected="${readingPart == readingPartName}"></option>
+                    </select>
+                    <select id="listeningPart-select" class="custom-select" name="listeningPartName" style="display: none;">
+                        <option th:each="listeningPart : ${listeningParts}" th:value="${listeningPart}" th:text="${listeningPart}" th:selected="${listeningPart == listeningPartName}"></option>
+                    </select>
+                    <button th:attr="disabled=${userId == null}" type="submit" id="start-btn" class="btn btn-light rounded-pill" style="display: none;">▶️</button>
                 </div>
             </div>
         </div>
@@ -66,8 +72,8 @@
                     <button id="stop-question-btn" class="btn btn-light rounded-pill border mb-3" style="display: none;">🛑 End</button>
                 </div>
             </div>
-
         </div>
+
         <!-- Loading spinner -->
         <div id="loading-spinner" class="text-center mb-3" style="display: none;">
             <div class="spinner-border text-light" role="status">
