@@ -35,4 +35,11 @@ public class ChatMessage {
         this.message = message;
         this.sentAt = LocalDateTime.now();
     }
+
+    public ChatMessage(User user, int roomId, String message, LocalDateTime sentAt) {
+        this.user = user;
+        this.roomId = roomId;
+        this.message = message;
+        this.sentAt = sentAt;
+    }
 }
