@@ -48,8 +48,8 @@ jobs:
       - name: SSH to EC2 and run JAR from S3
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.EC2_HOST }}     
-          username: ${{ secrets.EC2_USER }}     
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
             export AWS_CREDENTIALS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -60,5 +60,7 @@ jobs:
             sudo yum install -y aws-cli
             mkdir -p app
             aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/project3-0.0.1-SNAPSHOT.jar ./app/app.jar
+
             pkill -f 'java' || true
-            nohup java -jar ./app/app.jar > app.log 2>&1 &
+
+            nohup java -jar ./app/app.jar --spring.config.location=file:./app/application.properties > app/app.log 2>&1 &
