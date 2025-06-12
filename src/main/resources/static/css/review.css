@@ -1,56 +1,61 @@
 html, body {
-    height: 100%;
-    margin: 0;
+  height: 100%;
+  margin: 0;
 }
 
 .box {
-    width: 100%;
-    height: 70%;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 2%;
-    display: flex;
-    flex-direction: column;
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08), 0 6px 6px rgba(0, 0, 0, 0.05);
-    transform: translateZ(0);
+  width: 100%;
+  height: 70%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 2%;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08), 0 6px 6px rgba(0, 0, 0, 0.05);
+  transform: translateZ(0);
 }
 
 input, button {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .bottom-line2 {
-    border-bottom: 2px solid rebeccapurple;
+  border-bottom: 2px solid rebeccapurple;
 }
 
 .data-list {
-    height: 70%;
-    overflow-y: auto;
+  height: 70%;
+  overflow-y: auto;
 }
 
 .data-list img {
-    display: none !important;
+  display: none !important;
 }
 
 .only-p img {
-    display: none;
-    width: 0;
-    white-space: pre-line;
+  display: none;
+  width: 0;
+  white-space: pre-line;
 }
 
 /* for review modification page */
 #editor {
-    flex: 1;
-    background-color: #ffffff;
-    overflow-y: auto;
-    font-size: 0.9rem;
+  flex: 1;
+  background-color: #ffffff;
+  overflow-y: auto;
+  font-size: 0.9rem;
 }
 
 #title {
-    height: 50px;
-    font-size: 1rem;
-    padding: 10px 12px;
+  height: 50px;
+  font-size: 1rem;
+  padding: 10px 12px;
 }
+
+.flex-grow-1 {
+  overflow-y: auto;
+}
+
 /* for review modification page */

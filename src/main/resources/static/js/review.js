@@ -23,9 +23,13 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     const backBtn = document.getElementById('backBtn');
-    if (backBtn) {
+    if (backBtn && type) {
         backBtn.addEventListener('click', () => {
-            window.history.back();
+            if (type === 'review') {
+                window.location.href = '/reviews';
+            } else if (type === 'contact') {
+                window.location.href = '/contacts';
+            }
         });
     }
 
