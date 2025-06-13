@@ -153,6 +153,8 @@ document.addEventListener("DOMContentLoaded", function () {
     //Search button for non-quiz category
     if (searchBtn) {
         searchBtn.addEventListener("click", (e) => {
+            searchBtn.disabled = true;
+
             e.preventDefault();
             let input = "";
 
@@ -305,6 +307,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .finally(() => {
                 // Hide spinner after fetch completes
                 loadingSpinner.style.display = "none";
+                searchBtn.disabled = false;
             });
 
     }
@@ -327,6 +330,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (categorySelect.value === "읽기 퀴즈") {
             resultText.innerHTML = passageHTML + questionHTML + `<div id="quiz-options">${optionsHTML}</div>` + feedbackHTML;
+            playQuestionBtn.disabled = true;
+            playQuestionBtn.style.display = "none";
         } else {
             resultText.innerHTML = `<div id="quiz-options">${optionsHTML}</div>` + feedbackHTML;
             playQuestionBtn.disabled = false;
