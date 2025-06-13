@@ -22,7 +22,7 @@ public class LoginController {
 
     @GetMapping("/login")
     public String showLoginPage() {
-        return "/login";
+        return "login";
     }
 
     @GetMapping("/set-nickname")
