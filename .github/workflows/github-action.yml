@@ -13,7 +13,8 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout source
+        uses: actions/checkout@v4
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -45,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: SSH to EC2 and run JAR from S3
+      - name: SSH to EC2 and restart Spring Boot using systemd
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -56,8 +57,10 @@ jobs:
             export AWS_CREDENTIALS_SECRET_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
             export AWS_REGION_STATIC=ap-northeast-2
             export AWS_S3_BUCKET=${{ secrets.S3_BUCKET_NAME }}
+
             sudo yum install -y aws-cli
-            mkdir -p app
-            aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/project3-0.0.1-SNAPSHOT.jar ./app/app.jar
-            pkill -f 'java' || true
-            nohup java -jar ./app/app.jar --spring.config.location=file:./app/application.properties > app/app.log 2>&1 &
+            mkdir -p /home/ec2-user/app
+            aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/project3-0.0.1-SNAPSHOT.jar /home/ec2-user/app/app.jar
+
+            sudo systemctl daemon-reexec
+            sudo systemctl restart allen
