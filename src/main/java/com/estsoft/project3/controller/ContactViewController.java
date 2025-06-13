@@ -39,11 +39,18 @@ public class ContactViewController {
         String currentUserEmail = principal.getAttribute("email");
         Contact contact = contactService.getContactById(id);
 
+        String email = principal.getAttribute("email");
+        User user = contactService.getUserByEmail(email);
+        List<Contact> contacts = contactService.getContactsByUser(user);
+
         if (!contact.getUser().getEmail().equals(currentUserEmail)) {
             return "redirect:/error";
         }
         model.addAttribute("contact", new ContactResponseDto(contact));
         model.addAttribute("contactId", id);
+        model.addAttribute("userId", user.getUserId());
+        model.addAttribute("role", String.valueOf(user.getRole()));
+        model.addAttribute("nickname", user.getNickname());
         return "contact";
     }
 
@@ -53,6 +60,10 @@ public class ContactViewController {
         Contact contact = contactService.getContactById(id);
         ContactResponseDto responseDto = new ContactResponseDto(contact);
 
+        String email = principal.getAttribute("email");
+        User user = contactService.getUserByEmail(email);
+        List<Contact> contacts = contactService.getContactsByUser(user);
+
         model.addAttribute("contact", responseDto);
 
         String currentUserEmail = principal.getName();
@@ -61,6 +72,9 @@ public class ContactViewController {
 
         model.addAttribute("hasAccess", isOwner);
         model.addAttribute("hasDeleteAccess", isOwner || isAdmin);
+        model.addAttribute("userId", user.getUserId());
+        model.addAttribute("role", String.valueOf(user.getRole()));
+        model.addAttribute("nickname", user.getNickname());
         return "contact-detail";
     }
 

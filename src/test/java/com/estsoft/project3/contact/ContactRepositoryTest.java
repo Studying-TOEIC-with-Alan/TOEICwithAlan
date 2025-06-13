@@ -26,21 +26,19 @@ class ContactRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
-    private User createUser(String email) {
-        return userRepository.findByEmail(email)
-            .orElseGet(() -> userRepository.save(
-                User.builder()
-                    .email(email)
-                    .nickname("tester")
-                    .role(Role.ROLE_USER)
-                    .isActive("Y")
-                    .provider("google")
-                    .build()
-            ));
+    public User createUser(String email) {
+        return userRepository.findByEmailAndIsActive(email, "Y").orElseGet(() ->
+            userRepository.save(User.builder()
+                .email(email)
+                .nickname("tester")
+                .role(Role.ROLE_USER)
+                .isActive("Y")
+                .provider("google")
+                .build()));
     }
 
     @Test
-    void findByUser_returnsContactsOfUser() {
+    void findByUser() {
         User user = createUser("user@example.com");
 
         Contact contact1 = Contact.builder()
