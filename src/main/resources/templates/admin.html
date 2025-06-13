@@ -10,72 +10,79 @@
 </head>
 <body>
 <div th:replace="~{header :: siteHeader}"></div>
-<main class="main-content" id="main-content">
-    <div class="admin-container">
-        <div class="admin-button-group" style="margin-bottom: 20px;">
-            <a href="/admin" class="admin-btn">회원관리</a>
-            <a href="/admin/contact" class="admin-btn">민원관리</a>
-        </div>
+<main id="main-content" class="row justify-content-center">
+    <div class="col-md-10">
+        <h3 class="mb-3 mt-5 mb-5 font-weight-bold text-white text-center">회원 관리</h3>
 
-        <h2>회원 관리</h2>
+        <div class="admin-container">
+            <div class="mb-4">
+                <a href="/admin" class="admin-btn">회원관리</a>
+                <a href="/admin/contact" class="admin-btn">민원관리</a>
+            </div>
 
-        <form method="get" action="/admin" class="search-form">
-            <input type="text" name="nickname" placeholder="닉네임 검색"/>
-            <button type="submit">검색</button>
-        </form>
-
-        <table border="1">
-            <thead>
-            <tr>
-                <th>Email</th>
-                <th>닉네임</th>
-                <th>isActive</th>
-                <th>등급</th>
-                <th>점수</th>
-                <th>수정</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="user : ${users}">
-                <form th:action="@{/admin/update}" method="post">
-                    <td th:text="${user.email}"></td>
-                    <td th:text="${user.nickname}"></td>
-                    <td th:text="${user.isActive}"></td>
-                    <td>
-                        <select name="grade">
-                            <option th:value="0" th:selected="${user.grade == 0}">0</option>
-                            <option th:value="1" th:selected="${user.grade == 1}">1</option>
-                            <option th:value="2" th:selected="${user.grade == 2}">2</option>
-                            <option th:value="3" th:selected="${user.grade == 3}">3</option>
-                        </select>
-                    </td>
-                    <td>
-                        <input type="number" name="score" th:value="${user.score}" min="0"/>
-                    </td>
-                    <td>
-                        <input type="hidden" name="userId" th:value="${user.userId}"/>
-                        <button type="submit">수정</button>
-                    </td>
+            <div class="mb-2">
+                <form method="get" action="/admin" class="search-form ">
+                    <input class="mr-3" type="text" name="nickname" placeholder="닉네임 검색"/>
+                    <button type="submit">검색</button>
                 </form>
-            </tr>
-            </tbody>
-        </table>
-        <div class="pagination">
-            <ul>
-                <li th:if="${userPage.hasPrevious()}">
-                    <a th:href="@{/admin/users(nickname=${param.nickname}, page=${userPage.number - 1})}">이전</a>
-                </li>
+            </div>
 
-                <li th:each="i : ${#numbers.sequence(0, userPage.totalPages - 1)}"
-                    th:classappend="${i == userPage.number} ? 'active'">
-                    <a th:href="@{/admin/users(nickname=${param.nickname}, page=${i})}"
-                       th:text="${i + 1}">1</a>
-                </li>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>닉네임</th>
+                        <th>isActive</th>
+                        <th>등급</th>
+                        <th>점수</th>
+                        <th>수정</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${users}">
+                        <form th:action="@{/admin/update}" method="post">
+                            <td th:text="${user.email}"></td>
+                            <td th:text="${user.nickname}"></td>
+                            <td th:text="${user.isActive}"></td>
+                            <td>
+                                <select name="grade">
+                                    <option th:value="0" th:selected="${user.grade == 0}">0</option>
+                                    <option th:value="1" th:selected="${user.grade == 1}">1</option>
+                                    <option th:value="2" th:selected="${user.grade == 2}">2</option>
+                                    <option th:value="3" th:selected="${user.grade == 3}">3</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="number" name="score" th:value="${user.score}" min="0"/>
+                            </td>
+                            <td>
+                                <input type="hidden" name="userId" th:value="${user.userId}"/>
+                                <button type="submit">수정</button>
+                            </td>
+                        </form>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
-                <li th:if="${userPage.hasNext()}">
-                    <a th:href="@{/admin/users(nickname=${param.nickname}, page=${userPage.number + 1})}">다음</a>
-                </li>
-            </ul>
+            <div class="pagination">
+                <ul>
+                    <li th:if="${userPage.hasPrevious()}">
+                        <a th:href="@{/admin/users(nickname=${param.nickname}, page=${userPage.number - 1})}">이전</a>
+                    </li>
+
+                    <li th:each="i : ${#numbers.sequence(0, userPage.totalPages - 1)}"
+                        th:classappend="${i == userPage.number} ? 'active'">
+                        <a th:href="@{/admin/users(nickname=${param.nickname}, page=${i})}"
+                           th:text="${i + 1}">1</a>
+                    </li>
+
+                    <li th:if="${userPage.hasNext()}">
+                        <a th:href="@{/admin/users(nickname=${param.nickname}, page=${userPage.number + 1})}">다음</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </main>

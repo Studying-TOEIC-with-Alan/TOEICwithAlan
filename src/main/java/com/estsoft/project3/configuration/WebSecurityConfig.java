@@ -29,7 +29,7 @@ public class WebSecurityConfig {
 
     @Bean
     public WebSecurityCustomizer configure() {      //Disable Spring Security Features
-        return web -> web.ignoring().requestMatchers("/static/**", "/js/**");
+        return web -> web.ignoring().requestMatchers("/static/**", "/api/**");
     }
 
     @Bean
@@ -38,10 +38,8 @@ public class WebSecurityConfig {
         ClientRegistrationRepository clientRegistrationRepository) throws Exception {
         httpSecurity
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/images/**", "/css/**", "/js/**", "/home", "/login").permitAll()
+                .requestMatchers("/images/**", "/css/**", "/js/**", "/home", "/login", "/set-nickname").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/reviews/**").authenticated()
-                .requestMatchers("/contacts/**").authenticated()
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
