@@ -327,6 +327,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (categorySelect.value === "읽기 퀴즈") {
             resultText.innerHTML = passageHTML + questionHTML + `<div id="quiz-options">${optionsHTML}</div>` + feedbackHTML;
+            playQuestionBtn.disabled = true;
+            playQuestionBtn.style.display = "none";
         } else {
             resultText.innerHTML = `<div id="quiz-options">${optionsHTML}</div>` + feedbackHTML;
             playQuestionBtn.disabled = false;

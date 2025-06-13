@@ -7,10 +7,10 @@
 
 ## 🚀 Key Features
 
+- 🤖 **AI-Powered Feedback** – Get explanations, corrections, suggestions, and examples using Allen AI
 - 🎧 **TOEIC Listening Quizzes** – Practice real-style TOEIC listening questions with audio
 - 📖 **TOEIC Reading Quizzes** – Test comprehension with grammar, vocabulary, and reading passages
-- 🤖 **AI-Powered Feedback** – Get explanations, corrections, and suggestions using Allen AI
-- 📝 **Note-Taking** – Use Users can write and manage personal study notes
+- 📝 **Note-Taking** – Users can write and manage personal study notes
 - 💬 **User-to-User Chat** – Interact and study collaboratively with other learners
 - 🌟 **Platform Review System** – Leave feedback of the platform 
 - 📬 **Contact Admin Form** – Send questions or support requests to the platform owner
@@ -79,6 +79,15 @@
 
 ### 🏠 Main Page
 ![Main Page](screenshots/main-page.png)
+
+## 💡 Ask Allen AI – Grammar Help
+![Ask Allen AI](screenshots/ask-ai.png)
+
+### 🎧 TOEIC Listening Quiz
+![Listening Quiz](screenshots/toeic-listening.png)
+
+### 📖 TOEIC Reading Quiz
+![Reading Quiz](screenshots/toeic-reading.png)
 
 ### 🔐 Login
 ![Login](screenshots/login.png)
