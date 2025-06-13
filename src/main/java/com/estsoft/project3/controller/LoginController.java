@@ -27,7 +27,7 @@ public class LoginController {
 
     @GetMapping("/set-nickname")
     public String setNickname() {
-        return "/nickname";
+        return "nickname";
     }
 
     @PostMapping("/set-nickname")
