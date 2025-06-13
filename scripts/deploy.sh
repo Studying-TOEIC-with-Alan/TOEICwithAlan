@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BUILD_JAR=$(ls /home/ec2-user/action/build/libs/*SNAPSHOT.jar)
+BUILD_JAR=$(ls /home/ec2-user/app/*.jar)
 JAR_NAME=$(basename $BUILD_JAR)
 echo "## build file name : $JAR_NAME" >> /home/ec2-user/action/spring-deploy.log
 

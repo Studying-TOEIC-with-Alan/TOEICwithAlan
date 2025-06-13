@@ -23,10 +23,14 @@ if (typeof speechSynthesis !== "undefined") {
 
 document.addEventListener("DOMContentLoaded", function () {
     const categorySelect = document.getElementById('category-hidden');
+
     const inputText = document.getElementById('input-text');
+    const inputResultGuide = document.getElementById('input-result-guide');
+
+    const grammarTypeSelect = document.getElementById('grammarType-select');
+
     const readingPartSelect = document.getElementById('readingPart-select');
     const listeningPartSelect = document.getElementById('listeningPart-select');
-    const inputResultGuide = document.getElementById('input-result-guide');
 
     const searchBtn = document.getElementById("search-btn");
     const startBtn = document.getElementById("start-btn");
@@ -73,8 +77,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (category === "문법") {
                 inputText.style.display = "none";
+                grammarTypeSelect.style.display = "inline";
             } else {
                 inputText.style.display = "inline";
+                grammarTypeSelect.style.display = "none";
             }
 
             inputText.value = "";
@@ -88,6 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
             inputResultGuide.style.display = "none";
             inputText.style.display = "none";
             searchBtn.style.display = "none";
+            grammarTypeSelect.style.display = "none";
 
             if (category === "읽기 퀴즈") {
                 readingPartSelect.disabled = false;
@@ -132,7 +139,13 @@ document.addEventListener("DOMContentLoaded", function () {
     if (searchBtn) {
         searchBtn.addEventListener("click", (e) => {
             e.preventDefault();
-            const input = inputText.value.trim();
+            let input = "";
+
+            if (categorySelect.value === "문법") {
+                input = grammarTypeSelect.value;
+            } else {
+                input = inputText.value.trim();
+            }
 
             // Input validation before call allen api
             if (categorySelect.value !== "문법" && !validateEnglishInput(input)) {
@@ -257,17 +270,17 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.log("Response incomplete: " + errorData.errorMessage);
                     beforeQuizMode();
                 } else {
-                    return (category === "읽기 퀴즈" || category === "듣기 퀴즈") ? response.json() : response.text();
+                    return response.json();
                 }
             })
             .then(data => {
                 if (category === "읽기 퀴즈" || category === "듣기 퀴즈") {
-                    renderQuizData(data);
+                    renderQuizData(data.allenInputText, data.quizData);
                     resultBox.style.display = "block";
                 }else {
-                    resultText.innerHTML = data;
+                    resultText.innerHTML = data.allenContent;
                     resultBox.style.display = "block";
-                    return saveAllenInfo(category, input, data);
+                    return saveAllenInfo(category, data.allenInputText, data.allenContent);
                 }
             })
             .catch(error => {
@@ -285,10 +298,10 @@ document.addEventListener("DOMContentLoaded", function () {
     let isSpeechCancelled = false;
 
     //Render reading and listening quiz data
-    function renderQuizData(data) {
-        currentQuizData = data; // Save for playback
+    function renderQuizData(allenInputText, quizData) {
+        currentQuizData = quizData; // Save for playback
 
-        const { passage, question, answerChoices, correctAnswer, allenInputText } = data;
+        const { passage, question, answerChoices, correctAnswer } = quizData;
 
         const passageHTML = `<p><strong>Passage:</strong><br>${marked.parse(passage)}</p>`;
         const questionHTML = `<p><strong>Question:</strong><br>${question}</p>`;
