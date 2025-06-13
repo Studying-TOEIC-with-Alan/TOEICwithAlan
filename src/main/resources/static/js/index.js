@@ -4,9 +4,24 @@ let womanVoice = null;
 function loadVoicesAndSet() {
     const voices = speechSynthesis.getVoices();
 
+    if (!voices.length) {
+        // Retry loading voices after a short delay
+        setTimeout(loadVoicesAndSet, 200);
+        return;
+    }
+
+    // Log voices once for debugging
+    console.log("Available voices:");
+    voices.forEach(v => console.log(`${v.name} (${v.lang})`));
+
     // Try matching by voice name (adjust to match what your browser lists)
-    manVoice = voices.find(v => v.name.includes("David") || v.name.includes("Google US English"));
-    womanVoice = voices.find(v => v.name.includes("Zira") || v.name.includes("Google US English Female") || v.name.includes("Samantha"));
+    manVoice = voices.find(v =>
+        /David|Alex|Google UK English Male|Microsoft George|Fred/i.test(v.name)
+    );
+
+    womanVoice = voices.find(v =>
+        /Zira|Samantha|Victoria|Google US English Female|Google UK English Female/i.test(v.name)
+    );
 
     if (!manVoice) console.warn("No man voice found.");
     if (!womanVoice) console.warn("No woman voice found.");
