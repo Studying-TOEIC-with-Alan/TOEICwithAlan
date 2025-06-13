@@ -50,17 +50,15 @@ class ReviewControllerTest {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    private User createUser(String email) {
-        return userRepository.findByEmail(email)
-            .orElseGet(() -> userRepository.save(
-                User.builder()
-                    .email(email)
-                    .nickname("tester")
-                    .role(Role.ROLE_USER)
-                    .isActive("Y")
-                    .provider("google")
-                    .build()
-            ));
+    public User createUser(String email) {
+        return userRepository.findByEmailAndIsActive(email, "Y").orElseGet(() ->
+            userRepository.save(User.builder()
+                .email(email)
+                .nickname("tester")
+                .role(Role.ROLE_USER)
+                .isActive("Y")
+                .provider("google")
+                .build()));
     }
 
     @Test

@@ -41,8 +41,8 @@ class ContactServiceTest {
     @Autowired
     private FileStorageService fileStorageService;
 
-    private User createUser(String email) {
-        return userRepository.findByEmail(email).orElseGet(() ->
+    public User createUser(String email) {
+        return userRepository.findByEmailAndIsActive(email, "Y").orElseGet(() ->
             userRepository.save(User.builder()
                 .email(email)
                 .nickname("tester")
@@ -76,7 +76,7 @@ class ContactServiceTest {
 
     @Test
     @DisplayName("전체 문의 조회 정렬 테스트")
-    void getAllContactsSortedByDateTest() throws InterruptedException {
+    void getAllContacts() throws InterruptedException {
         contactRepository.deleteAll();
         User user = createUser("test@example.com");
 

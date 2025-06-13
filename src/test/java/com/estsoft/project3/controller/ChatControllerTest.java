@@ -51,21 +51,21 @@ class ChatControllerTest {
         createUser("test@example.com", 2L);
     }
 
-    private User createUser(String email, Long grade) {
-        User user = userRepository.findByEmail(email)
-            .orElseGet(() -> userRepository.save(
-                User.builder()
-                    .provider("google")
-                    .email(email)
-                    .nickname("tester")
-                    .role(Role.ROLE_USER)
-                    .isActive("Y")
-                    .build()
-            ));
-        user.setGrade(grade);
-        return user;
-    }
+    public User createUser(String email, Long grade) {
+        User user = userRepository.findByEmailAndIsActive(email, "Y").orElseGet(() ->
+            User.builder()
+                .email(email)
+                .nickname("tester")
+                .role(Role.ROLE_USER)
+                .isActive("Y")
+                .provider("google")
+                .build()
+        );
 
+        user.setGrade(grade);
+
+        return userRepository.save(user);
+    }
 
     private RequestPostProcessor oauth2Login(String email) {
         return SecurityMockMvcRequestPostProcessors.oauth2Login().oauth2User(
