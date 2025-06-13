@@ -55,7 +55,7 @@ public class WebSecurityConfig {
                     exception.printStackTrace();
                 })
                 .successHandler(customOAuth2SuccessHandler)
-                .loginPage("/login")
+                .loginPage("/login").permitAll()
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")

@@ -43,8 +43,8 @@ class ReviewServiceTest {
     @Autowired
     private FileStorageService fileStorageService;
 
-    private User createUser(String email) {
-        return userRepository.findByEmail(email).orElseGet(() ->
+    public User createUser(String email) {
+        return userRepository.findByEmailAndIsActive(email, "Y").orElseGet(() ->
             userRepository.save(User.builder()
                 .email(email)
                 .nickname("tester")
