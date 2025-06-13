@@ -2,12 +2,10 @@ package com.estsoft.project3.controller;
 
 import com.estsoft.project3.domain.Role;
 import com.estsoft.project3.domain.User;
-import com.estsoft.project3.dto.SessionUser;
 import com.estsoft.project3.review.Review;
 import com.estsoft.project3.review.ReviewResponseDto;
 import com.estsoft.project3.review.ReviewService;
 import com.estsoft.project3.service.UserService;
-import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,22 +42,29 @@ public class ReviewViewController {
 
         String currentUserEmail = principal.getAttribute("email");
         Review review = reviewService.getReviewById(id);
+        String email = principal.getAttribute("email");
+        User user = reviewService.getUserByEmail(email);
+        List<Review> reviews = reviewService.getReviewsByUser(user);
 
         if (!review.getUser().getEmail().equals(currentUserEmail)) {
             return "redirect:/error";
         }
         model.addAttribute("review", new ReviewResponseDto(review));
         model.addAttribute("reviewId", id);
+        model.addAttribute("userId", user.getUserId());
+        model.addAttribute("role", String.valueOf(user.getRole()));
+        model.addAttribute("nickname", user.getNickname());
         return "review";
     }
 
     @GetMapping("/reviews")
     public String showAllReviews(@RequestParam(name = "sort", defaultValue = "newest") String sort,
-        Model model, HttpSession httpSession) {
+        Model model, @AuthenticationPrincipal OAuth2User principal) {
         boolean newestFirst = sort.equalsIgnoreCase("newest");
-        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
-        Long userId = sessionUser.getUserId();
-        User user = userService.getUserById(userId);
+
+        String email = principal.getAttribute("email");
+        User user = reviewService.getUserByEmail(email);
+        List<Review> review = reviewService.getReviewsByUser(user);
 
         List<Review> reviews = reviewService.getAllReviewsSortedByDate(newestFirst);
 
@@ -69,9 +74,9 @@ public class ReviewViewController {
 
         model.addAttribute("reviews", responseDto);
         model.addAttribute("sort", sort);
-        model.addAttribute("userId", sessionUser.getUserId());
-        model.addAttribute("role", String.valueOf(sessionUser.getRole()));
-        model.addAttribute("nickname", sessionUser.getNickname());
+        model.addAttribute("userId", user.getUserId());
+        model.addAttribute("role", String.valueOf(user.getRole()));
+        model.addAttribute("nickname", user.getNickname());
         model.addAttribute("user", user);
 
         return "review-main";
@@ -83,6 +88,10 @@ public class ReviewViewController {
         Review review = reviewService.getReviewById(id);
         ReviewResponseDto responseDto = new ReviewResponseDto(review);
 
+        String email = principal.getAttribute("email");
+        User user = reviewService.getUserByEmail(email);
+        List<Review> reviews = reviewService.getReviewsByUser(user);
+
         model.addAttribute("review", responseDto);
 
         String currentUserEmail = principal.getName();
@@ -91,6 +100,9 @@ public class ReviewViewController {
 
         model.addAttribute("hasAccess", isOwner);
         model.addAttribute("hasDeleteAccess", isOwner || isAdmin);
+        model.addAttribute("userId", user.getUserId());
+        model.addAttribute("role", String.valueOf(user.getRole()));
+        model.addAttribute("nickname", user.getNickname());
         return "review-detail";
     }
 }

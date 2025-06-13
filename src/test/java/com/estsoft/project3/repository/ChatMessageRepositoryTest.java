@@ -80,19 +80,20 @@ class ChatMessageRepositoryTest {
         assertThat(remaining).allMatch(msg -> msg.getSentAt().isAfter(cutoff));
     }
 
-    private User createUser(String email, Long grade) {
-        User user = userRepository.findByEmail(email)
-            .orElseGet(() -> userRepository.save(
-                User.builder()
-                    .provider("google")
-                    .email(email)
-                    .nickname("tester")
-                    .role(Role.ROLE_USER)
-                    .isActive("Y")
-                    .build()
-            ));
+    public User createUser(String email, Long grade) {
+        User user = userRepository.findByEmailAndIsActive(email, "Y").orElseGet(() ->
+            User.builder()
+                .email(email)
+                .nickname("tester")
+                .role(Role.ROLE_USER)
+                .isActive("Y")
+                .provider("google")
+                .build()
+        );
+
         user.setGrade(grade);
-        return user;
+
+        return userRepository.save(user);
     }
 
     private void setSentAt(ChatMessage message, LocalDateTime time) {
