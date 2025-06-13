@@ -153,6 +153,8 @@ document.addEventListener("DOMContentLoaded", function () {
     //Search button for non-quiz category
     if (searchBtn) {
         searchBtn.addEventListener("click", (e) => {
+            searchBtn.disabled = true;
+
             e.preventDefault();
             let input = "";
 
@@ -305,6 +307,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .finally(() => {
                 // Hide spinner after fetch completes
                 loadingSpinner.style.display = "none";
+                searchBtn.disabled = false;
             });
 
     }

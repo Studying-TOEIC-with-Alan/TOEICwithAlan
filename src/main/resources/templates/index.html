@@ -16,7 +16,7 @@
     <div class="col-md-10 mb-5 text-center">
         <h3 class="mb-5 mt-5 font-weight-bold text-white">Easy English, Everyday</h3>
 
-        <div id="ask-allen-form" class="mb-5">
+        <div id="ask-allen-form" class="mb-3">
             <!--Category selection button-->
             <div class="btn-group mb-3" role="group" aria-label="Category Buttons">
                 <button th:each="cat : ${categories}"
@@ -84,9 +84,9 @@
 
         <!-- writing note -->
         <input type="hidden" id="user-id" name="userId" th:value="${userId}" />
-        <button th:attr="disabled=${userId == null}" type="submit" id="write-note-button" class="btn btn-light rounded-pill border mb-3">✏️ 노트 작성</button>
-        <button type="submit" id="save-note-button" class="btn btn-primary rounded-pill border mb-3">💾 노트 저장</button>
-        <button type="submit" id="cancel-note-button" class="btn btn-secondary rounded-pill border mb-3">❌ 취소</button><br>
+        <button th:attr="disabled=${userId == null}" type="submit" id="write-note-button" class="btn btn-light rounded-pill border mb-3 mt-3">✏️ 노트 작성</button>
+        <button type="submit" id="save-note-button" class="btn btn-primary rounded-pill border mb-3 mt-3">💾 노트 저장</button>
+        <button type="submit" id="cancel-note-button" class="btn btn-secondary rounded-pill border mb-3 mt-3">❌ 취소</button><br>
         <div id="tilTitleGroup">
             <label for="tilTitle" class="font-weight-bold d-block text-white">Title</label>
             <input type="text" id="tilTitle" name="tilTitle" maxlength="20" />
