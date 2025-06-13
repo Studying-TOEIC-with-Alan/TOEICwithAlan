@@ -33,6 +33,7 @@ p {
     height: 38px;
 }
 
+/* for result text style start */
 .result-text {
     white-space: normal;
     word-break: break-word;
@@ -48,16 +49,29 @@ p {
 .result-text ol {
     padding-left: 1.5em;
     list-style-position: outside; /* put numbers outside the text block */
+    margin-bottom: 20px;
 }
 
-.result-text li {
+.result-text ol li {
     margin-left: 20px;
-    text-indent: 5px; /* keeps lines aligned for multiple lines */
+    text-indent: 5px;
+    margin-bottom: 20px;
+}
+
+.result-text ul {
+    padding-left: 1.5em;
+    margin-bottom: 20px;
+}
+
+.result-text ul li {
+    margin-left: 20px;
+    margin-bottom: 10px;
 }
 
 .result-text p {
-    margin-bottom: 1em; /* spacing between paragraphs */
+    margin-bottom: 1.5em; /* spacing between paragraphs */
 }
+/* for result text style end */
 
 .guide-text {
     font-size: 12px;
