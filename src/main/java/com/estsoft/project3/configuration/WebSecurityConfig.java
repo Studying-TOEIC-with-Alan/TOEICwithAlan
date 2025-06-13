@@ -38,7 +38,7 @@ public class WebSecurityConfig {
         ClientRegistrationRepository clientRegistrationRepository) throws Exception {
         httpSecurity
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/images/**", "/css/**", "/js/**", "/home", "/login").permitAll()
+                .requestMatchers("/images/**", "/css/**", "/js/**", "/home", "/login", "/set-nickname").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/reviews/**").authenticated()
                 .requestMatchers("/contacts/**").authenticated()
