@@ -14,7 +14,7 @@ function loadVoicesAndSet() {
     console.log("Available voices:");
     voices.forEach(v => console.log(`${v.name} (${v.lang})`));
 
-    // Try matching by voice name (adjust to match what your browser lists)
+    // Get man and woman voices (adjust to match what your browser lists)
     manVoice = voices.find(v =>
         /David|Alex|Google UK English Male|Microsoft George|Fred/i.test(v.name)
     );
