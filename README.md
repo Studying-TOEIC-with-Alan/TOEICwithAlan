@@ -23,17 +23,13 @@
 | Layer                | Technology                                                                                     |
 |----------------------|------------------------------------------------------------------------------------------------|
 | **Backend**          | Spring Boot, Spring Security, Spring Scheduler, JPA, MyBatis, Lombok, RESTful API architecture |
-| **Frontend**         | Thymeleaf, Bootstrap, HTML, CSS, JS                                                            |
-| **AI Integration**   | Allen AI API                                                                                   |
+| **Frontend**         | Thymeleaf, Bootstrap, HTML, CSS, JavaScript, Quill.js, lottie.min.js                           |
+| **API**              | RESTful API architecture, JSON responses                                                       |
+| **Integrations**     | Allen AI API, OAuth2 (Google Login), Long Polling                                              |
 | **Database**         | MySQL                                                                                          |
-| **Messaging**        | Long pooling                                                                                   |
-| **Login**            | Oauth2 (Google)                                                                                |
-| **Rich Text Editor** | Quill.js                                                                                       |
-| **API Tools**        | REST APIs with JSON responses                                                                  |
+| **DevOps / Infra**   | AWS EC2, Gradle                                                                                |
 | **UI/UX Design**     | Figma                                                                                          |
 | **DB Design**        | ERD Cloud                                                                                      |
-| **Infra**            | AWS EC2                                                                                        |
-| **Build Tool**       | Gradle                                                                                         |
 
 ---
 
@@ -80,7 +76,7 @@
 ### 🏠 Main Page
 ![Main Page](screenshots/main-page.png)
 
-## 💡 Ask Allen AI – Grammar Help
+### 💡 Grammar Help
 ![Ask Allen AI](screenshots/ask-ai.png)
 
 ### 🎧 TOEIC Listening Quiz
