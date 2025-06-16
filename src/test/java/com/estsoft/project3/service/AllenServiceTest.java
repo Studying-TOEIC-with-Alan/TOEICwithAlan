@@ -1,5 +1,6 @@
 package com.estsoft.project3.service;
 
+import com.estsoft.project3.config.MockS3ClientConfig;
 import com.estsoft.project3.domain.Allen;
 import com.estsoft.project3.domain.Role;
 import com.estsoft.project3.domain.User;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
@@ -19,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Import(MockS3ClientConfig.class)
 class AllenServiceTest {
 
     @Autowired

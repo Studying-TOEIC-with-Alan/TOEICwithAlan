@@ -1,10 +1,12 @@
 package com.estsoft.project3.repository;
 
+import com.estsoft.project3.config.MockS3ClientConfig;
 import com.estsoft.project3.domain.Role;
 import com.estsoft.project3.domain.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @ActiveProfiles("test")
+@Import(MockS3ClientConfig.class)
 class UserRepositoryTest {
 
     @Autowired
