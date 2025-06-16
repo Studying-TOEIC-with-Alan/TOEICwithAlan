@@ -65,9 +65,7 @@ public class ContactViewController {
         List<Contact> contacts = contactService.getContactsByUser(user);
 
         model.addAttribute("contact", responseDto);
-
-        String currentUserEmail = principal.getName();
-        boolean isOwner = contact.getUser().getEmail().equals(currentUserEmail);
+        boolean isOwner = contact.getUser().getEmail().equals(user.getEmail());
         boolean isAdmin = user.getRole() == Role.ROLE_ADMIN;
 
         model.addAttribute("hasAccess", isOwner);

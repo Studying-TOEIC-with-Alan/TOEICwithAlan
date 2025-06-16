@@ -94,8 +94,7 @@ public class ReviewViewController {
 
         model.addAttribute("review", responseDto);
 
-        String currentUserEmail = principal.getName();
-        boolean isOwner = review.getUser().getEmail().equals(currentUserEmail);
+        boolean isOwner = review.getUser().getEmail().equals(user.getEmail());
         boolean isAdmin = user.getRole() == Role.ROLE_ADMIN;
 
         model.addAttribute("hasAccess", isOwner);
