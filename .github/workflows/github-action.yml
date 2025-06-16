@@ -41,13 +41,13 @@ jobs:
           echo "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect" >> src/test/resources/application-test.properties
           echo "spring.security.oauth2.client.registration.google.client-id=dummy-client-id" >> src/test/resources/application-test.properties
           echo "spring.security.oauth2.client.registration.google.client-secret=dummy-client-secret" >> src/test/resources/application-test.properties
-          echo "cloud.aws.s3.bucket=dummy-bucket" >> src/test/resources/application-test.properties
-          echo "cloud.aws.region.static=ap-northeast-2" >> src/test/resources/application-test.properties
-          echo "cloud.aws.credentials.accessKey=dummy-access-key" >> src/test/resources/application-test.properties
-          echo "cloud.aws.credentials.secretKey=dummy-secret-key" >> src/test/resources/application-test.properties
+          echo "AWS_S3_BUCKET=dummy-bucket" >> src/test/resources/application-test.properties
+          echo "AWS_CREDENTIALS_ACCESS_KEY=dummy-access-key" >> src/test/resources/application-test.properties
+          echo "AWS_CREDENTIALS_SECRET_KEY=dummy-secret-key" >> src/test/resources/application-test.properties
+          echo "AWS_REGION_STATIC=ap-northeast-2" >> src/test/resources/application-test.properties
 
-      - name: Build
-        run: ./gradlew build
+      - name: Build with test profile
+        run: ./gradlew build -Dspring.profiles.active=test
 
       - name: Upload test report if tests fail
         if: failure()
