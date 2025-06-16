@@ -1,9 +1,11 @@
 package com.estsoft.project3.service;
 
+import com.estsoft.project3.config.MockS3ClientConfig;
 import com.estsoft.project3.dto.QuizQuestion;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
@@ -12,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Import(MockS3ClientConfig.class)
 class ToeicParserServiceTest {
 
     @Autowired

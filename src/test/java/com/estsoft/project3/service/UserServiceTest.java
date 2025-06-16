@@ -1,5 +1,6 @@
 package com.estsoft.project3.service;
 
+import com.estsoft.project3.config.MockS3ClientConfig;
 import com.estsoft.project3.domain.Role;
 import com.estsoft.project3.domain.User;
 import com.estsoft.project3.dto.UserRequest;
@@ -7,6 +8,7 @@ import com.estsoft.project3.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
@@ -15,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Import(MockS3ClientConfig.class)
 class UserServiceTest {
 
     @Autowired
@@ -56,7 +59,7 @@ class UserServiceTest {
         User user = createTestUser();
 
         UserRequest request = new UserRequest();
-        request.setNickname("NewNickname");
+        request.setNickname("NewNickname1");
         request.setGrade(2L);
         request.setScore(100L);
         request.setIsActive("N");

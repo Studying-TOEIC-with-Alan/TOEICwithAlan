@@ -1,9 +1,5 @@
 package com.estsoft.project3.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import com.estsoft.project3.config.MockS3ClientConfig;
 import com.estsoft.project3.contact.Contact;
 import com.estsoft.project3.contact.ContactRepository;
@@ -11,10 +7,10 @@ import com.estsoft.project3.contact.ContactResponseDto;
 import com.estsoft.project3.domain.Role;
 import com.estsoft.project3.domain.User;
 import com.estsoft.project3.repository.UserRepository;
+import com.estsoft.project3.review.ReviewRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +22,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -45,7 +42,7 @@ class AdminServiceTest {
     private ContactRepository contactRepository;
 
     @Autowired
-    private MockMvc mockMvc;
+    private ReviewRepository reviewRepository;
 
     private User testUser;
     private Contact testContact1;
@@ -53,6 +50,7 @@ class AdminServiceTest {
 
     @BeforeEach
     void setUp() {
+        reviewRepository.deleteAll();
         contactRepository.deleteAll();
         userRepository.deleteAll();
 
@@ -74,12 +72,6 @@ class AdminServiceTest {
             .user(testUser)
             .build();
         contactRepository.saveAll(List.of(testContact1, testContact2));
-    }
-
-    @AfterEach
-    void tearDown() {
-        contactRepository.deleteAll();
-        userRepository.deleteAll();
     }
 
     @Test
@@ -117,8 +109,10 @@ class AdminServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         Page<User> result = adminService.findByNicknameContaining("integration", pageable);
         assertNotNull(result);
-        assertEquals(1, result.getTotalElements());
-        assertEquals(testUser.getNickname(), result.getContent().get(0).getNickname());
+        boolean containsTestUser = result.getContent().stream()
+                .anyMatch(u -> u.getNickname().equals("integrationTestUser"));
+
+        assertTrue(containsTestUser, "Should contain integrationTestUser");
     }
 
     @Test

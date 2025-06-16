@@ -1,5 +1,6 @@
 package com.estsoft.project3.controller;
 
+import com.estsoft.project3.config.MockS3ClientConfig;
 import com.estsoft.project3.domain.Allen;
 import com.estsoft.project3.domain.Role;
 import com.estsoft.project3.domain.User;
@@ -17,9 +18,11 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -35,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Import(MockS3ClientConfig.class)
 @AutoConfigureMockMvc
 class AllenControllerTest {
 
@@ -77,6 +81,7 @@ class AllenControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
     void insertAllen() throws Exception {
         //given:
         User savedUser = createUser();
@@ -105,6 +110,7 @@ class AllenControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
     void resetState() throws Exception {
         //given:
         String url = "/api/resetAllen";
@@ -117,6 +123,7 @@ class AllenControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
     void askAllenNonQuiz() throws Exception {
         //given:
         User savedUser = createUser();
@@ -133,10 +140,11 @@ class AllenControllerTest {
 
         //then:
         resultActions.andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
     @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
     void askAllenQuiz() throws Exception {
         //given:
         User savedUser = createUser();
@@ -161,22 +169,22 @@ class AllenControllerTest {
         mockQuiz.setCorrectAnswer("B");
 
         when(allenApiService.getAnswer(anyString())).thenReturn(mockedRawResponse);
-        when(toeicParserService.parse(mockedRawResponse)).thenReturn(mockQuiz);
+        when(toeicParserService.parse(anyString())).thenReturn(mockQuiz);
         when(allenService.GetLastAllenByUserAndCatAndInput(savedUser.getUserId(), category, inputText)).thenReturn(null);
 
         //when:
         ResponseEntity<?> response = allenController.askAllen(category, inputText, session);
 
         //then:
-        assertInstanceOf(QuizQuestion.class, response.getBody());
-
-        QuizQuestion quizQuestion = (QuizQuestion) response.getBody();
+        Map<?, ?> responseBody = (Map<?, ?>) response.getBody();
+        assertNotNull(responseBody);
+        QuizQuestion quizQuestion = (QuizQuestion) responseBody.get("quizData");
         assertEquals("Passage", quizQuestion.getPassage());
         assertEquals("Question?", quizQuestion.getQuestion());
-        assertEquals("Choice A", quizQuestion.getAnswerChoices().get("A"));
-        assertEquals("Choice B", quizQuestion.getAnswerChoices().get("B"));
-        assertEquals("Choice C", quizQuestion.getAnswerChoices().get("C"));
-        assertEquals("Choice D", quizQuestion.getAnswerChoices().get("D"));
-        assertEquals("B", quizQuestion.getCorrectAnswer());
+        assertEquals("Choice A",quizQuestion.getAnswerChoices().get("A"));
+        assertEquals("Choice B",quizQuestion.getAnswerChoices().get("B"));
+        assertEquals("Choice C",quizQuestion.getAnswerChoices().get("C"));
+        assertEquals("Choice D",quizQuestion.getAnswerChoices().get("D"));
+        assertEquals("B",quizQuestion.getCorrectAnswer());
     }
 }
