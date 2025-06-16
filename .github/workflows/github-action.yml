@@ -28,6 +28,21 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3.1.0
 
+      - name: Create application-test.properties for test
+        run: |
+          mkdir -p src/test/resources
+          echo "spring.datasource.driver-class-name=org.h2.Driver" >> src/test/resources/application-test.properties
+          echo "spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1" >> src/test/resources/application-test.properties
+          echo "spring.datasource.username=sa" >> src/test/resources/application-test.properties
+          echo "spring.datasource.password=" >> src/test/resources/application-test.properties
+          echo "spring.h2.console.enabled=true" >> src/test/resources/application-test.properties
+          echo "spring.jpa.hibernate.ddl-auto=create-drop" >> src/test/resources/application-test.properties
+          echo "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect" >> src/test/resources/application-test.properties
+          echo "spring.jpa.show-sql=true" >> src/test/resources/application-test.properties
+          echo "aws.credentials.access-key=dummy-access-key" >> src/test/resources/application-test.properties
+          echo "aws.credentials.secret-key=dummy-secret-key" >> src/test/resources/application-test.properties
+          echo "aws.region.static=ap-northeast-2" >> src/test/resources/application-test.properties
+
       - name: Build
         run: ./gradlew build
 
