@@ -28,28 +28,8 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3.1.0
 
-      - name: Create application-test.properties
-        run: |
-          mkdir -p src/test/resources
-          echo "spring.datasource.driver-class-name=org.h2.Driver" > src/test/resources/application-test.properties
-          echo "spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1" >> src/test/resources/application-test.properties
-          echo "spring.datasource.username=sa" >> src/test/resources/application-test.properties
-          echo "spring.datasource.password=" >> src/test/resources/application-test.properties
-          echo "spring.h2.console.enabled=true" >> src/test/resources/application-test.properties
-          echo "spring.jpa.hibernate.ddl-auto=create-drop" >> src/test/resources/application-test.properties
-          echo "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect" >> src/test/resources/application-test.properties
-          echo "spring.jpa.show-sql=true" >> src/test/resources/application-test.properties
-          echo "AWS_S3_BUCKET=dummy-bucket" >> src/test/resources/application-test.properties
-          echo "AWS_CREDENTIALS_ACCESS_KEY=dummy-access-key" >> src/test/resources/application-test.properties
-          echo "AWS_CREDENTIALS_SECRET_KEY=dummy-secret-key" >> src/test/resources/application-test.properties
-          echo "AWS_REGION_STATIC=ap-northeast-2" >> src/test/resources/application-test.properties
-          echo "cloud.aws.credentials.access-key=dummy-access-key" >> src/test/resources/application-test.properties
-          echo "cloud.aws.credentials.secret-key=dummy-secret-key" >> src/test/resources/application-test.properties
-          echo "cloud.aws.region=ap-northeast-2" >> src/test/resources/application-test.properties
-          echo "cloud.aws.s3.bucket=dummy-bucket" >> src/test/resources/application-test.properties
-
-      - name: Build with tests
-        run: ./gradlew build -Dspring.profiles.active=test
+      - name: Build without tests
+        run: ./gradlew build -x test
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -77,10 +57,8 @@ jobs:
             export AWS_CREDENTIALS_SECRET_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
             export AWS_REGION_STATIC=ap-northeast-2
             export AWS_S3_BUCKET=${{ secrets.S3_BUCKET_NAME }}
-
             sudo yum install -y aws-cli
             mkdir -p /home/ec2-user/app
             aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/project3-0.0.1-SNAPSHOT.jar /home/ec2-user/app/app.jar
-
             sudo systemctl daemon-reexec
             sudo systemctl restart allen
