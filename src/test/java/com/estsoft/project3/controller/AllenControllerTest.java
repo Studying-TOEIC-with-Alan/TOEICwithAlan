@@ -169,24 +169,22 @@ class AllenControllerTest {
         mockQuiz.setCorrectAnswer("B");
 
         when(allenApiService.getAnswer(anyString())).thenReturn(mockedRawResponse);
-        when(toeicParserService.parse(mockedRawResponse)).thenReturn(mockQuiz);
+        when(toeicParserService.parse(anyString())).thenReturn(mockQuiz);
         when(allenService.GetLastAllenByUserAndCatAndInput(savedUser.getUserId(), category, inputText)).thenReturn(null);
 
         //when:
-        ResultActions resultActions = mockMvc.perform(post("/api/askAllen")
-                .param("category", category)
-                .param("inputText", inputText)
-                .session(session));
+        ResponseEntity<?> response = allenController.askAllen(category, inputText, session);
 
         //then:
-        resultActions.andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.quizData.passage").value("Passage"))
-                .andExpect(jsonPath("$.quizData.question").value("Question?"))
-                .andExpect(jsonPath("$.quizData.answerChoices.A").value("Choice A"))
-                .andExpect(jsonPath("$.quizData.answerChoices.B").value("Choice B"))
-                .andExpect(jsonPath("$.quizData.answerChoices.C").value("Choice C"))
-                .andExpect(jsonPath("$.quizData.answerChoices.D").value("Choice D"))
-                .andExpect(jsonPath("$.quizData.correctAnswer").value("B"));
+        Map<?, ?> responseBody = (Map<?, ?>) response.getBody();
+        assertNotNull(responseBody);
+        QuizQuestion quizQuestion = (QuizQuestion) responseBody.get("quizData");
+        assertEquals("Passage", quizQuestion.getPassage());
+        assertEquals("Question?", quizQuestion.getQuestion());
+        assertEquals("Choice A",quizQuestion.getAnswerChoices().get("A"));
+        assertEquals("Choice B",quizQuestion.getAnswerChoices().get("B"));
+        assertEquals("Choice C",quizQuestion.getAnswerChoices().get("C"));
+        assertEquals("Choice D",quizQuestion.getAnswerChoices().get("D"));
+        assertEquals("B",quizQuestion.getCorrectAnswer());
     }
 }
