@@ -1,5 +1,5 @@
 window.addEventListener('DOMContentLoaded', () => {
-    const baseUrl = 'https://myprojectb12.s3.ap-northeast-2.amazonaws.com/';
+    const baseUrl = 'https://3-team-allen.s3.ap-northeast-2.amazonaws.com/';
     const type = document.body.dataset.type;
     let itemId = document.body.dataset[`${type}Id`];
     const imgTagsInContent = document.querySelectorAll('#content img');
