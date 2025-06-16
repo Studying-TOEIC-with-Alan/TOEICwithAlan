@@ -18,10 +18,10 @@ public class FileStorageService {
 
     private final S3Client s3Client;
 
-    @Value("${AWS_S3_BUCKET}")
+    @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    @Value("${AWS_REGION_STATIC}")
+    @Value("${cloud.aws.region}")
     private String region;
 
     public String uploadSingleFile(MultipartFile file) throws IOException {
