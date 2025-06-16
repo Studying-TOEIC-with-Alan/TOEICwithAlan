@@ -68,7 +68,7 @@ public class ContactViewController {
 
         String currentUserEmail = principal.getName();
         boolean isOwner = contact.getUser().getEmail().equals(currentUserEmail);
-        boolean isAdmin = contact.getUser().getRole() == Role.ROLE_ADMIN;
+        boolean isAdmin = user.getRole() == Role.ROLE_ADMIN;
 
         model.addAttribute("hasAccess", isOwner);
         model.addAttribute("hasDeleteAccess", isOwner || isAdmin);

@@ -96,7 +96,7 @@ public class ReviewViewController {
 
         String currentUserEmail = principal.getName();
         boolean isOwner = review.getUser().getEmail().equals(currentUserEmail);
-        boolean isAdmin = review.getUser().getRole() == Role.ROLE_ADMIN;
+        boolean isAdmin = user.getRole() == Role.ROLE_ADMIN;
 
         model.addAttribute("hasAccess", isOwner);
         model.addAttribute("hasDeleteAccess", isOwner || isAdmin);
