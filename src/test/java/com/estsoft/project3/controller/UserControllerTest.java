@@ -1,5 +1,6 @@
 package com.estsoft.project3.controller;
 
+import com.estsoft.project3.config.MockS3ClientConfig;
 import com.estsoft.project3.domain.Role;
 import com.estsoft.project3.domain.User;
 import com.estsoft.project3.dto.SessionUser;
@@ -8,7 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -18,6 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
+@Import(MockS3ClientConfig.class)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 class UserControllerTest {
@@ -28,6 +32,7 @@ class UserControllerTest {
     private UserRepository userRepository;
 
     @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
     public void testUpdateUser() throws Exception {
         //given:
         User user = new User();
