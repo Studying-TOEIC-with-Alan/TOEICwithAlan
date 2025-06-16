@@ -43,6 +43,10 @@ jobs:
           echo "AWS_CREDENTIALS_ACCESS_KEY=dummy-access-key" >> src/test/resources/application-test.properties
           echo "AWS_CREDENTIALS_SECRET_KEY=dummy-secret-key" >> src/test/resources/application-test.properties
           echo "AWS_REGION_STATIC=ap-northeast-2" >> src/test/resources/application-test.properties
+          echo "cloud.aws.credentials.access-key=dummy-access-key" >> src/test/resources/application-test.properties
+          echo "cloud.aws.credentials.secret-key=dummy-secret-key" >> src/test/resources/application-test.properties
+          echo "cloud.aws.region=ap-northeast-2" >> src/test/resources/application-test.properties
+          echo "cloud.aws.s3.bucket=dummy-bucket" >> src/test/resources/application-test.properties
 
       - name: Build with tests
         run: ./gradlew build -Dspring.profiles.active=test
