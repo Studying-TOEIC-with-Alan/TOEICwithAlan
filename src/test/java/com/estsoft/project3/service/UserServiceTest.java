@@ -59,7 +59,7 @@ class UserServiceTest {
         User user = createTestUser();
 
         UserRequest request = new UserRequest();
-        request.setNickname("NewNickname");
+        request.setNickname("NewNickname1");
         request.setGrade(2L);
         request.setScore(100L);
         request.setIsActive("N");
