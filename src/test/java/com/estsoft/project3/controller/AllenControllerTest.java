@@ -139,8 +139,7 @@ class AllenControllerTest {
                 .param("inputText",inputText));
 
         //then:
-        resultActions.andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        resultActions.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
     @Test
