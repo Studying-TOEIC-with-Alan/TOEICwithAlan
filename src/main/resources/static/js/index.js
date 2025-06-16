@@ -4,9 +4,24 @@ let womanVoice = null;
 function loadVoicesAndSet() {
     const voices = speechSynthesis.getVoices();
 
-    // Try matching by voice name (adjust to match what your browser lists)
-    manVoice = voices.find(v => v.name.includes("David") || v.name.includes("Google US English"));
-    womanVoice = voices.find(v => v.name.includes("Zira") || v.name.includes("Google US English Female") || v.name.includes("Samantha"));
+    if (!voices.length) {
+        // Retry loading voices after a short delay
+        setTimeout(loadVoicesAndSet, 200);
+        return;
+    }
+
+    // Log voices once for debugging
+    console.log("Available voices:");
+    voices.forEach(v => console.log(`${v.name} (${v.lang})`));
+
+    // Get man and woman voices (adjust to match what your browser lists)
+    manVoice = voices.find(v =>
+        /David|Alex|Google UK English Male|Microsoft George|Fred/i.test(v.name)
+    );
+
+    womanVoice = voices.find(v =>
+        /Zira|Samantha|Victoria|Google US English Female|Google UK English Female/i.test(v.name)
+    );
 
     if (!manVoice) console.warn("No man voice found.");
     if (!womanVoice) console.warn("No woman voice found.");
@@ -138,6 +153,8 @@ document.addEventListener("DOMContentLoaded", function () {
     //Search button for non-quiz category
     if (searchBtn) {
         searchBtn.addEventListener("click", (e) => {
+            searchBtn.disabled = true;
+
             e.preventDefault();
             let input = "";
 
@@ -290,6 +307,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .finally(() => {
                 // Hide spinner after fetch completes
                 loadingSpinner.style.display = "none";
+                searchBtn.disabled = false;
             });
 
     }
@@ -308,10 +326,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const optionsHTML = Object.entries(answerChoices).map(([key, value]) =>
         `<label for="choice-${key}" style="display: inline-flex; align-items: center; margin-bottom: 8px; cursor: pointer;">
         <input type="radio" name="answer" value="${key}" id="choice-${key}" style="margin-right: 8px; cursor: pointer;">${key}) ${value}</label><br>`).join('');
-        const feedbackHTML = `<div id="quiz-feedback" class="mt-2"></div>`;
+        const feedbackHTML = `<div id="quiz-feedback" class="mt-2 text-center"></div>`;
 
         if (categorySelect.value === "읽기 퀴즈") {
             resultText.innerHTML = passageHTML + questionHTML + `<div id="quiz-options">${optionsHTML}</div>` + feedbackHTML;
+            playQuestionBtn.disabled = true;
+            playQuestionBtn.style.display = "none";
         } else {
             resultText.innerHTML = `<div id="quiz-options">${optionsHTML}</div>` + feedbackHTML;
             playQuestionBtn.disabled = false;
@@ -328,13 +348,37 @@ document.addEventListener("DOMContentLoaded", function () {
                 const selected = this.value;
                 const feedback = document.getElementById("quiz-feedback");
 
-                if (selected === correctAnswer) {
-                    feedback.innerHTML = `<p class="text-success"><strong>Correct!</strong></p>`;
-                } else {
-                    feedback.innerHTML = `<p class="text-danger"><strong>Incorrect.</strong> Correct answer is ${correctAnswer}.</p>`;
-                }
+                // Clear previous feedback
+                feedback.innerHTML = "";
 
-                // Optional: disable all options after selection
+                // Create a container for animation
+                const animationContainer = document.createElement("div");
+                animationContainer.style.width = "80px";
+                animationContainer.style.height = "80px";
+                animationContainer.style.margin = "0 auto";
+                feedback.appendChild(animationContainer);
+
+                // Determine correct animation path
+                const animationPath = selected === correctAnswer
+                    ? "animations/success.json"
+                    : "animations/fail.json";
+
+                // Load animation using Lottie
+                lottie.loadAnimation({
+                    container: animationContainer,
+                    renderer: "svg",
+                    loop: false,
+                    autoplay: true,
+                    path: animationPath
+                });
+
+                const feedbackText = document.createElement("p");
+                feedbackText.innerHTML = selected === correctAnswer
+                    ? `<strong class="text-success">Correct!</strong>`
+                    : `<strong class="text-danger">Incorrect.</strong> Correct answer is ${correctAnswer}.`;
+                feedback.appendChild(feedbackText);
+
+                // Disable all options after selection
                 document.querySelectorAll('input[name="answer"]').forEach(input => input.disabled = true);
 
                 // Show the "Next Question" button after answer

@@ -16,7 +16,7 @@
     <div class="col-md-10 mb-5 text-center">
         <h3 class="mb-5 mt-5 font-weight-bold text-white">Easy English, Everyday</h3>
 
-        <div id="ask-allen-form" class="mb-5">
+        <div id="ask-allen-form" class="mb-3">
             <!--Category selection button-->
             <div class="btn-group mb-3" role="group" aria-label="Category Buttons">
                 <button th:each="cat : ${categories}"
@@ -28,17 +28,17 @@
             <input type="hidden" name="category" id="category-hidden" th:value="${category}" />
 
             <div class="form-group">
-                <!--Question type-->
+                <!--Question type input-->
                 <input type="text" class="rounded-pill input-text pl-3 pr-3" id="input-text" name="inputText" th:value="${inputText}" style="display: none;" placeholder="Start typing..." autocomplete="off"/>
 
-                <!--Selection type-->
+                <!--Selection type input-->
                 <select id="grammarType-select" class="custom-select" name="grammarTypeName" style="display: none;">
                     <option th:each="grammarType : ${grammarTypes}" th:value="${grammarType}" th:text="${grammarType}" th:selected="${grammarType == grammarTypeName}"></option>
                 </select>
 
                 <button th:attr="disabled=${userId == null}" type="submit" id="search-btn" class="btn btn-light rounded-pill" style="display: none;">🔍</button>
 
-                <!--Quiz type-->
+                <!--Quiz type input-->
                 <div class="mb-3">
                     <select id="readingPart-select" class="custom-select" name="readingPartName" style="display: none;">
                         <option th:each="readingPart : ${readingParts}" th:value="${readingPart}" th:text="${readingPart}" th:selected="${readingPart == readingPartName}"></option>
@@ -46,6 +46,7 @@
                     <select id="listeningPart-select" class="custom-select" name="listeningPartName" style="display: none;">
                         <option th:each="listeningPart : ${listeningParts}" th:value="${listeningPart}" th:text="${listeningPart}" th:selected="${listeningPart == listeningPartName}"></option>
                     </select>
+
                     <button th:attr="disabled=${userId == null}" type="submit" id="start-btn" class="btn btn-light rounded-pill" style="display: none;">▶️</button>
                 </div>
             </div>
@@ -81,12 +82,11 @@
             </div>
         </div>
 
-
         <!-- writing note -->
         <input type="hidden" id="user-id" name="userId" th:value="${userId}" />
-        <button th:attr="disabled=${userId == null}" type="submit" id="write-note-button" class="btn btn-light rounded-pill border mb-3">✏️ 노트 작성</button>
-        <button type="submit" id="save-note-button" class="btn btn-primary rounded-pill border mb-3">💾 노트 저장</button>
-        <button type="submit" id="cancel-note-button" class="btn btn-secondary rounded-pill border mb-3">❌ 취소</button><br>
+        <button th:attr="disabled=${userId == null}" type="submit" id="write-note-button" class="btn btn-light rounded-pill border mb-3 mt-3">✏️ 노트 작성</button>
+        <button type="submit" id="save-note-button" class="btn btn-primary rounded-pill border mb-3 mt-3">💾 노트 저장</button>
+        <button type="submit" id="cancel-note-button" class="btn btn-secondary rounded-pill border mb-3 mt-3">❌ 취소</button><br>
         <div id="tilTitleGroup">
             <label for="tilTitle" class="font-weight-bold d-block text-white">Title</label>
             <input type="text" id="tilTitle" name="tilTitle" maxlength="20" />
@@ -99,6 +99,7 @@
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
 <script src="/js/index.js"></script>
 </body>
 </html>
