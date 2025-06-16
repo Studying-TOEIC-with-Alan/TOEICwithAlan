@@ -14,7 +14,6 @@ import com.estsoft.project3.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -43,9 +41,6 @@ class AdminServiceTest {
 
     @Autowired
     private ContactRepository contactRepository;
-
-    @Autowired
-    private MockMvc mockMvc;
 
     private User testUser;
     private Contact testContact1;
@@ -74,12 +69,6 @@ class AdminServiceTest {
             .user(testUser)
             .build();
         contactRepository.saveAll(List.of(testContact1, testContact2));
-    }
-
-    @AfterEach
-    void tearDown() {
-        contactRepository.deleteAll();
-        userRepository.deleteAll();
     }
 
     @Test

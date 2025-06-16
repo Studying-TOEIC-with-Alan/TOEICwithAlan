@@ -19,7 +19,6 @@ import jakarta.transaction.Transactional;
 import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,9 +42,6 @@ class LoginControllerTest {
 
     @Autowired
     private UserRepository userRepository;
-
-    @InjectMocks
-    private LoginController loginController;
 
     private OAuth2User oauthUser;
     private User user;
@@ -73,7 +69,7 @@ class LoginControllerTest {
     void login() throws Exception {
         mvc.perform(get("/login"))
             .andExpect(status().isOk())
-            .andExpect(view().name("/login"));
+            .andExpect(view().name("login"));
     }
 
     @Test
@@ -81,7 +77,7 @@ class LoginControllerTest {
         mvc.perform(get("/set-nickname")
                 .with(oauth2Login().oauth2User(oauthUser)))
             .andExpect(status().isOk())
-            .andExpect(view().name("/nickname"));
+            .andExpect(view().name("nickname"));
     }
 
     @Test
@@ -109,7 +105,7 @@ class LoginControllerTest {
         mvc.perform(post("/set-nickname")
                 .param("nickname", "nick"))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("http://localhost/login"));
+            .andExpect(redirectedUrl("/login"));
     }
 
     @Test
