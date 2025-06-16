@@ -1,4 +1,3 @@
-use lingobuddy;
 DROP TABLE IF EXISTS allen;
 DROP TABLE IF EXISTS til;
 DROP TABLE IF EXISTS chat_message;
