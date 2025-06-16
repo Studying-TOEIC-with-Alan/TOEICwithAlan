@@ -1,3 +1,4 @@
+use lingobuddy;
 DROP TABLE IF EXISTS allen;
 DROP TABLE IF EXISTS til;
 DROP TABLE IF EXISTS chat_message;
@@ -75,7 +76,7 @@ CREATE TABLE contact_file (
     filename VARCHAR(255) NOT NULL,
     file_path VARCHAR(500) NOT NULL,
     contact_id BIGINT NOT NULL,
-    FOREIGN KEY (contact_id) REFERENCES contact(id) ON DELETE CASCADE
+    FOREIGN KEY (contact_id) REFERENCES contact(contact_id) ON DELETE CASCADE
 );
 
 CREATE TABLE review_file (
@@ -83,5 +84,5 @@ CREATE TABLE review_file (
     filename VARCHAR(255) NOT NULL,
     file_path VARCHAR(500) NOT NULL,
     review_id BIGINT NOT NULL,
-    FOREIGN KEY (review_id) REFERENCES review(id) ON DELETE CASCADE
+    FOREIGN KEY (review_id) REFERENCES review(review_id) ON DELETE CASCADE
 );
