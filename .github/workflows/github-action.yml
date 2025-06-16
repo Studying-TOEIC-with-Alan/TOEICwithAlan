@@ -46,6 +46,7 @@ jobs:
           echo "aws.credentials.secret.key=dummy-secret-key" >> src/test/resources/application-test.properties
           echo "aws.region.static=ap-northeast-2" >> src/test/resources/application-test.properties
           echo "allen.api.url=http://localhost:8080/dummy-allen-api" >> src/test/resources/application-test.properties
+          echo "allen.api.key=dummy-allen-key" >> src/test/resources/application-test.properties
       - name: Build
         run: ./gradlew build
         env:
